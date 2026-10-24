@@ -24,6 +24,9 @@ class UIManager {
         this.moveListModal = document.getElementById('moveListModal');
 
         this.pointsElements = document.querySelectorAll('.points-val');
+        this.touchControls = document.getElementById('touchControls');
+        this.btnTouchU = document.getElementById('btnTouchU');
+        this.btnToggleTouch = document.getElementById('btnToggleTouch');
     }
 
     bindEvents() {
@@ -138,6 +141,9 @@ class UIManager {
                 this.renderShopCards();
             }
         });
+
+        // Initialize Virtual Arcade Touch Controls
+        this.initTouchControls();
     }
 
     updatePointsDisplay() {
@@ -157,6 +163,9 @@ class UIManager {
         this.charSelectScreen.classList.add('hidden');
         this.shopScreen.classList.add('hidden');
         this.hudOverlay.classList.add('hidden');
+        if (this.touchControls) {
+            this.touchControls.classList.add('hidden');
+        }
         this.menuScreen.classList.remove('hidden');
         this.updatePointsDisplay();
     }
@@ -323,6 +332,9 @@ class UIManager {
     launchGame() {
         this.charSelectScreen.classList.add('hidden');
         this.hudOverlay.classList.remove('hidden');
+        if (this.touchControls && this.touchEnabled) {
+            this.touchControls.classList.remove('hidden');
+        }
         window.GameInstance.startMatch(this.selectedP1Char, this.selectedP2Char, this.currentMode, this.currentDifficulty);
     }
 
@@ -451,12 +463,15 @@ class UIManager {
     showPause(show = true) {
         if (show) {
             this.pauseOverlay.classList.remove('hidden');
+            if (this.touchControls) this.touchControls.classList.add('hidden');
         } else {
             this.pauseOverlay.classList.add('hidden');
+            if (this.touchControls && this.touchEnabled) this.touchControls.classList.remove('hidden');
         }
     }
 
     showGameOver(p1Won, points, p1Rounds, p2Rounds, arcadeIdx) {
+        if (this.touchControls) this.touchControls.classList.add('hidden');
         this.gameOverOverlay.classList.remove('hidden');
         const titleEl = document.getElementById('gameOverTitle');
         const pointsEl = document.getElementById('gameOverPoints');
@@ -494,4 +509,165 @@ class UIManager {
 // Global UI singleton
 window.addEventListener('DOMContentLoaded', () => {
     window.UI = new UIManager();
-});
+
+    // ----------------------------------------------------
+    // VIRTUAL ARCADE TOUCH CONTROLS (U, K, L, J, S, D-Pad)
+    // ----------------------------------------------------
+    initTouchControls() {
+        if (!this.touchControls) return;
+
+        this.updateTouchToggleButton();
+
+        this.btnToggleTouch?.addEventListener('click', () => {
+            Sound.playClick();
+            this.touchEnabled = !this.touchEnabled;
+            localStorage.setItem('battle_arena_touch_enabled', this.touchEnabled ? 'true' : 'false');
+            this.updateTouchToggleButton();
+            if (window.GameInstance && window.GameInstance.state === 'fighting') {
+                this.touchControls.classList.toggle('hidden', !this.touchEnabled);
+            }
+        });
+
+        // Helper to bind tactile multi-touch pointer events with pointer capture
+        const bindKey = (btnId, onDown, onUp) => {
+            const btn = document.getElementById(btnId);
+            if (!btn) return;
+
+            let activeId = null;
+
+            btn.addEventListener('pointerdown', (e) => {
+                e.preventDefault();
+                e.stopPropagation();
+                if (activeId !== null) return;
+                activeId = e.pointerId;
+                try { btn.setPointerCapture(e.pointerId); } catch (_) {}
+                btn.classList.add('touch-active');
+                if (window.GameInstance && window.GameInstance.sound) {
+                    window.GameInstance.sound.resume();
+                }
+                if (onDown) onDown();
+            }, { passive: false });
+
+            const release = (e) => {
+                if (e.pointerId !== activeId) return;
+                e.preventDefault();
+                e.stopPropagation();
+                activeId = null;
+                try { btn.releasePointerCapture(e.pointerId); } catch (_) {}
+                btn.classList.remove('touch-active');
+                if (onUp) onUp();
+            };
+
+            btn.addEventListener('pointerup', release, { passive: false });
+            btn.addEventListener('pointercancel', release, { passive: false });
+        };
+
+        // Move Left (KeyA)
+        bindKey('btnTouchLeft',
+            () => {
+                if (window.GameInstance) {
+                    window.GameInstance.keys['KeyA'] = true;
+                    if (window.GameInstance.p1) window.GameInstance.p1.moveLeft();
+                }
+            },
+            () => {
+                if (window.GameInstance) {
+                    window.GameInstance.keys['KeyA'] = false;
+                    if (window.GameInstance.p1 && !window.GameInstance.keys['KeyD']) {
+                        window.GameInstance.p1.stopMoving();
+                    }
+                }
+            }
+        );
+
+        // Move Right (KeyD)
+        bindKey('btnTouchRight',
+            () => {
+                if (window.GameInstance) {
+                    window.GameInstance.keys['KeyD'] = true;
+                    if (window.GameInstance.p1) window.GameInstance.p1.moveRight();
+                }
+            },
+            () => {
+                if (window.GameInstance) {
+                    window.GameInstance.keys['KeyD'] = false;
+                    if (window.GameInstance.p1 && !window.GameInstance.keys['KeyA']) {
+                        window.GameInstance.p1.stopMoving();
+                    }
+                }
+            }
+        );
+
+        // Jump (KeyW / Space)
+        bindKey('btnTouchJump', () => {
+            if (window.GameInstance && window.GameInstance.p1) {
+                window.GameInstance.p1.jump();
+            }
+        });
+
+        // Guard / Block (KeyS)
+        bindKey('btnTouchS',
+            () => {
+                if (window.GameInstance) {
+                    window.GameInstance.keys['KeyS'] = true;
+                    if (window.GameInstance.p1) window.GameInstance.p1.startBlock();
+                }
+            },
+            () => {
+                if (window.GameInstance) {
+                    window.GameInstance.keys['KeyS'] = false;
+                    if (window.GameInstance.p1) window.GameInstance.p1.stopBlock();
+                }
+            }
+        );
+
+        // Basic Attack (KeyJ)
+        bindKey('btnTouchJ', () => {
+            if (window.GameInstance && window.GameInstance.p1) {
+                window.GameInstance.p1.triggerBasicAttack();
+            }
+        });
+
+        // Skill 1 (KeyK)
+        bindKey('btnTouchK', () => {
+            if (window.GameInstance && window.GameInstance.p1) {
+                window.GameInstance.p1.triggerSkill1();
+            }
+        });
+
+        // Skill 2 (KeyL)
+        bindKey('btnTouchL', () => {
+            if (window.GameInstance && window.GameInstance.p1) {
+                window.GameInstance.p1.triggerSkill2();
+            }
+        });
+
+        // Ultimate (KeyU)
+        bindKey('btnTouchU', () => {
+            if (window.GameInstance && window.GameInstance.p1) {
+                window.GameInstance.p1.triggerUltimate();
+            }
+        });
+
+        // Mobile Pause Button
+        bindKey('btnTouchPause', () => {
+            if (window.GameInstance) {
+                window.GameInstance.togglePause();
+            }
+        });
+    }
+
+    updateTouchToggleButton() {
+        if (!this.btnToggleTouch) return;
+        this.btnToggleTouch.textContent = this.touchEnabled ? '📱 Touch: ON' : '📱 Touch: OFF';
+    }
+
+    updateTouchHUD(p1) {
+        if (!this.btnTouchU || !p1) return;
+        if (p1.energy >= 100 && p1.cooldowns.ultimate <= 0) {
+            this.btnTouchU.classList.add('ultimate-ready');
+        } else {
+            this.btnTouchU.classList.remove('ultimate-ready');
+        }
+    }
+}

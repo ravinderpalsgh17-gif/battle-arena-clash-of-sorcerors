@@ -1,4 +1,4 @@
-﻿# ⚔️ Battle Arena: Clash of Sorcerors
+# ⚔️ Battle Arena: Clash of Sorcerors
 
 An adrenaline-pumping 2D fighting arena game featuring mythological and cursed deities battling for cosmic supremacy. Built with pure HTML5 Canvas, modern JavaScript (ES6+), procedural Web Audio synthesis, and dynamic particle systems.
 
@@ -82,6 +82,20 @@ The game features **5 distinct combatants**, starting with the default free char
 | **Skill 1** | `Numpad 2` or `2` |
 | **Skill 2** | `Numpad 3` or `3` |
 | **Ultimate** | `Numpad 5` or `5` / `0` |
+
+### 📱 Mobile & Touch Controls (Play Without a Keyboard!)
+The game includes a full built-in virtual arcade controller overlay that activates on touchscreens and mobile devices (or can be toggled using the **📱 Touch: ON** button in the top navigation bar):
+
+| On-Screen Button | Action | Description |
+|---|---|---|
+| **`◀` / `▶`** | **Move Left / Right** | Smooth directional thumb movement |
+| **`▲ JUMP`** | **Jump** | Aerial somersault leap |
+| **`[S]`** | **Guard / Block** | Hold to guard against enemy combos |
+| **`[J]`** | **Basic Attack** | Primary martial strike / ranged projectile |
+| **`[K]`** | **Skill 1** | First unique combat technique |
+| **`[L]`** | **Skill 2** | Second unique combat technique |
+| **`[U]`** | **Ultimate (100 Energy)** | Cataclysmic finisher (glows with gold flames when ready!) |
+| **`⏸`** | **Pause** | Access pause & restart options |
 
 ---
 

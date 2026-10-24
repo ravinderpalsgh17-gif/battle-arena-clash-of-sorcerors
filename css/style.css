@@ -61,9 +61,8 @@ body {
 /* Screen Wrapper & Letterboxing */
 #gameContainer {
     position: relative;
-    width: 1280px;
-    min-height: 720px;
-    max-width: 98vw;
+    width: 100%;
+    max-width: 1280px;
     aspect-ratio: 16 / 9;
     box-shadow: 0 0 60px rgba(0, 0, 0, 0.9), 0 0 25px rgba(255, 0, 85, 0.2);
     overflow: hidden;
@@ -783,5 +782,355 @@ kbd {
 @media (max-width: 900px) {
     .info-columns {
         grid-template-columns: 1fr;
+    }
+}
+
+/* ============================================================================
+   Virtual Arcade Touch Controls for Mobile & Non-Keyboard Devices
+   ============================================================================ */
+.touch-controls {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    pointer-events: none;
+    z-index: 60;
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-end;
+    padding: 16px 20px;
+    box-sizing: border-box;
+    transition: opacity 0.25s ease;
+}
+
+.touch-group {
+    pointer-events: auto;
+    display: flex;
+    flex-direction: column;
+    user-select: none;
+    -webkit-user-select: none;
+}
+
+/* Left Movement Cluster */
+.touch-left {
+    align-items: center;
+    gap: 8px;
+    margin-bottom: 2px;
+}
+
+.touch-dpad-row {
+    display: flex;
+    gap: 10px;
+}
+
+/* Right Action Buttons Cluster */
+.touch-right {
+    align-items: flex-end;
+    gap: 8px;
+    margin-bottom: 2px;
+}
+
+.touch-action-grid {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 8px;
+}
+
+.touch-skills-row,
+.touch-main-row {
+    display: flex;
+    gap: 10px;
+    justify-content: center;
+}
+
+/* Base Touch Button */
+.touch-btn {
+    user-select: none;
+    -webkit-user-select: none;
+    touch-action: none;
+    -webkit-tap-highlight-color: transparent;
+    cursor: pointer;
+    font-family: var(--font-body), sans-serif;
+    font-weight: 900;
+    background: rgba(14, 14, 26, 0.82);
+    backdrop-filter: blur(6px);
+    -webkit-backdrop-filter: blur(6px);
+    color: #fff;
+    border: 2px solid rgba(255, 255, 255, 0.2);
+    border-radius: 14px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.5), inset 0 1px 0 rgba(255, 255, 255, 0.15);
+    transition: transform 0.06s ease, filter 0.06s ease, background 0.06s ease, box-shadow 0.06s ease;
+    padding: 0;
+}
+
+.touch-btn:active,
+.touch-btn.touch-active {
+    transform: scale(0.92);
+    filter: brightness(1.35);
+}
+
+/* Movement / D-Pad Buttons */
+.touch-btn.touch-dir {
+    width: 60px;
+    height: 54px;
+    font-size: 20px;
+    color: var(--cyan);
+    border-color: rgba(0, 229, 255, 0.5);
+    box-shadow: 0 0 12px rgba(0, 229, 255, 0.2), inset 0 1px 0 rgba(0, 229, 255, 0.3);
+}
+
+.touch-btn.touch-dir:active,
+.touch-btn.touch-dir.touch-active {
+    background: rgba(0, 229, 255, 0.35);
+    border-color: var(--cyan);
+    box-shadow: 0 0 20px rgba(0, 229, 255, 0.6);
+}
+
+.touch-btn.touch-jump {
+    width: 130px;
+    height: 42px;
+    border-color: rgba(0, 229, 255, 0.6);
+    color: var(--cyan);
+    display: flex;
+    flex-direction: row;
+    gap: 6px;
+    font-size: 13px;
+    letter-spacing: 1px;
+}
+
+.touch-btn.touch-jump:active,
+.touch-btn.touch-jump.touch-active {
+    background: rgba(0, 229, 255, 0.35);
+    border-color: var(--cyan);
+    box-shadow: 0 0 20px rgba(0, 229, 255, 0.6);
+}
+
+/* Mobile Pause Button */
+.touch-pause-btn {
+    position: absolute;
+    top: 15px;
+    right: 18px;
+    width: 42px;
+    height: 42px;
+    border-radius: 50%;
+    pointer-events: auto;
+    font-size: 16px;
+    color: #fff;
+    border-color: rgba(255, 255, 255, 0.35);
+    background: rgba(14, 14, 26, 0.85);
+    z-index: 70;
+}
+
+.touch-pause-btn:active,
+.touch-pause-btn.touch-active {
+    background: rgba(255, 255, 255, 0.3);
+    border-color: #fff;
+}
+
+/* Action Buttons (U, K, L, J, S) */
+.touch-act {
+    width: 66px;
+    height: 58px;
+    position: relative;
+    border-radius: 14px;
+}
+
+.touch-key {
+    font-family: var(--font-heading), 'Cinzel', sans-serif;
+    font-size: 22px;
+    font-weight: 900;
+    line-height: 1;
+}
+
+.touch-name {
+    font-size: 9px;
+    font-weight: 800;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    margin-top: 2px;
+    opacity: 0.9;
+}
+
+/* [U] Ultimate Button */
+.touch-act-u {
+    width: 76px;
+    height: 60px;
+    border-color: var(--gold);
+    color: var(--gold);
+    background: radial-gradient(circle at center, rgba(255, 215, 0, 0.25) 0%, rgba(20, 15, 30, 0.85) 100%);
+    box-shadow: 0 0 16px rgba(255, 215, 0, 0.35), inset 0 1px 0 rgba(255, 215, 0, 0.4);
+}
+
+.touch-act-u.ultimate-ready {
+    animation: pulse-ult 1.4s infinite alternate;
+}
+
+@keyframes pulse-ult {
+    0% {
+        box-shadow: 0 0 15px rgba(255, 215, 0, 0.4);
+        border-color: var(--gold);
+    }
+    100% {
+        box-shadow: 0 0 30px rgba(255, 77, 0, 0.9), 0 0 50px rgba(255, 215, 0, 0.6);
+        border-color: #ff9900;
+    }
+}
+
+.touch-act-u:active,
+.touch-act-u.touch-active {
+    background: rgba(255, 215, 0, 0.45);
+    box-shadow: 0 0 25px rgba(255, 215, 0, 0.8);
+}
+
+/* [K] Skill 1 Button */
+.touch-act-k {
+    border-color: rgba(0, 229, 255, 0.7);
+    color: var(--cyan);
+    box-shadow: 0 0 12px rgba(0, 229, 255, 0.25);
+}
+
+.touch-act-k:active,
+.touch-act-k.touch-active {
+    background: rgba(0, 229, 255, 0.4);
+    box-shadow: 0 0 22px rgba(0, 229, 255, 0.7);
+}
+
+/* [L] Skill 2 Button */
+.touch-act-l {
+    border-color: rgba(180, 90, 255, 0.75);
+    color: #d18dff;
+    box-shadow: 0 0 12px rgba(180, 90, 255, 0.25);
+}
+
+.touch-act-l:active,
+.touch-act-l.touch-active {
+    background: rgba(180, 90, 255, 0.4);
+    box-shadow: 0 0 22px rgba(180, 90, 255, 0.7);
+}
+
+/* [J] Attack Button */
+.touch-act-j {
+    width: 70px;
+    height: 60px;
+    border-color: rgba(255, 42, 95, 0.85);
+    color: #ff3366;
+    background: radial-gradient(circle at center, rgba(255, 42, 95, 0.2) 0%, rgba(20, 10, 20, 0.85) 100%);
+    box-shadow: 0 0 15px rgba(255, 42, 95, 0.35);
+}
+
+.touch-act-j:active,
+.touch-act-j.touch-active {
+    background: rgba(255, 42, 95, 0.45);
+    box-shadow: 0 0 25px rgba(255, 42, 95, 0.8);
+}
+
+/* [S] Guard / Block Button */
+.touch-act-s {
+    width: 66px;
+    height: 60px;
+    border-color: rgba(76, 201, 240, 0.8);
+    color: #4cc9f0;
+    box-shadow: 0 0 12px rgba(76, 201, 240, 0.25);
+}
+
+.touch-act-s:active,
+.touch-act-s.touch-active {
+    background: rgba(76, 201, 240, 0.4);
+    box-shadow: 0 0 22px rgba(76, 201, 240, 0.7);
+}
+
+/* Media Queries for Tablet and Mobile Sizing */
+@media (max-width: 900px) {
+    .touch-controls {
+        padding: 8px 12px;
+    }
+    .touch-btn.touch-dir {
+        width: 50px;
+        height: 46px;
+        font-size: 18px;
+    }
+    .touch-btn.touch-jump {
+        width: 110px;
+        height: 36px;
+        font-size: 12px;
+    }
+    .touch-act {
+        width: 52px;
+        height: 48px;
+    }
+    .touch-act-u {
+        width: 60px;
+        height: 50px;
+    }
+    .touch-act-j,
+    .touch-act-s {
+        width: 54px;
+        height: 48px;
+    }
+    .touch-key {
+        font-size: 17px;
+    }
+    .touch-name {
+        font-size: 8px;
+    }
+    .touch-pause-btn {
+        width: 36px;
+        height: 36px;
+        font-size: 13px;
+        top: 10px;
+        right: 12px;
+    }
+}
+
+@media (max-width: 600px) {
+    body {
+        padding: 6px 2px 30px 2px;
+    }
+    .touch-controls {
+        padding: 4px 6px;
+    }
+    .touch-btn.touch-dir {
+        width: 42px;
+        height: 40px;
+        font-size: 15px;
+    }
+    .touch-btn.touch-jump {
+        width: 94px;
+        height: 32px;
+        font-size: 11px;
+    }
+    .touch-act {
+        width: 44px;
+        height: 42px;
+    }
+    .touch-act-u {
+        width: 48px;
+        height: 42px;
+    }
+    .touch-act-j,
+    .touch-act-s {
+        width: 46px;
+        height: 42px;
+    }
+    .touch-key {
+        font-size: 14px;
+    }
+    .touch-name {
+        font-size: 7px;
+    }
+    .top-bar {
+        top: 8px;
+        left: 8px;
+        right: 8px;
+    }
+    .points-pill {
+        padding: 4px 10px;
+        font-size: 14px;
     }
 }

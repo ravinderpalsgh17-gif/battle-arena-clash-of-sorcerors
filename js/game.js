@@ -135,6 +135,10 @@ class BattleArenaGame {
         this.state = 'fighting';
         this.sound.startBGM();
 
+        if (window.UI && window.UI.touchControls && window.UI.touchEnabled) {
+            window.UI.touchControls.classList.remove('hidden');
+        }
+
         // Start render loop if not running
         if (!this.animId) {
             this.loop(0);
@@ -417,6 +421,11 @@ class BattleArenaGame {
 
         // 5. Draw HUD (Health bars, Ultimate gauges, Round timer, Portraits)
         this.drawHUD();
+
+        // 6. Update virtual touch controls indicator
+        if (window.UI && this.p1) {
+            window.UI.updateTouchHUD(this.p1);
+        }
     }
 
     drawStageBackground() {
