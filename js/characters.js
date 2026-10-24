@@ -350,7 +350,7 @@ const CHARACTERS_DATA = {
 
 // Persistence helper for player progression and in-game points
 class StorageManager {
-    static STORAGE_KEY = 'battle_arena_clashofsorcerors_save';
+    static STORAGE_KEY = 'battle_arena_clashofsorcerors_save_v1';
 
     static load() {
         const defaultData = {
@@ -362,7 +362,7 @@ class StorageManager {
         };
 
         try {
-            const raw = localStorage.getItem(this.STORAGE_KEY) || localStorage.getItem('battle_arena_clashofgods_save');
+            const raw = localStorage.getItem(this.STORAGE_KEY);
             if (raw) {
                 const parsed = JSON.parse(raw);
                 return { ...defaultData, ...parsed };
@@ -386,6 +386,25 @@ class StorageManager {
         data.points = Math.max(0, (data.points || 0) + amt);
         this.save(data);
         return data.points;
+    }
+
+    static resetPoints() {
+        const data = this.load();
+        data.points = 0;
+        this.save(data);
+        return data;
+    }
+
+    static reset() {
+        const defaultData = {
+            points: 0,
+            unlocked: ['yuji'],
+            battlesWon: 0,
+            battlesLost: 0,
+            arcadeCompleted: false
+        };
+        this.save(defaultData);
+        return defaultData;
     }
 
     static unlockCharacter(charId) {

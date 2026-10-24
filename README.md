@@ -87,7 +87,7 @@ The game features **5 distinct combatants**, starting with the default free char
 
 ## 🪙 Economy & In-Game Points
 
-* **Starter Bonus**: New players start with **500 Battle Points**.
+* **Starter Points**: New players start with **0 Battle Points** (Start strictly at 0 coins; earn all points through combat!).
 * **Earn Points**:
   * Match Victory: **300 – 600 Points** (scales with difficulty: Easy, Medium, Hard, Deity).
   * Combo Bonuses: Up to **+200 Points** for high hit chains.

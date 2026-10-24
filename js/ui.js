@@ -128,6 +128,16 @@ class UIManager {
             this.shopScreen.classList.add('hidden');
             this.menuScreen.classList.remove('hidden');
         });
+
+        // Reset Points to 0
+        document.getElementById('btnResetPoints')?.addEventListener('click', () => {
+            if (confirm('Reset your coins/points balance to 0?')) {
+                StorageManager.resetPoints();
+                this.updatePointsDisplay();
+                this.renderCharCards();
+                this.renderShopCards();
+            }
+        });
     }
 
     updatePointsDisplay() {
