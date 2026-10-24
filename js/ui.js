@@ -504,11 +504,6 @@ class UIManager {
 
         this.updatePointsDisplay();
     }
-}
-
-// Global UI singleton
-window.addEventListener('DOMContentLoaded', () => {
-    window.UI = new UIManager();
 
     // ----------------------------------------------------
     // VIRTUAL ARCADE TOUCH CONTROLS (U, K, L, J, S, D-Pad)
@@ -671,3 +666,8 @@ window.addEventListener('DOMContentLoaded', () => {
         }
     }
 }
+
+// Global UI singleton
+window.addEventListener('DOMContentLoaded', () => {
+    window.UI = new UIManager();
+});
