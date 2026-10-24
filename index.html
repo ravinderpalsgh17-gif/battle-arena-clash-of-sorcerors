@@ -1,0 +1,437 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Battle Arena: Clash of Sorcerors</title>
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>⚡</text></svg>">
+</head>
+<body>
+
+    <div id="gameContainer">
+        <!-- 1. The High Performance Battle Canvas -->
+        <canvas id="gameCanvas" width="1280" height="720"></canvas>
+
+        <!-- 2. Global Top Status Bar -->
+        <div class="top-bar">
+            <div class="points-pill">
+                <span class="points-val">🪙 0</span>
+            </div>
+            <div style="display: flex; gap: 10px;">
+                <button id="btnToggleMute" class="btn btn-secondary" style="padding: 6px 14px; font-size: 14px;">🔊 Sound: ON</button>
+                <button id="btnMoveList" class="btn btn-secondary" style="padding: 6px 14px; font-size: 14px;">📖 Move List</button>
+            </div>
+        </div>
+
+        <!-- 3. Main Menu Screen -->
+        <div id="menuScreen" class="ui-screen">
+            <h1 class="menu-title">BATTLE ARENA</h1>
+            <div class="menu-subtitle">⚡ CLASH OF SORCERORS ⚡</div>
+
+            <div class="menu-buttons">
+                <button id="btnModeArcade" class="btn btn-primary">🏆 ARCADE LADDER</button>
+                <button id="btnModeVersus" class="btn btn-secondary">⚔️ VERSUS AI</button>
+                <button id="btnModePvP" class="btn btn-secondary">👥 LOCAL 2-PLAYER</button>
+                <button id="btnModeTraining" class="btn btn-secondary">🥋 TRAINING DOJO</button>
+                <button id="btnShop" class="btn btn-gold">🏛️ GOD ROSTER & SHOP</button>
+            </div>
+        </div>
+
+        <!-- 4. Character Selection Screen -->
+        <div id="charSelectScreen" class="ui-screen hidden">
+            <h2 id="charSelectTitle" class="menu-subtitle" style="margin-top: 15px; margin-bottom: 5px;">CHOOSE YOUR FIGHTER</h2>
+
+            <div class="char-select-container">
+                <!-- Left: 5 Character Grid -->
+                <div id="charSelectGrid" class="char-select-grid">
+                    <!-- Injected dynamically by ui.js -->
+                </div>
+
+                <!-- Right: Character Details Preview -->
+                <div id="charSelectPreview" class="char-select-preview">
+                    <!-- Injected dynamically by ui.js -->
+                </div>
+            </div>
+
+            <div style="margin-top: 15px;">
+                <button id="btnCharSelectBack" class="btn btn-secondary">← BACK TO MENU</button>
+            </div>
+        </div>
+
+        <!-- 5. God Shop Screen -->
+        <div id="shopScreen" class="ui-screen hidden">
+            <h2 class="menu-title" style="font-size: 38px;">PANTHEON SHOP</h2>
+            <div class="menu-subtitle" style="margin-bottom: 10px;">PURCHASE DEITIES WITH IN-GAME POINTS</div>
+
+            <div id="shopGrid" class="shop-grid">
+                <!-- Injected dynamically by ui.js -->
+            </div>
+
+            <div style="margin-top: 20px;">
+                <button id="btnShopBack" class="btn btn-secondary">← BACK TO MENU</button>
+            </div>
+        </div>
+
+        <!-- 6. HUD Controls Hint Bar -->
+        <div id="hudOverlay" class="hidden">
+            <div class="hud-controls-hint">
+                <span><strong>P1:</strong> [A/D] Move</span>
+                <span>[W] Jump</span>
+                <span>[S] Block</span>
+                <span>[J] Basic Attack</span>
+                <span>[K] Skill 1</span>
+                <span>[L] Skill 2</span>
+                <span>[U] Ultimate</span>
+                <span>[Esc/P] Pause</span>
+            </div>
+        </div>
+
+        <!-- 7. Pause Menu Overlay -->
+        <div id="pauseOverlay" class="ui-screen hidden">
+            <h2 class="menu-title" style="font-size: 44px; margin-bottom: 25px;">MATCH PAUSED</h2>
+            <div class="menu-buttons">
+                <button id="btnResume" class="btn btn-primary">RESUME</button>
+                <button id="btnRestartMatch" class="btn btn-secondary">RESTART MATCH</button>
+                <button id="btnQuitToMenu" class="btn btn-secondary">QUIT TO MENU</button>
+            </div>
+        </div>
+
+        <!-- 8. Match Over / Victory Overlay -->
+        <div id="gameOverOverlay" class="ui-screen hidden">
+            <h2 id="gameOverTitle" class="menu-title" style="font-size: 52px; margin-bottom: 10px;">VICTORY!</h2>
+            <div id="gameOverScore" style="font-size: 20px; color: #aaa; margin-bottom: 10px;">Final Rounds: P1 [ 2 ] - [ 0 ] P2</div>
+            <div id="gameOverPoints" style="font-size: 28px; color: var(--gold); margin-bottom: 30px;">+🪙 450 Battle Points Earned!</div>
+
+            <div class="menu-buttons">
+                <button id="btnGameOverNext" class="btn btn-primary">NEXT OPPONENT</button>
+                <button id="btnGameOverRematch" class="btn btn-secondary">REMATCH</button>
+                <button id="btnGameOverMenu" class="btn btn-secondary">MAIN MENU</button>
+            </div>
+        </div>
+
+        <!-- 9. Move List / God Codex Modal -->
+        <div id="moveListModal" class="ui-screen hidden" style="z-index: 200;">
+            <div class="modal-box">
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
+                    <h2 style="font-family: var(--font-heading); color: var(--gold);">GOD CODEX & MOVE LIST</h2>
+                    <button id="btnCloseMoveList" class="btn btn-secondary" style="padding: 6px 14px;">✕ CLOSE</button>
+                </div>
+                <div id="moveListContent">
+                    <!-- Injected by ui.js -->
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Scroll Indicator / Quick Jump -->
+    <div class="scroll-hint">
+        <span>▼ Scroll Down to View Full Character Codex, Move Lists & Game Details ▼</span>
+    </div>
+
+    <!-- Full Details & Lore Section Below Arena -->
+    <section id="detailsSection" class="details-section">
+        <div class="details-container">
+            <header class="details-header">
+                <h2>⚡ FULL COMBAT CODEX & MOVE LIST ⚡</h2>
+                <p>Scroll through all 5 deities, their unique attacks, damage values, cooldowns, and combat controls below.</p>
+            </header>
+
+            <!-- 5 Characters Comprehensive Grid -->
+            <div class="characters-detailed-grid">
+                <!-- 1. YUJI -->
+                <article class="fighter-detail-card" style="border-top-color: #ff2a5f;">
+                    <div class="fighter-detail-header">
+                        <div class="fighter-detail-badge" style="background: #ff2a5f;">FREE / DEFAULT</div>
+                        <h3 style="color: #ff2a5f;">🥊 Yuji Itadori</h3>
+                        <div class="fighter-detail-subtitle">The Divine Vessel &bull; Close-Range Brawler</div>
+                        <p class="fighter-detail-lore">Superhuman martial artist housing ancient divine cursed energy. Excels at high-pressure close-quarters combat.</p>
+                    </div>
+                    <div class="moves-table-wrapper">
+                        <table class="moves-table">
+                            <thead>
+                                <tr><th>Command</th><th>Attack Name</th><th>Damage</th><th>Cooldown</th><th>Unique Effect</th></tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td><kbd>J</kbd> / <kbd>Z</kbd></td>
+                                    <td><strong>Divergent Fist</strong></td>
+                                    <td>55 + 35</td>
+                                    <td>0.35s</td>
+                                    <td>Martial strike followed 0.25s later by a delayed cursed energy detonation!</td>
+                                </tr>
+                                <tr>
+                                    <td><kbd>K</kbd> / <kbd>X</kbd></td>
+                                    <td><strong>Cursed Rush</strong></td>
+                                    <td>110</td>
+                                    <td>4.0s</td>
+                                    <td>Rapid forward blur dash delivering 4 lightning-fast cursed punches.</td>
+                                </tr>
+                                <tr>
+                                    <td><kbd>L</kbd> / <kbd>C</kbd></td>
+                                    <td><strong>Slaughter Demon</strong></td>
+                                    <td>135</td>
+                                    <td>6.0s</td>
+                                    <td>Airborne somersault knife slash that lacerates target and causes bleed.</td>
+                                </tr>
+                                <tr class="ultimate-row">
+                                    <td><kbd>U</kbd> / <kbd>V</kbd></td>
+                                    <td><strong>Black Flash (Kokusen)</strong></td>
+                                    <td>320</td>
+                                    <td>14.0s</td>
+                                    <td>Warp space with black & crimson lightning for a devastating 2.5x critical blow!</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <div class="fighter-passive-box">
+                        <strong>Passive: Unbreakable Resolve</strong> — When health drops below 35%, gains +30% armor damage reduction and +20% move speed.
+                    </div>
+                </article>
+
+                <!-- 2. ZEUS -->
+                <article class="fighter-detail-card" style="border-top-color: #00e5ff;">
+                    <div class="fighter-detail-header">
+                        <div class="fighter-detail-badge" style="background: #00e5ff; color: #000;">1,000 POINTS</div>
+                        <h3 style="color: #00e5ff;">⚡ Zeus</h3>
+                        <div class="fighter-detail-subtitle">Lord of Olympus &bull; Lightning Zoner</div>
+                        <p class="fighter-detail-lore">Supreme Greek sky father commanding piercing lightning and celestial thunderbolts to control the arena from any range.</p>
+                    </div>
+                    <div class="moves-table-wrapper">
+                        <table class="moves-table">
+                            <thead>
+                                <tr><th>Command</th><th>Attack Name</th><th>Damage</th><th>Cooldown</th><th>Unique Effect</th></tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td><kbd>J</kbd> / <kbd>Z</kbd></td>
+                                    <td><strong>Thunder Lance</strong></td>
+                                    <td>50</td>
+                                    <td>0.55s</td>
+                                    <td>Hurls a piercing lightning spear across the entire screen through defenses.</td>
+                                </tr>
+                                <tr>
+                                    <td><kbd>K</kbd> / <kbd>X</kbd></td>
+                                    <td><strong>Chain Spark</strong></td>
+                                    <td>95</td>
+                                    <td>4.5s</td>
+                                    <td>Fires a homing electrical ball that seeks the foe and inflicts stun lock.</td>
+                                </tr>
+                                <tr>
+                                    <td><kbd>L</kbd> / <kbd>C</kbd></td>
+                                    <td><strong>Aegis Storm</strong></td>
+                                    <td>120</td>
+                                    <td>7.0s</td>
+                                    <td>360-degree rotating electrical cyclone that destroys projectiles and shocks enemies.</td>
+                                </tr>
+                                <tr class="ultimate-row">
+                                    <td><kbd>U</kbd> / <kbd>V</kbd></td>
+                                    <td><strong>Wrath of Olympus</strong></td>
+                                    <td>340</td>
+                                    <td>15.0s</td>
+                                    <td>Calls down 5 colossal thunderbolts crashing from the heavens sequentially across the stage!</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <div class="fighter-passive-box">
+                        <strong>Passive: Static Overcharge</strong> — Every 4th attack inflicts a paralyzed debuff, freezing enemy actions briefly.
+                    </div>
+                </article>
+
+                <!-- 3. ANUBIS -->
+                <article class="fighter-detail-card" style="border-top-color: #9d4edd;">
+                    <div class="fighter-detail-header">
+                        <div class="fighter-detail-badge" style="background: #9d4edd;">2,200 POINTS</div>
+                        <h3 style="color: #9d4edd;">🐺 Anubis</h3>
+                        <div class="fighter-detail-subtitle">Judge of Souls &bull; Life Drain & Hex Mage</div>
+                        <p class="fighter-detail-lore">Ancient Egyptian guardian of the Scales of Ma'at and god of the underworld. Siphons opponent health to sustain himself.</p>
+                    </div>
+                    <div class="moves-table-wrapper">
+                        <table class="moves-table">
+                            <thead>
+                                <tr><th>Command</th><th>Attack Name</th><th>Damage</th><th>Cooldown</th><th>Unique Effect</th></tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td><kbd>J</kbd> / <kbd>Z</kbd></td>
+                                    <td><strong>Soul Siphon</strong></td>
+                                    <td>48</td>
+                                    <td>0.45s</td>
+                                    <td>Launches a ghostly jackal skull that restores 40% of damage dealt back to Anubis as HP!</td>
+                                </tr>
+                                <tr>
+                                    <td><kbd>K</kbd> / <kbd>X</kbd></td>
+                                    <td><strong>Jackal Claws</strong></td>
+                                    <td>100</td>
+                                    <td>4.2s</td>
+                                    <td>Shadow sweep scythe cut that lacerates opponent and inflicts lingering death decay.</td>
+                                </tr>
+                                <tr>
+                                    <td><kbd>L</kbd> / <kbd>C</kbd></td>
+                                    <td><strong>Tomb Quicksand</strong></td>
+                                    <td>115</td>
+                                    <td>6.5s</td>
+                                    <td>Opens a swirling quicksand vortex beneath the foe that slows, grounds, and damages.</td>
+                                </tr>
+                                <tr class="ultimate-row">
+                                    <td><kbd>U</kbd> / <kbd>V</kbd></td>
+                                    <td><strong>Judgment of Ma'at</strong></td>
+                                    <td>310</td>
+                                    <td>16.0s</td>
+                                    <td>Summons the golden Scales of Truth; reaps the enemy soul, dealing huge true damage and healing Anubis!</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <div class="fighter-passive-box">
+                        <strong>Passive: Soul Siphon Aura</strong> — Passively restores 25% of all combat damage directly back into Anubis's health pool.
+                    </div>
+                </article>
+
+                <!-- 4. SUN WUKONG -->
+                <article class="fighter-detail-card" style="border-top-color: #ff9f1c;">
+                    <div class="fighter-detail-header">
+                        <div class="fighter-detail-badge" style="background: #ff9f1c; color: #000;">3,800 POINTS</div>
+                        <h3 style="color: #ff9f1c;">🐵 Sun Wukong</h3>
+                        <div class="fighter-detail-subtitle">The Great Sage &bull; Elusive Clone Master</div>
+                        <p class="fighter-detail-lore">The legendary Monkey King with 72 earthly transformations, golden cloud mobility, and the extending Ruyi staff.</p>
+                    </div>
+                    <div class="moves-table-wrapper">
+                        <table class="moves-table">
+                            <thead>
+                                <tr><th>Command</th><th>Attack Name</th><th>Damage</th><th>Cooldown</th><th>Unique Effect</th></tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td><kbd>J</kbd> / <kbd>Z</kbd></td>
+                                    <td><strong>Ruyi Expansion</strong></td>
+                                    <td>58</td>
+                                    <td>0.40s</td>
+                                    <td>Thrusts golden staff, extending it rapidly across 70% of the arena with heavy knockback.</td>
+                                </tr>
+                                <tr>
+                                    <td><kbd>K</kbd> / <kbd>X</kbd></td>
+                                    <td><strong>Nimbus Somersault</strong></td>
+                                    <td>125</td>
+                                    <td>4.8s</td>
+                                    <td>Leaps high on a golden nimbus cloud and crashes down with a massive staff slam.</td>
+                                </tr>
+                                <tr>
+                                    <td><kbd>L</kbd> / <kbd>C</kbd></td>
+                                    <td><strong>Hair Clone Decoy</strong></td>
+                                    <td>90</td>
+                                    <td>6.0s</td>
+                                    <td>Leaves a fighting illusion clone behind while Wukong teleports behind the enemy.</td>
+                                </tr>
+                                <tr class="ultimate-row">
+                                    <td><kbd>U</kbd> / <kbd>V</kbd></td>
+                                    <td><strong>Heaven Havoc (72 Styles)</strong></td>
+                                    <td>350</td>
+                                    <td>15.0s</td>
+                                    <td>Summons three illusionary clones that converge from all angles in a synchronized frenzy!</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <div class="fighter-passive-box">
+                        <strong>Passive: Immortal Stone Body</strong> — Immune to flinching or knockback while attacking, plus constant 1.5% max HP regen every 2s.
+                    </div>
+                </article>
+
+                <!-- 5. SUKUNA -->
+                <article class="fighter-detail-card" style="border-top-color: #ff0033;">
+                    <div class="fighter-detail-header">
+                        <div class="fighter-detail-badge" style="background: #ff0033;">5,500 POINTS</div>
+                        <h3 style="color: #ff0033;">⛩️ Ryomen Sukuna</h3>
+                        <div class="fighter-detail-subtitle">King of Curses &bull; Destructive Calamity God</div>
+                        <p class="fighter-detail-lore">The supreme calamity of jujutsu, wielding invisible spatial slashes, divine thermal arrows, and an open-barrier domain.</p>
+                    </div>
+                    <div class="moves-table-wrapper">
+                        <table class="moves-table">
+                            <thead>
+                                <tr><th>Command</th><th>Attack Name</th><th>Damage</th><th>Cooldown</th><th>Unique Effect</th></tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td><kbd>J</kbd> / <kbd>Z</kbd></td>
+                                    <td><strong>Dismantle (Kai)</strong></td>
+                                    <td>62</td>
+                                    <td>0.38s</td>
+                                    <td>Fires swift, invisible spatial slashes flying in an X-formation across the screen.</td>
+                                </tr>
+                                <tr>
+                                    <td><kbd>K</kbd> / <kbd>X</kbd></td>
+                                    <td><strong>Cleave (Hachi)</strong></td>
+                                    <td>130</td>
+                                    <td>4.5s</td>
+                                    <td>Teleports to enemy face, executing an armor-piercing slash scaled to enemy max HP.</td>
+                                </tr>
+                                <tr>
+                                    <td><kbd>L</kbd> / <kbd>C</kbd></td>
+                                    <td><strong>Fuga (Flame Arrow)</strong></td>
+                                    <td>155</td>
+                                    <td>7.5s</td>
+                                    <td>Draws a thermal fire arrow that triggers an incinerating explosion upon impact.</td>
+                                </tr>
+                                <tr class="ultimate-row">
+                                    <td><kbd>U</kbd> / <kbd>V</kbd></td>
+                                    <td><strong>Malevolent Shrine</strong></td>
+                                    <td>380</td>
+                                    <td>18.0s</td>
+                                    <td>Expands barrier-less domain; relentless slashes carve the entire arena for 3.5 seconds!</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <div class="fighter-passive-box">
+                        <strong>Passive: Reverse Cursed Technique</strong> — Critical strikes and special attacks restore 20% of damage dealt when under 40% HP.
+                    </div>
+                </article>
+            </div>
+
+            <!-- Economy & Controls Info -->
+            <div class="info-columns">
+                <div class="info-card">
+                    <h4>🪙 Fair Point Economy System</h4>
+                    <p>There are no infinite coin cheats or exploits. Players earn Battle Points through combat skill:</p>
+                    <ul>
+                        <li><strong>Match Victory</strong>: 300 to 600 Points (scales with Easy, Medium, Hard, Deity).</li>
+                        <li><strong>Combo Streaks</strong>: Up to +200 bonus Points for chaining hits.</li>
+                        <li><strong>Time Bonus</strong>: Earn bonus points for fast victories.</li>
+                        <li><strong>Arcade Ladder</strong>: Defeat Zeus, Anubis, Wukong, and Sukuna in order to claim the Grand Pantheon Purse!</li>
+                        <li><strong>Safe Storage</strong>: Unlocked deities and points persist in your browser's local storage.</li>
+                    </ul>
+                </div>
+                <div class="info-card">
+                    <h4>🎮 Full Keyboard Controls</h4>
+                    <table class="controls-guide-table">
+                        <tr><th>Action</th><th>Player 1 (Solo)</th><th>Player 2 (Local PvP)</th></tr>
+                        <tr><td>Move Left / Right</td><td><kbd>A</kbd> / <kbd>D</kbd></td><td><kbd>&larr;</kbd> / <kbd>&rarr;</kbd> (Arrows)</td></tr>
+                        <tr><td>Jump</td><td><kbd>W</kbd> or <kbd>Space</kbd></td><td><kbd>&uarr;</kbd> (Up Arrow)</td></tr>
+                        <tr><td>Block / Guard</td><td><kbd>S</kbd></td><td><kbd>&darr;</kbd> (Down Arrow)</td></tr>
+                        <tr><td>Basic Attack</td><td><kbd>J</kbd> or <kbd>Z</kbd></td><td><kbd>Numpad 1</kbd> or <kbd>1</kbd></td></tr>
+                        <tr><td>Skill 1</td><td><kbd>K</kbd> or <kbd>X</kbd></td><td><kbd>Numpad 2</kbd> or <kbd>2</kbd></td></tr>
+                        <tr><td>Skill 2</td><td><kbd>L</kbd> or <kbd>C</kbd></td><td><kbd>Numpad 3</kbd> or <kbd>3</kbd></td></tr>
+                        <tr><td>Ultimate (100 Energy)</td><td><kbd>U</kbd> or <kbd>V</kbd></td><td><kbd>Numpad 5</kbd> or <kbd>5</kbd></td></tr>
+                        <tr><td>Pause</td><td><kbd>Esc</kbd> or <kbd>P</kbd></td><td><kbd>Esc</kbd></td></tr>
+                    </table>
+                </div>
+            </div>
+
+            <div class="details-footer">
+                <button onclick="window.scrollTo({top: 0, behavior: 'smooth'})" class="btn btn-primary">▲ Back to Arena Top ▲</button>
+            </div>
+        </div>
+    </section>
+
+    <!-- Script Includes in Dependency Order -->
+    <script src="js/audio.js"></script>
+    <script src="js/particles.js"></script>
+    <script src="js/characters.js"></script>
+    <script src="js/fighter.js"></script>
+    <script src="js/ai.js"></script>
+    <script src="js/game.js"></script>
+    <script src="js/ui.js"></script>
+</body>
+</html>
