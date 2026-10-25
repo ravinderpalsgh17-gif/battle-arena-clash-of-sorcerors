@@ -129,7 +129,7 @@ class UIManager {
         // Back from Char Select
         document.getElementById('btnCharSelectBack')?.addEventListener('click', () => {
             Sound.playClick();
-            if (window.GameInstance && window.GameInstance.clearPreview3D) window.GameInstance.clearPreview3D();
+            if (window.GameInstance && window.GameInstance.showPreview3D) window.GameInstance.showPreview3D('sukuna');
             this.charSelectScreen.classList.add('hidden');
             this.menuScreen.classList.remove('hidden');
         });
@@ -166,11 +166,11 @@ class UIManager {
         if (window.GameInstance) {
             window.GameInstance.state = 'menu';
             window.GameInstance.sound.stopBGM();
-            if (window.GameInstance.clearPreview3D) window.GameInstance.clearPreview3D();
             if (window.GameInstance.p1) window.GameInstance.p1.cleanup();
             if (window.GameInstance.p2) window.GameInstance.p2.cleanup();
             window.GameInstance.clearProjectiles();
             if (window.GameInstance.world3d) window.GameInstance.world3d.clearDomain();
+            if (window.GameInstance.showPreview3D) window.GameInstance.showPreview3D('sukuna');
         }
         this.pauseOverlay.classList.add('hidden');
         this.gameOverOverlay.classList.add('hidden');

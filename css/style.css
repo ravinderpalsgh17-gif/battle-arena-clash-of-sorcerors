@@ -98,13 +98,24 @@ canvas#hudCanvas {
     flex-direction: column;
     justify-content: center;
     align-items: center;
-    background: rgba(8, 8, 16, 0.88);
-    backdrop-filter: blur(8px);
+    background: rgba(8, 8, 16, 0.75);
+    backdrop-filter: blur(6px);
     transition: opacity 0.3s ease, visibility 0.3s ease;
     z-index: 100;
     overflow-y: auto;
     -webkit-overflow-scrolling: touch;
     padding: 20px;
+}
+
+/* Semi-transparent Glass on Menu & Char Select so 3D World & 3D Fighters are Live & Visible! */
+#menuScreen {
+    background: radial-gradient(circle at center, rgba(12, 16, 30, 0.25) 0%, rgba(6, 8, 16, 0.58) 100%);
+    backdrop-filter: none;
+}
+
+#charSelectScreen {
+    background: rgba(10, 12, 22, 0.65);
+    backdrop-filter: blur(4px);
 }
 
 .hidden {

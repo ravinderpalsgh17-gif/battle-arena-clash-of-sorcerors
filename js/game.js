@@ -81,6 +81,9 @@ class BattleArenaGame {
 
         // Start continuous render loop
         this.loop(0);
+
+        // Feature 4-Armed Heian Sukuna on 3D Main Menu
+        this.showPreview3D('sukuna');
     }
 
     initInputListeners() {
@@ -102,6 +105,15 @@ class BattleArenaGame {
                 if (e.code === 'KeyK' || e.code === 'KeyX') this.p1.triggerSkill1();
                 if (e.code === 'KeyL' || e.code === 'KeyC') this.p1.triggerSkill2();
                 if (e.code === 'KeyU') this.p1.triggerUltimate();
+
+                // Dual-control support for solo modes
+                if (this.mode !== 'pvp') {
+                    if (e.code === 'Numpad0') this.p1.jump();
+                    if (e.code === 'Numpad1' || e.code === 'Digit1') this.p1.triggerBasicAttack();
+                    if (e.code === 'Numpad2' || e.code === 'Digit2') this.p1.triggerSkill1();
+                    if (e.code === 'Numpad3' || e.code === 'Digit3') this.p1.triggerSkill2();
+                    if (e.code === 'Numpad5' || e.code === 'Digit5') this.p1.triggerUltimate();
+                }
             }
 
             // Player 2 Combat Triggers (Local PvP)
@@ -117,7 +129,7 @@ class BattleArenaGame {
         window.addEventListener('keyup', (e) => {
             this.keys[e.code] = false;
 
-            if (this.p1 && (e.code === 'KeyS' || e.code === 'ShiftLeft')) {
+            if (this.p1 && (e.code === 'KeyS' || e.code === 'ShiftLeft' || (this.mode !== 'pvp' && (e.code === 'ArrowDown' || e.code === 'NumpadPeriod')))) {
                 this.p1.stopBlock();
             }
             if (this.p2 && (e.code === 'ArrowDown' || e.code === 'NumpadPeriod')) {
@@ -424,7 +436,7 @@ class BattleArenaGame {
         this.animId = requestAnimationFrame((t) => this.loop(t));
 
         if (this.state === 'fighting') {
-            // 1. Process Continuous 3D Inputs for Player 1 (WASD)
+            // 1. Process Continuous 3D Inputs for Player 1 (WASD + Arrow keys in solo play)
             if (this.p1 && this.p1.canAct()) {
                 let dx = 0;
                 let dz = 0;
@@ -433,13 +445,21 @@ class BattleArenaGame {
                 if (this.keys['KeyA']) dx -= 1;
                 if (this.keys['KeyD']) dx += 1;
 
+                // Support Arrow Keys for Player 1 in non-PvP modes
+                if (this.mode !== 'pvp') {
+                    if (this.keys['ArrowUp']) dz -= 1;
+                    if (this.keys['ArrowDown']) dz += 1;
+                    if (this.keys['ArrowLeft']) dx -= 1;
+                    if (this.keys['ArrowRight']) dx += 1;
+                }
+
                 if (dx !== 0 || dz !== 0) {
                     this.p1.move3D(dx, dz);
                 } else {
                     this.p1.stopMoving();
                 }
 
-                if (this.keys['ShiftLeft']) {
+                if (this.keys['ShiftLeft'] || (this.mode !== 'pvp' && (this.keys['NumpadPeriod'] || this.keys['ShiftRight']))) {
                     this.p1.startBlock();
                 }
             }
