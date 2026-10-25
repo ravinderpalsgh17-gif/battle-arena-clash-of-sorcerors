@@ -1,66 +1,114 @@
 # ⚔️ Battle Arena: Clash of Sorcerors
 
-An adrenaline-pumping 2D fighting arena game featuring mythological and cursed deities battling for cosmic supremacy. Built with pure HTML5 Canvas, modern JavaScript (ES6+), procedural Web Audio synthesis, and dynamic particle systems.
+An adrenaline-pumping 2D fighting arena game featuring 16 legendary characters from **Jujutsu Kaisen**, ranked and balanced according to their canonical power levels, grades, and domain expansions. Built with pure HTML5 Canvas, modern JavaScript (ES6+), procedural Web Audio synthesis, and dynamic particle systems.
 
 ---
 
-## 🎮 Playable Characters & Unique Combat Kits
+## 🎮 Playable Jujutsu Kaisen Roster & Power Scaling
 
-The game features **5 distinct combatants**, starting with the default free character **Yuji**, while the remaining four gods can be unlocked using in-game battle points earned from victories, combos, and tournament runs.
+The game features **16 iconic Jujutsu Kaisen sorcerers and special grade cursed spirits**, organized strictly by their canonical power hierarchy. Players start with two free characters (**Yuji Itadori** and **Nobara Kugisaki**), and can unlock more powerful sorcerers and curses using battle points earned in combat.
 
-### 1. 🥊 Yuji Itadori — *The Divine Vessel* (FREE / Default)
-> Superhuman martial artist channeling lethal divergent cursed energy.
-* **Basic Attack (`J` / `Z`)**: **Divergent Fist** — Heavy martial strike followed a fraction of a second later by a delayed cursed shockwave that detonates for bonus burst damage and knockback.
-* **Skill 1 (`K` / `X`)**: **Cursed Rush** — High-speed blur dash delivering a rapid-fire 4-punch combo.
-* **Skill 2 (`L` / `C`)**: **Slaughter Demon** — Forward aerial somersault knife carving that inflicts bleeding.
-* **Ultimate (`U` / `V`)**: **Black Flash (Kokusen)** — Warps space within 0.000001 seconds, generating jagged black and crimson lightning for an earth-shattering critical blow (2.5x damage + screen shake).
-* **Passive — *Unbreakable Resolve***: When health drops below 35%, automatically gains +30% armor damage reduction and +20% movement speed.
+### 🌟 Tier 1: Starters (Grade 3 & Grade 1 Vessel)
+1. **🥊 Yuji Itadori** (*The Divine Vessel*) — Free Starter
+   * **Power Level**: Grade 1 / Awakened Vessel &bull; Rushdown Brawler
+   * **Moves**: Divergent Fist (delayed curse impact), Cursed Rush, Manji Kick, Black Flash (Kokusen).
+   * **Passive**: *Unbreakable Resolve* (30% damage reduction below 35% HP).
 
----
-
-### 2. ⚡ Zeus — *Lord of Olympus* (1,000 Points)
-> Supreme Greek sky father commanding piercing lightning and divine thunderbolts.
-* **Basic Attack (`J` / `Z`)**: **Thunder Lance** — Hurls a piercing bolt of lightning across the entire screen.
-* **Skill 1 (`K` / `X`)**: **Chain Spark** — Discharges a homing electrical orb that seeks out and stuns the opponent.
-* **Skill 2 (`L` / `C`)**: **Aegis Storm** — Surrounds Zeus in a 360-degree rotating electrical cyclone that deflects projectiles and electrocutes rushers.
-* **Ultimate (`U` / `V`)**: **Wrath of Olympus** — Calls down 5 consecutive titanic thunderbolts that crash across the arena.
-* **Passive — *Static Overcharge***: Every 4th attack inflicts a temporary paralyzing stun.
+2. **🔨 Nobara Kugisaki** (*Straw Doll Sorcerer*) — Free Starter
+   * **Power Level**: Grade 3 Sorcerer &bull; Zoner & Trap Specialist
+   * **Moves**: Cursed Nail Hurl, Hairpin (Kanzashi detonation), Iron Hammer Smash, Resonance: Black Flash.
+   * **Passive**: *Cursed Nail Embed* (Lodged nails inflict bleed damage).
 
 ---
 
-### 3. 🐺 Anubis — *Judge of Souls* (2,200 Points)
-> Jackal-headed Egyptian deity of the Underworld and guardian of the Scales of Ma'at.
-* **Basic Attack (`J` / `Z`)**: **Soul Siphon** — Fires a ghostly jackal skull that absorbs enemy life force and heals Anubis for 40% of the damage dealt.
-* **Skill 1 (`K` / `X`)**: **Jackal Claws** — A low shadow sweep that shreds the opponent and inflicts lingering decay curse damage.
-* **Skill 2 (`L` / `C`)**: **Tomb Quicksand** — Opens a swirling vortex of underworld sand beneath the opponent that slows, grounds, and damages them.
-* **Ultimate (`U` / `V`)**: **Judgment of Ma'at** — Summons the golden Scales of Truth; reaps the opponent's soul, dealing massive true damage and restoring Anubis's health.
-* **Passive — *Soul Siphon Aura***: Restores 25% of all damage dealt directly back into Anubis's health pool.
+### 🌙 Tier 2: Up-and-Coming Prodigies (Grade 2 & Semi-Grade 1)
+3. **🐺 Megumi Fushiguro** (*Ten Shadows Prodigy*) — 200 Points
+   * **Power Level**: Grade 2 Sorcerer &bull; Shikigami Summoner
+   * **Moves**: Divine Dog Totality, Nue Thunder Wings, Shadow Submerge & Toad, Chimera Shadow Garden.
+   * **Passive**: *Shadow Evasion* (Dashing into shadow grants invulnerability).
+
+4. **🐼 Panda** (*Mutant Cursed Corpse*) — 350 Points
+   * **Power Level**: Semi-Grade 1 Sorcerer &bull; Heavy Armor Tank
+   * **Moves**: Heavy Boxing Hook, Gorilla Mode: Drumming Beat (Unblockable), Cannonball Slam, Gorilla Beatdown.
+   * **Passive**: *Three Cores* (Survives lethal blow once with 140 HP).
 
 ---
 
-### 4. 🐵 Sun Wukong — *The Great Sage Heaven's Equal* (3,800 Points)
-> The mythical Monkey King with 72 earthly transformations and the legendary Ruyi staff.
-* **Basic Attack (`J` / `Z`)**: **Ruyi Expansion** — Thrusts his golden staff, extending it dynamically across 70% of the arena with heavy knockback.
-* **Skill 1 (`K` / `X`)**: **Nimbus Somersault** — Flips high into the air on a golden cloud before crashing down with a downward staff slam.
-* **Skill 2 (`L` / `C`)**: **Hair Clone Decoy** — Leaves a fighting shadow clone while Wukong dashes unseen behind the enemy.
-* **Ultimate (`U` / `V`)**: **Heaven Havoc (72 Styles)** — Summons three illusionary clones that converge from all angles in a synchronized frenzy.
-* **Passive — *Immortal Stone Body***: Immune to flinching or knockback while executing attacks, plus constant 1.5% max HP regeneration every 2 seconds.
+### ⚡ Tier 3: Elite Sorcerers & Curse Brother (Grade 1 & Special Grade Womb)
+5. **📐 Kento Nanami** (*7:3 Ratio Master*) — 500 Points
+   * **Power Level**: Grade 1 Sorcerer &bull; Precision Critical Striker
+   * **Moves**: Ratio Technique: 7:3 Cut, Collapse (Kawarawari), Overtime Cleave, Consecutive Black Flash (x4).
+   * **Passive**: *Overtime Shift* (+35% damage boost below 40% HP).
+
+6. **👏 Aoi Todo** (*Boogie Woogie Virtuoso*) — 700 Points
+   * **Power Level**: Grade 1 Sorcerer &bull; 530,000 IQ Mindgames
+   * **Moves**: Brute Force Straight, Boogie Woogie (instant position clap-swap!), Playful Cloud, Brotherly Black Flash.
+   * **Passive**: *530,000 IQ* (Critical damage bonus after position swap).
+
+7. **🩸 Choso** (*Blood Manipulation Elder*) — 900 Points
+   * **Power Level**: Special Grade Cursed Womb #1 &bull; Long-Range Piercer
+   * **Moves**: Blood Edge, Piercing Blood (supersonic laser), Supernova, Flowing Red Scale: Piercing Meteor.
+   * **Passive**: *Toxic Blood* (All blood skills poison the enemy).
 
 ---
 
-### 5. ⛩️ Ryomen Sukuna — *King of Curses* (5,500 Points)
-> The undisputed calamity god of jujutsu, cutting all existence into ribbons.
-* **Basic Attack (`J` / `Z`)**: **Dismantle (Kai)** — Fires swift, invisible flying spatial slashes in an X-pattern.
-* **Skill 1 (`K` / `X`)**: **Cleave (Hachi)** — Teleports directly in front of the enemy, grabbing them and executing an armor-piercing slash scaled to the opponent's maximum HP.
-* **Skill 2 (`L` / `C`)**: **Fuga (Divine Flame Arrow)** — Draws and shoots a thermal fire arrow that triggers an incinerating explosion upon impact.
-* **Ultimate (`U` / `V`)**: **Malevolent Shrine (Fukuma Mizushi)** — Expands an open barrier domain; blood moon rises and relentless slashes carve the entire arena for 3.5 seconds.
-* **Passive — *Reverse Cursed Technique***: Critical strikes and special attacks restore 20% of damage dealt when under 40% HP.
+### 🗡️ Tier 4: Disaster Curses & Heavenly Restrictions (Special Grade)
+8. **🗡️ Maki Zenin** (*The Demonic Monster*) — 1,100 Points
+   * **Power Level**: Awakened Heavenly Restriction &bull; True Damage Blade
+   * **Moves**: Split Soul Katana (true damage ignoring defense), Dragon Bone Blast, Air Surface Blitz, Carnage of the Zenin.
+   * **Passive**: *Zero Cursed Energy* (Immune to lock-on, takes 25% less domain damage).
+
+9. **⛓️ Toji Fushiguro** (*The Sorcerer Killer*) — 1,350 Points
+   * **Power Level**: Special Grade Hunter &bull; Anti-Mage Assassin
+   * **Moves**: Inverted Spear of Heaven (drains cursed energy & nullifies buffs), Fly Head Swarm, Playful Cloud Smash, Ghost Execution.
+   * **Passive**: *Heavenly Restriction* (Blinding movement speed and high defense).
+
+10. **🌋 Jogo** (*The Calamitous Volcano*) — 1,600 Points
+    * **Power Level**: Special Grade Disaster Curse &bull; Pyromancy Zoner
+    * **Moves**: Ember Insects (homing fireflies), Volcanic Geyser, Disaster Flames Palm, Maximum: Meteor.
+    * **Passive**: *Disaster Heat Aura* (Continuous burning aura to nearby enemies).
+
+11. **🪡 Mahito** (*The Shape of the Soul*) — 1,850 Points
+    * **Power Level**: Special Grade Disaster Curse &bull; Soul Shaper
+    * **Moves**: Soul Drill Arm, Body Repel, Polymorphic Soul Whip, Domain: Self-Embodiment of Perfection.
+    * **Passive**: *Idle Transfiguration* (Rapid health regeneration between hits).
 
 ---
 
-## 🕹️ Controls
+### 👑 Tier 5: Modern Monsters & Cursed Anomalies (Special Grade Sorcerers)
+12. **🎰 Kinji Hakari** (*The Undying Gambler*) — 2,100 Points
+    * **Power Level**: Special Grade Tier &bull; Restless Gambler
+    * **Moves**: Rough Cursed Fist, Train Shutter Slam, Pachinko Ball Shot, Idle Death Gamble (JACKPOT!).
+    * **Passive**: *Rough Cursed Edge* (Punches shred block) + *Jackpot Immortality* (6 seconds of infinite energy and 100 HP/s regeneration!).
 
-### Player 1 (Default / Solo)
+13. **🌀 Suguru Geto (Kenjaku)** (*Master of Curses*) — 2,400 Points
+    * **Power Level**: Special Grade Sorcerer &bull; Curse Manipulator
+    * **Moves**: Cursed Staff Arc, Cursed Spirit Swarm, Antigravity System, Maximum: Uzumaki.
+    * **Passive**: *Curse Absorption* (Absorbs energy whenever enemy uses a skill).
+
+14. **💍 Yuta Okkotsu** (*The Prodigy of Curses*) — 2,700 Points
+    * **Power Level**: Special Grade Sorcerer &bull; Boundless Energy & Rika
+    * **Moves**: Boundless Katana Cleave, Cursed Speech ("DON'T MOVE!"), Rika Smash, Pure Love Beam.
+    * **Passive**: *Reverse Cursed Output* (Passive health regeneration when energy > 50%).
+
+---
+
+### 🌌 Tier 6: Pinnacle of the Verse (The Strongest)
+15. **👑 Ryomen Sukuna** (*King of Curses*) — 3,000 Points
+    * **Power Level**: The Strongest in History &bull; Raid Boss Zoner
+    * **Moves**: Dismantle (flying invisible cut), Cleave (durability grab), Fūga (Divine Flame Arrow), Domain: Malevolent Shrine.
+    * **Passive**: *King's Aura* (Surrounding bleed aura + 30% hitstun resistance).
+
+16. **👁️ Satoru Gojo** (*The Honored One*) — 3,000 Points
+    * **Power Level**: The Strongest Modern Sorcerer &bull; Spatial Dominator
+    * **Moves**: Lapse: Blue (vacuum attraction punch), Reversal: Red (repulsion blast), Teleport Axe Kick, Hollow Technique: Purple & Unlimited Void.
+    * **Passive**: *Limitless Infinity Barrier* (Completely absorbs 1 hit every 6 seconds and slows enemy projectiles).
+
+---
+
+## 🕹️ Controls Guide
+
+### Keyboard (Player 1)
 | Action | Keybinding |
 |---|---|
 | **Move Left / Right** | `A` / `D` |
@@ -72,7 +120,7 @@ The game features **5 distinct combatants**, starting with the default free char
 | **Ultimate (100 Energy)** | `U` or `V` |
 | **Pause** | `Escape` or `P` |
 
-### Player 2 (Local PvP)
+### Keyboard (Player 2 Local PvP)
 | Action | Keybinding |
 |---|---|
 | **Move Left / Right** | `←` / `→` (Arrow Keys) |
@@ -83,55 +131,13 @@ The game features **5 distinct combatants**, starting with the default free char
 | **Skill 2** | `Numpad 3` or `3` |
 | **Ultimate** | `Numpad 5` or `5` / `0` |
 
-### 📱 Mobile & Touch Controls (Play Without a Keyboard!)
-The game includes a full built-in virtual arcade controller overlay that activates on touchscreens and mobile devices (or can be toggled using the **📱 Touch: ON** button in the top navigation bar):
-
-| On-Screen Button | Action | Description |
-|---|---|---|
-| **`◀` / `▶`** | **Move Left / Right** | Smooth directional thumb movement |
-| **`▲ JUMP`** | **Jump** | Aerial somersault leap |
-| **`[S]`** | **Guard / Block** | Hold to guard against enemy combos |
-| **`[J]`** | **Basic Attack** | Primary martial strike / ranged projectile |
-| **`[K]`** | **Skill 1** | First unique combat technique |
-| **`[L]`** | **Skill 2** | Second unique combat technique |
-| **`[U]`** | **Ultimate (100 Energy)** | Cataclysmic finisher (glows with gold flames when ready!) |
-| **`⏸`** | **Pause** | Access pause & restart options |
-
----
-
-## 🪙 Economy & In-Game Points
-
-* **Starter Points**: New players start with **0 Battle Points** (Start strictly at 0 coins; earn all points through combat!).
-* **Earn Points**:
-  * Match Victory: **300 – 600 Points** (scales with difficulty: Easy, Medium, Hard, Deity).
-  * Combo Bonuses: Up to **+200 Points** for high hit chains.
-  * Time Bonus: Bonus points for finishing rounds fast.
-* **Persistent Save**: Points, unlocked deities, and match records are saved automatically to `localStorage`.
-* **Fair Economy**: Points are earned strictly through skill in combat, tournament ladders, and combo execution (no cheat exploits).
-
----
-
-## 🚀 How to Run Locally
-
-No external build tools or installations are required! Simply:
-
-1. Clone or download this repository:
-   ```bash
-   git clone https://github.com/<your-username>/battle-arena-clash-of-sorcerors.git
-   cd battle-arena-clash-of-sorcerors
-   ```
-2. Open `index.html` directly in any modern web browser (Chrome, Edge, Firefox, Brave, Safari).
-3. (Optional) Run via a local web server:
-   ```bash
-   # Python 3
-   python -m http.server 8000
-   ```
-   Then open `http://localhost:8000`.
-
----
-
-## 🌟 Built With
-* **HTML5 Canvas**: 60 FPS smooth rendering with dynamic letterbox scaling.
-* **Web Audio API**: Procedural sound effects and synthesizer (zero external audio file dependency).
-* **Vanilla JavaScript (ES6+)**: Modular physics, particle effects, and AI state machines.
-* **CSS3 Flexbox & Grid**: Responsive arcade-styled UI with glowing cyberpunk/mythic aesthetics.
+### 📱 Mobile On-Screen Touch Controls
+The game features built-in virtual arcade buttons:
+* **`◀` / `▶`**: Left / Right Movement D-Pad
+* **`▲ JUMP`**: Jump
+* **`[S]`**: Guard / Block
+* **`[J]`**: Basic Attack
+* **`[K]`**: Skill 1
+* **`[L]`**: Skill 2
+* **`[U]`**: Ultimate (Glows with energy when charged!)
+* **`⏸`**: Pause Match

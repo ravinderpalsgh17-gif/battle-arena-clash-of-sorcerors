@@ -1,4 +1,4 @@
-﻿// Master Game Engine: Loop, Stages, Modes, Combat Resolution & Input
+// Master Game Engine: Loop, Stages, Modes, Combat Resolution & Input
 // Battle Arena: Clash of Sorcerors
 
 class BattleArenaGame {
@@ -30,8 +30,8 @@ class BattleArenaGame {
         this.p2RoundsWon = 0;
         this.currentRound = 1;
 
-        // Arcade Ladder Progression
-        this.arcadeLadder = ['zeus', 'anubis', 'wukong', 'sukuna'];
+        // Arcade Ladder Progression (Jujutsu Kaisen Cursed Gauntlet)
+        this.arcadeLadder = ['megumi', 'nanami', 'todo', 'mahito', 'toji', 'yuta', 'sukuna'];
         this.arcadeIndex = 0;
 
         // Input tracking
@@ -108,12 +108,12 @@ class BattleArenaGame {
         this.mode = mode;
         this.difficulty = difficulty;
 
-        // Choose stage appropriate to the opponent or mode
-        if (p2CharKey === 'zeus') this.stage = 'olympus';
-        else if (p2CharKey === 'anubis') this.stage = 'underworld';
-        else if (p2CharKey === 'wukong') this.stage = 'celestial';
-        else if (p2CharKey === 'sukuna') this.stage = 'shinjuku';
-        else this.stage = 'olympus';
+        // Choose stage appropriate to the opponent or mode (Iconic JJK Locations)
+        if (p2CharKey === 'sukuna' || p2CharKey === 'gojo') this.stage = 'shinjuku';
+        else if (p2CharKey === 'mahito' || p2CharKey === 'choso' || p2CharKey === 'todo' || p2CharKey === 'nanami') this.stage = 'shibuya';
+        else if (p2CharKey === 'jogo' || p2CharKey === 'geto' || p2CharKey === 'toji') this.stage = 'curse_forest';
+        else if (p2CharKey === 'hakari' || p2CharKey === 'yuta') this.stage = 'domain_void';
+        else this.stage = 'jujutsu_high';
 
         this.p1 = new Fighter(p1CharKey, 280, false, this.particles, this.sound);
         this.p2 = new Fighter(p2CharKey, 930, true, this.particles, this.sound);
@@ -431,101 +431,130 @@ class BattleArenaGame {
     drawStageBackground() {
         const ctx = this.ctx;
 
-        if (this.stage === 'olympus') {
-            // MOUNT OLYMPUS: Golden cosmic skies, floating marble platforms, glowing lightning
+        if (this.stage === 'jujutsu_high') {
+            // TOKYO JUJUTSU HIGH COURTYARD
             const grad = ctx.createLinearGradient(0, 0, 0, 720);
-            grad.addColorStop(0, '#0a0d24');
-            grad.addColorStop(0.5, '#1e1644');
-            grad.addColorStop(1, '#0e0b1f');
+            grad.addColorStop(0, '#0d131f');
+            grad.addColorStop(0.5, '#192336');
+            grad.addColorStop(1, '#0e1420');
             ctx.fillStyle = grad;
             ctx.fillRect(0, 0, this.width, this.height);
 
-            // Distant starry nebulas
-            ctx.fillStyle = 'rgba(0, 229, 255, 0.08)';
+            // Crescent Moon & Distant Mountain
+            ctx.fillStyle = '#fdfefe';
             ctx.beginPath();
-            ctx.arc(640, 200, 350, 0, Math.PI * 2);
+            ctx.arc(640, 160, 60, 0, Math.PI * 2);
+            ctx.fill();
+            ctx.fillStyle = '#0d131f';
+            ctx.beginPath();
+            ctx.arc(655, 150, 52, 0, Math.PI * 2);
             ctx.fill();
 
-            // Marble Greek Pillars in background
-            ctx.fillStyle = '#2b234d';
-            for (let i = 0; i < 7; i++) {
-                ctx.fillRect(80 + i * 180, 220, 36, 340);
-                ctx.fillRect(68 + i * 180, 208, 60, 16); // Capital
-                ctx.fillRect(68 + i * 180, 550, 60, 14); // Base
+            // Traditional Japanese Temple Roofs & Torii Pillars
+            ctx.fillStyle = '#111927';
+            for (let i = 0; i < 4; i++) {
+                ctx.fillRect(120 + i * 320, 260, 24, 300);
+                ctx.fillRect(90 + i * 320, 250, 84, 18);
             }
 
-            // Divine Floor / Podium
-            ctx.fillStyle = '#1c1636';
+            // Stone Courtyard Floor
+            ctx.fillStyle = '#171e2b';
             ctx.fillRect(0, 560, this.width, 160);
-            ctx.strokeStyle = '#ffd700';
+            ctx.strokeStyle = '#3a7bd5';
             ctx.lineWidth = 3;
             ctx.beginPath();
             ctx.moveTo(0, 560);
             ctx.lineTo(this.width, 560);
             ctx.stroke();
 
-        } else if (this.stage === 'underworld') {
-            // UNDERWORLD GATES: Dark obsidian obelisks, eerie purple soul fire
+        } else if (this.stage === 'shibuya') {
+            // SHIBUYA UNDERGROUND SUBWAY STATION
             const grad = ctx.createLinearGradient(0, 0, 0, 720);
-            grad.addColorStop(0, '#07050d');
-            grad.addColorStop(0.6, '#180e2b');
-            grad.addColorStop(1, '#08050e');
+            grad.addColorStop(0, '#0c0d12');
+            grad.addColorStop(0.5, '#171a24');
+            grad.addColorStop(1, '#0c0d14');
             ctx.fillStyle = grad;
             ctx.fillRect(0, 0, this.width, this.height);
 
-            // Glowing Underworld Eclipse / Moon
-            ctx.fillStyle = '#5a189a';
-            ctx.beginPath();
-            ctx.arc(640, 180, 100, 0, Math.PI * 2);
-            ctx.fill();
-            ctx.fillStyle = '#07050d';
-            ctx.beginPath();
-            ctx.arc(620, 170, 92, 0, Math.PI * 2);
-            ctx.fill();
-
-            // Obsidian Pyramids / Obelisks
-            ctx.fillStyle = '#1b1429';
-            for (let i = 0; i < 5; i++) {
-                ctx.beginPath();
-                ctx.moveTo(100 + i * 260, 560);
-                ctx.lineTo(160 + i * 260, 260);
-                ctx.lineTo(220 + i * 260, 560);
-                ctx.closePath();
-                ctx.fill();
-            }
-
-            // Floor with spectral glyphs
-            ctx.fillStyle = '#0e0b17';
-            ctx.fillRect(0, 560, this.width, 160);
-            ctx.strokeStyle = '#9d4edd';
-            ctx.lineWidth = 3;
-            ctx.beginPath();
-            ctx.moveTo(0, 560);
-            ctx.lineTo(this.width, 560);
-            ctx.stroke();
-
-        } else if (this.stage === 'celestial') {
-            // CELESTIAL CLOUD PALACE (Wukong): Warm jade & amber sunrise, floating golden pagodas
-            const grad = ctx.createLinearGradient(0, 0, 0, 720);
-            grad.addColorStop(0, '#2d132c');
-            grad.addColorStop(0.4, '#801336');
-            grad.addColorStop(0.8, '#c72c41');
-            grad.addColorStop(1, '#ee4540');
-            ctx.fillStyle = grad;
-            ctx.fillRect(0, 0, this.width, this.height);
-
-            // Floating Golden Clouds
-            ctx.fillStyle = 'rgba(255, 215, 0, 0.18)';
+            // Concrete Station Pillars
+            ctx.fillStyle = '#222736';
             for (let i = 0; i < 6; i++) {
+                ctx.fillRect(100 + i * 210, 140, 48, 420);
+            }
+
+            // Fluorescent Station Neon Glow
+            ctx.fillStyle = 'rgba(0, 229, 255, 0.12)';
+            for (let i = 0; i < 6; i++) {
+                ctx.fillRect(90 + i * 210, 160, 68, 12);
+            }
+
+            // Subway Track Floor & Hazard Yellow Lines
+            ctx.fillStyle = '#12141a';
+            ctx.fillRect(0, 560, this.width, 160);
+            ctx.strokeStyle = '#ffcc00';
+            ctx.lineWidth = 4;
+            ctx.beginPath();
+            ctx.moveTo(0, 560);
+            ctx.lineTo(this.width, 560);
+            ctx.stroke();
+
+        } else if (this.stage === 'curse_forest') {
+            // MISTY CURSED SPIRIT FOREST
+            const grad = ctx.createLinearGradient(0, 0, 0, 720);
+            grad.addColorStop(0, '#070b09');
+            grad.addColorStop(0.5, '#13241b');
+            grad.addColorStop(1, '#09120c');
+            ctx.fillStyle = grad;
+            ctx.fillRect(0, 0, this.width, this.height);
+
+            // Eerie Green Cursed Wisps
+            ctx.fillStyle = 'rgba(0, 230, 118, 0.15)';
+            for (let i = 0; i < 8; i++) {
                 ctx.beginPath();
-                ctx.arc(120 + i * 210, 320, 80, 0, Math.PI * 2);
+                ctx.arc(100 + i * 160, 280 + Math.sin(i * 1.5) * 40, 40, 0, Math.PI * 2);
                 ctx.fill();
             }
 
-            // Golden Cloud Floor
-            ctx.fillStyle = '#22092c';
+            // Twisted Ancient Trees
+            ctx.fillStyle = '#0a1710';
+            for (let i = 0; i < 5; i++) {
+                ctx.fillRect(150 + i * 260, 180, 50, 380);
+            }
+
+            // Forest Floor
+            ctx.fillStyle = '#0b160f';
             ctx.fillRect(0, 560, this.width, 160);
-            ctx.strokeStyle = '#ff9f1c';
+            ctx.strokeStyle = '#00e676';
+            ctx.lineWidth = 3;
+            ctx.beginPath();
+            ctx.moveTo(0, 560);
+            ctx.lineTo(this.width, 560);
+            ctx.stroke();
+
+        } else if (this.stage === 'domain_void') {
+            // UNLIMITED VOID / INFINITE SPATIAL DIMENSION
+            const grad = ctx.createLinearGradient(0, 0, 0, 720);
+            grad.addColorStop(0, '#02000a');
+            grad.addColorStop(0.5, '#0b0024');
+            grad.addColorStop(1, '#03000d');
+            ctx.fillStyle = grad;
+            ctx.fillRect(0, 0, this.width, this.height);
+
+            // Cosmic Nebulae & Infinite Eyes Starlight
+            ctx.fillStyle = 'rgba(123, 31, 162, 0.2)';
+            ctx.beginPath();
+            ctx.arc(640, 240, 280, 0, Math.PI * 2);
+            ctx.fill();
+
+            ctx.fillStyle = 'rgba(0, 176, 255, 0.2)';
+            ctx.beginPath();
+            ctx.arc(640, 240, 160, 0, Math.PI * 2);
+            ctx.fill();
+
+            // Floating Stellar Void Floor
+            ctx.fillStyle = '#070214';
+            ctx.fillRect(0, 560, this.width, 160);
+            ctx.strokeStyle = '#a855f7';
             ctx.lineWidth = 3;
             ctx.beginPath();
             ctx.moveTo(0, 560);
@@ -533,7 +562,7 @@ class BattleArenaGame {
             ctx.stroke();
 
         } else if (this.stage === 'shinjuku') {
-            // CURSED SHINJUKU RUINS (Sukuna): Crumbled modern metropolis, blood moon, malevolent miasma
+            // CURSED SHINJUKU RUINS (Sukuna & Gojo Showdown)
             const grad = ctx.createLinearGradient(0, 0, 0, 720);
             grad.addColorStop(0, '#100003');
             grad.addColorStop(0.5, '#2e020a');
@@ -575,17 +604,18 @@ class BattleArenaGame {
             ctx.save();
             ctx.fillStyle = p.color;
             ctx.shadowColor = p.color;
-            ctx.shadowBlur = 12;
+            ctx.shadowBlur = 14;
 
-            if (p.type === 'zeus_lance') {
-                ctx.fillRect(p.x, p.y, p.width, p.height);
-                ctx.fillStyle = '#ffffff';
-                ctx.fillRect(p.x + 10, p.y + 4, p.width - 20, p.height - 8);
-            } else if (p.type === 'anubis_skull') {
+            if (p.type === 'hollow_purple_sphere') {
+                // Hollow Purple: Massive sphere of imaginary mass
                 ctx.beginPath();
                 ctx.arc(p.x + p.width / 2, p.y + p.height / 2, p.width / 2, 0, Math.PI * 2);
                 ctx.fill();
+                ctx.strokeStyle = '#ffffff';
+                ctx.lineWidth = 4;
+                ctx.stroke();
             } else if (p.type === 'sukuna_dismantle') {
+                // Dismantle: Flying slash crosses
                 ctx.strokeStyle = p.color;
                 ctx.lineWidth = 4;
                 ctx.beginPath();
@@ -594,14 +624,24 @@ class BattleArenaGame {
                 ctx.moveTo(p.x, p.y + p.height);
                 ctx.lineTo(p.x + p.width, p.y);
                 ctx.stroke();
-            } else if (p.type === 'sukuna_fuga') {
-                ctx.fillStyle = '#ff3300';
+            } else if (p.type === 'choso_beam' || p.type === 'choso_meteor') {
+                // Piercing Blood: Dense laser line
                 ctx.fillRect(p.x, p.y, p.width, p.height);
-            } else if (p.type === 'anubis_quicksand') {
-                ctx.fillStyle = 'rgba(114, 9, 183, 0.45)';
+                ctx.fillStyle = '#ffffff';
+                ctx.fillRect(p.x + 5, p.y + 4, p.width - 10, p.height - 8);
+            } else if (p.type === 'gojo_red') {
+                // Reversal Red: Glowing crimson orb
                 ctx.beginPath();
-                ctx.ellipse(p.x, p.y, p.width / 2, 14, 0, 0, Math.PI * 2);
+                ctx.arc(p.x + p.width / 2, p.y + p.height / 2, p.width / 2, 0, Math.PI * 2);
                 ctx.fill();
+            } else if (p.type === 'love_beam' || p.type === 'uzumaki_beam') {
+                // Colossal Beams
+                ctx.fillRect(p.x, p.y, p.width, p.height);
+                ctx.fillStyle = '#ffffff';
+                ctx.fillRect(p.x + 8, p.y + 8, p.width - 16, p.height - 16);
+            } else if (p.type === 'nobara_nail') {
+                // Metal nail with glowing aura
+                ctx.fillRect(p.x, p.y, p.width, p.height);
             } else {
                 ctx.fillRect(p.x, p.y, p.width, p.height);
             }

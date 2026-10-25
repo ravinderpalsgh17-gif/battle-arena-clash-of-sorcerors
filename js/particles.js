@@ -1,4 +1,4 @@
-﻿// Particle Engine & Visual Effects for Battle Arena: Clash of Sorcerors
+// Particle Engine & Visual Effects for Battle Arena: Clash of Sorcerors
 
 class ParticleEngine {
     constructor() {
@@ -175,6 +175,51 @@ class ParticleEngine {
                 decay: 0.025,
                 type: 'black_flash',
                 gravity: 0.15
+            });
+        }
+    }
+
+    // Hollow Purple Colossal Spatial Annihilation
+    createHollowPurpleBlast(x, y) {
+        this.flash('#a855f7', 0.35);
+        this.shake(30, 25);
+        this.addShockwave(x, y, 220, '#a855f7', 12);
+        this.addShockwave(x, y, 140, '#00b0ff', 8);
+        this.addShockwave(x, y, 90, '#ff0055', 8);
+
+        for (let i = 0; i < 50; i++) {
+            const angle = Math.random() * Math.PI * 2;
+            const speed = 5 + Math.random() * 14;
+            const colors = ['#9333ea', '#c084fc', '#00b0ff', '#ff0055', '#ffffff'];
+            this.particles.push({
+                x, y,
+                vx: Math.cos(angle) * speed,
+                vy: Math.sin(angle) * speed,
+                color: colors[Math.floor(Math.random() * colors.length)],
+                size: 5 + Math.random() * 8,
+                alpha: 1.0,
+                decay: 0.02,
+                type: 'curse',
+                gravity: 0
+            });
+        }
+    }
+
+    // Choso Piercing Blood Sparks
+    createBloodSparks(x, y, count = 18) {
+        for (let i = 0; i < count; i++) {
+            const angle = Math.random() * Math.PI * 2;
+            const speed = 3 + Math.random() * 8;
+            this.particles.push({
+                x, y,
+                vx: Math.cos(angle) * speed,
+                vy: Math.sin(angle) * speed - 1,
+                color: i % 2 === 0 ? '#b71c1c' : '#e53935',
+                size: 3 + Math.random() * 4,
+                alpha: 1.0,
+                decay: 0.035,
+                type: 'curse',
+                gravity: 0.2
             });
         }
     }

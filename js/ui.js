@@ -1,4 +1,4 @@
-﻿// UI Manager: Menus, Character Selection, Shop, Move List & Overlays
+// UI Manager: Menus, Character Selection, Shop, Move List & Overlays
 // Battle Arena: Clash of Sorcerors
 
 class UIManager {
@@ -210,7 +210,7 @@ class UIManager {
                 </div>
                 <div class="char-card-info">
                     <div class="char-card-name">${char.name}</div>
-                    <div class="char-card-title" style="color: ${char.color}">${char.title}</div>
+                    <div class="char-card-title" style="color: ${char.color}"><strong>${char.grade || ""}</strong> &bull; ${char.title}</div>
                     <div class="char-card-status">
                         ${unlocked ? '<span class="status-unlocked">UNLOCKED</span>' : `<span class="status-locked">🔒 ${char.cost} PTS</span>`}
                     </div>
@@ -253,7 +253,7 @@ class UIManager {
         previewContainer.innerHTML = `
             <div class="preview-header">
                 <h2 style="color: ${char.color}">${char.name}</h2>
-                <div class="preview-title">${char.title}</div>
+                <div class="preview-title"><strong>${char.grade || ""}</strong> &bull; ${char.title}</div>
                 <p class="preview-tagline">${char.tagline}</p>
             </div>
 
@@ -302,11 +302,11 @@ class UIManager {
                         this.selectedP2Char = window.GameInstance.arcadeLadder[0];
                         this.launchGame();
                     } else if (this.currentMode === 'training') {
-                        this.selectedP2Char = (key === 'sukuna') ? 'yuji' : 'sukuna';
+                        this.selectedP2Char = (key === 'sukuna') ? 'gojo' : ((key === 'gojo') ? 'sukuna' : 'sukuna');
                         this.launchGame();
                     } else {
                         // Versus AI: pick random unlocked or default opponent
-                        this.selectedP2Char = (key === 'sukuna') ? 'yuji' : 'sukuna';
+                        this.selectedP2Char = (key === 'sukuna') ? 'gojo' : ((key === 'gojo') ? 'sukuna' : 'sukuna');
                         this.launchGame();
                     }
                 } else {
@@ -368,7 +368,7 @@ class UIManager {
                     ${unlocked ? 'OWNED' : `🪙 ${char.cost} PTS`}
                 </div>
                 <h3 style="color: ${char.color}">${char.name}</h3>
-                <div class="shop-title">${char.title}</div>
+                <div class="shop-title"><strong>${char.grade || ""}</strong> &bull; ${char.title}</div>
                 <p class="shop-tagline">${char.tagline}</p>
                 <div class="shop-ultimate">
                     <strong>Ultimate:</strong> ${char.attacks.ultimate.name}

@@ -1,4 +1,4 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
@@ -35,7 +35,7 @@
                 <button id="btnModeVersus" class="btn btn-secondary">⚔️ VERSUS AI</button>
                 <button id="btnModePvP" class="btn btn-secondary">👥 LOCAL 2-PLAYER</button>
                 <button id="btnModeTraining" class="btn btn-secondary">🥋 TRAINING DOJO</button>
-                <button id="btnShop" class="btn btn-gold">🏛️ GOD ROSTER & SHOP</button>
+                <button id="btnShop" class="btn btn-gold">🥋 SORCERER ROSTER & SHOP</button>
             </div>
         </div>
 
@@ -44,7 +44,7 @@
             <h2 id="charSelectTitle" class="menu-subtitle" style="margin-top: 15px; margin-bottom: 5px;">CHOOSE YOUR FIGHTER</h2>
 
             <div class="char-select-container">
-                <!-- Left: 5 Character Grid -->
+                <!-- Left: 16 Character Grid -->
                 <div id="charSelectGrid" class="char-select-grid">
                     <!-- Injected dynamically by ui.js -->
                 </div>
@@ -60,10 +60,10 @@
             </div>
         </div>
 
-        <!-- 5. God Shop Screen -->
+        <!-- 5. Sorcerer Shop Screen -->
         <div id="shopScreen" class="ui-screen hidden">
-            <h2 class="menu-title" style="font-size: 38px;">PANTHEON SHOP</h2>
-            <div class="menu-subtitle" style="margin-bottom: 10px;">PURCHASE DEITIES WITH IN-GAME POINTS</div>
+            <h2 class="menu-title" style="font-size: 38px;">JUJUTSU HIGH SHOP</h2>
+            <div class="menu-subtitle" style="margin-bottom: 10px;">UNLOCK 16 JUJUTSU KAISEN SORCERERS & CURSES</div>
 
             <div id="shopGrid" class="shop-grid">
                 <!-- Injected dynamically by ui.js -->
@@ -169,11 +169,11 @@
             </div>
         </div>
 
-        <!-- 9. Move List / God Codex Modal -->
+        <!-- 9. Move List / Codex Modal -->
         <div id="moveListModal" class="ui-screen hidden" style="z-index: 200;">
             <div class="modal-box">
                 <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
-                    <h2 style="font-family: var(--font-heading); color: var(--gold);">GOD CODEX & MOVE LIST</h2>
+                    <h2 style="font-family: var(--font-heading); color: var(--gold);">JUJUTSU CODEX & MOVE LIST</h2>
                     <button id="btnCloseMoveList" class="btn btn-secondary" style="padding: 6px 14px;">✕ CLOSE</button>
                 </div>
                 <div id="moveListContent">
@@ -185,266 +185,224 @@
 
     <!-- Scroll Indicator / Quick Jump -->
     <div class="scroll-hint">
-        <span>▼ Scroll Down to View Full Character Codex, Move Lists & Game Details ▼</span>
+        <span>▼ Scroll Down to View Full Jujutsu Kaisen Roster, Power Levels & Lore ▼</span>
     </div>
 
     <!-- Full Details & Lore Section Below Arena -->
     <section id="detailsSection" class="details-section">
         <div class="details-container">
             <header class="details-header">
-                <h2>⚡ FULL COMBAT CODEX & MOVE LIST ⚡</h2>
-                <p>Scroll through all 5 deities, their unique attacks, damage values, cooldowns, and combat controls below.</p>
+                <h2>⚡ FULL JUJUTSU KAISEN POWER LADDER & CODEX ⚡</h2>
+                <p>All 16 fighters are from Jujutsu Kaisen, ranked and balanced according to their canonical power levels, grades, and domain expansions.</p>
             </header>
 
-            <!-- 5 Characters Comprehensive Grid -->
+            <!-- 16 Characters Comprehensive Grid Organized by Power Level -->
             <div class="characters-detailed-grid">
                 <!-- 1. YUJI -->
                 <article class="fighter-detail-card" style="border-top-color: #ff2a5f;">
                     <div class="fighter-detail-header">
-                        <div class="fighter-detail-badge" style="background: #ff2a5f;">FREE / DEFAULT</div>
+                        <div class="fighter-detail-badge" style="background: #ff2a5f;">FREE / STARTER</div>
                         <h3 style="color: #ff2a5f;">🥊 Yuji Itadori</h3>
-                        <div class="fighter-detail-subtitle">The Divine Vessel &bull; Close-Range Brawler</div>
-                        <p class="fighter-detail-lore">Superhuman martial artist housing ancient divine cursed energy. Excels at high-pressure close-quarters combat.</p>
-                    </div>
-                    <div class="moves-table-wrapper">
-                        <table class="moves-table">
-                            <thead>
-                                <tr><th>Command</th><th>Attack Name</th><th>Damage</th><th>Cooldown</th><th>Unique Effect</th></tr>
-                            </thead>
-                            <tbody>
-                                <tr>
-                                    <td><kbd>J</kbd> / <kbd>Z</kbd></td>
-                                    <td><strong>Divergent Fist</strong></td>
-                                    <td>55 + 35</td>
-                                    <td>0.35s</td>
-                                    <td>Martial strike followed 0.25s later by a delayed cursed energy detonation!</td>
-                                </tr>
-                                <tr>
-                                    <td><kbd>K</kbd> / <kbd>X</kbd></td>
-                                    <td><strong>Cursed Rush</strong></td>
-                                    <td>110</td>
-                                    <td>4.0s</td>
-                                    <td>Rapid forward blur dash delivering 4 lightning-fast cursed punches.</td>
-                                </tr>
-                                <tr>
-                                    <td><kbd>L</kbd> / <kbd>C</kbd></td>
-                                    <td><strong>Slaughter Demon</strong></td>
-                                    <td>135</td>
-                                    <td>6.0s</td>
-                                    <td>Airborne somersault knife slash that lacerates target and causes bleed.</td>
-                                </tr>
-                                <tr class="ultimate-row">
-                                    <td><kbd>U</kbd> / <kbd>V</kbd></td>
-                                    <td><strong>Black Flash (Kokusen)</strong></td>
-                                    <td>320</td>
-                                    <td>14.0s</td>
-                                    <td>Warp space with black & crimson lightning for a devastating 2.5x critical blow!</td>
-                                </tr>
-                            </tbody>
-                        </table>
+                        <div class="fighter-detail-subtitle">Grade 1 / Vessel &bull; Rushdown Brawler</div>
+                        <p class="fighter-detail-lore">Superhuman martial artist housing ancient cursed power. Chains Divergent Fists and consecutive spatial Black Flashes.</p>
                     </div>
                     <div class="fighter-passive-box">
-                        <strong>Passive: Unbreakable Resolve</strong> — When health drops below 35%, gains +30% armor damage reduction and +20% move speed.
+                        <strong>Passive: Unbreakable Resolve</strong> &bull; Damage resistance increases by 30% when HP falls below 35%.
                     </div>
                 </article>
 
-                <!-- 2. ZEUS -->
+                <!-- 2. NOBARA -->
+                <article class="fighter-detail-card" style="border-top-color: #ff7733;">
+                    <div class="fighter-detail-header">
+                        <div class="fighter-detail-badge" style="background: #ff7733;">FREE / STARTER</div>
+                        <h3 style="color: #ff7733;">🔨 Nobara Kugisaki</h3>
+                        <div class="fighter-detail-subtitle">Grade 3 Sorcerer &bull; Zoner & Trap Specialist</div>
+                        <p class="fighter-detail-lore">Tokyo first-year wielding metal nails and hammer. Detonates Kanzashi Hairpins and transmits unavoidable Straw Doll Resonance.</p>
+                    </div>
+                    <div class="fighter-passive-box">
+                        <strong>Passive: Cursed Nail Embed</strong> &bull; Nail hits embed into the opponent, inflicting residual bleed over time.
+                    </div>
+                </article>
+
+                <!-- 3. MEGUMI -->
+                <article class="fighter-detail-card" style="border-top-color: #3a7bd5;">
+                    <div class="fighter-detail-header">
+                        <div class="fighter-detail-badge" style="background: #3a7bd5;">🪙 200 PTS</div>
+                        <h3 style="color: #3a7bd5;">🐺 Megumi Fushiguro</h3>
+                        <div class="fighter-detail-subtitle">Grade 2 Sorcerer &bull; Ten Shadows Summoner</div>
+                        <p class="fighter-detail-lore">Zenin bloodline prodigy commanding Divine Dog Totality, Nue lightning wings, and Chimera Shadow Garden.</p>
+                    </div>
+                    <div class="fighter-passive-box">
+                        <strong>Passive: Shadow Evasion</strong> &bull; Submerging into shadow grants invulnerability frames and recovers energy.
+                    </div>
+                </article>
+
+                <!-- 4. PANDA -->
+                <article class="fighter-detail-card" style="border-top-color: #43a047;">
+                    <div class="fighter-detail-header">
+                        <div class="fighter-detail-badge" style="background: #43a047;">🪙 350 PTS</div>
+                        <h3 style="color: #43a047;">🐼 Panda</h3>
+                        <div class="fighter-detail-subtitle">Semi-Grade 1 &bull; Mutant Cursed Corpse</div>
+                        <p class="fighter-detail-lore">Constructed with 3 internal cores. Shifts into Gorilla Mode for unblockable drumbeat resonance shockwaves.</p>
+                    </div>
+                    <div class="fighter-passive-box">
+                        <strong>Passive: Three Cores</strong> &bull; Survives a fatal blow once per match with 140 HP and immediate energy surge.
+                    </div>
+                </article>
+
+                <!-- 5. NANAMI -->
+                <article class="fighter-detail-card" style="border-top-color: #e6b800;">
+                    <div class="fighter-detail-header">
+                        <div class="fighter-detail-badge" style="background: #e6b800;">🪙 500 PTS</div>
+                        <h3 style="color: #e6b800;">📐 Kento Nanami</h3>
+                        <div class="fighter-detail-subtitle">Grade 1 Sorcerer &bull; 7:3 Ratio Master</div>
+                        <p class="fighter-detail-lore">Forcibly carves a weak point at the 7:3 division with his fabric-wrapped blade, landing devastating critical hits.</p>
+                    </div>
+                    <div class="fighter-passive-box">
+                        <strong>Passive: Overtime Shift</strong> &bull; Surges cursed energy output by +35% when HP drops below 40%.
+                    </div>
+                </article>
+
+                <!-- 6. TODO -->
+                <article class="fighter-detail-card" style="border-top-color: #ff4081;">
+                    <div class="fighter-detail-header">
+                        <div class="fighter-detail-badge" style="background: #ff4081;">🪙 700 PTS</div>
+                        <h3 style="color: #ff4081;">👏 Aoi Todo</h3>
+                        <div class="fighter-detail-subtitle">Grade 1 Sorcerer &bull; Boogie Woogie Virtuoso</div>
+                        <p class="fighter-detail-lore">530,000 IQ heavyweight. Swaps positions with a single hand clap and wields the special grade Playful Cloud.</p>
+                    </div>
+                    <div class="fighter-passive-box">
+                        <strong>Passive: 530,000 IQ Mindgames</strong> &bull; Swapping behind the enemy confers a critical damage multiplier.
+                    </div>
+                </article>
+
+                <!-- 7. CHOSO -->
+                <article class="fighter-detail-card" style="border-top-color: #b71c1c;">
+                    <div class="fighter-detail-header">
+                        <div class="fighter-detail-badge" style="background: #b71c1c;">🪙 900 PTS</div>
+                        <h3 style="color: #b71c1c;">🩸 Choso</h3>
+                        <div class="fighter-detail-subtitle">Special Grade Womb #1 &bull; Blood Manipulation</div>
+                        <p class="fighter-detail-lore">Compresses blood into supersonic Piercing Blood beams and detonates Supernova droplet clusters.</p>
+                    </div>
+                    <div class="fighter-passive-box">
+                        <strong>Passive: Toxic Blood</strong> &bull; All blood techniques inflict corrosive poison damage on the opponent.
+                    </div>
+                </article>
+
+                <!-- 8. MAKI -->
+                <article class="fighter-detail-card" style="border-top-color: #00bfa5;">
+                    <div class="fighter-detail-header">
+                        <div class="fighter-detail-badge" style="background: #00bfa5;">🪙 1100 PTS</div>
+                        <h3 style="color: #00bfa5;">🗡️ Maki Zenin</h3>
+                        <div class="fighter-detail-subtitle">Awakened Heavenly Restriction &bull; Demonic Monster</div>
+                        <p class="fighter-detail-lore">Zero cursed energy anomaly. Wields the Split Soul Katana to slice through durability and air surfaces directly.</p>
+                    </div>
+                    <div class="fighter-passive-box">
+                        <strong>Passive: Zero Cursed Energy</strong> &bull; Immune to lock-on projectiles and ignores 25% of domain damage.
+                    </div>
+                </article>
+
+                <!-- 9. TOJI -->
+                <article class="fighter-detail-card" style="border-top-color: #78909c;">
+                    <div class="fighter-detail-header">
+                        <div class="fighter-detail-badge" style="background: #78909c;">🪙 1350 PTS</div>
+                        <h3 style="color: #78909c;">⛓️ Toji Fushiguro</h3>
+                        <div class="fighter-detail-subtitle">Special Grade Hunter &bull; The Sorcerer Killer</div>
+                        <p class="fighter-detail-lore">Pinnacle physical monster armed with the Inverted Spear of Heaven, nullifying cursed energy and techniques.</p>
+                    </div>
+                    <div class="fighter-passive-box">
+                        <strong>Passive: Heavenly Physical Prowess</strong> &bull; Moves 20% faster and drains enemy cursed energy on hit.
+                    </div>
+                </article>
+
+                <!-- 10. JOGO -->
+                <article class="fighter-detail-card" style="border-top-color: #ff5722;">
+                    <div class="fighter-detail-header">
+                        <div class="fighter-detail-badge" style="background: #ff5722;">🪙 1600 PTS</div>
+                        <h3 style="color: #ff5722;">🌋 Jogo</h3>
+                        <div class="fighter-detail-subtitle">Special Grade Disaster Curse &bull; Earth & Volcanoes</div>
+                        <p class="fighter-detail-lore">Incinerates battlefields with 3,000°C disaster flames, erupting geysers, and Maximum: Meteor.</p>
+                    </div>
+                    <div class="fighter-passive-box">
+                        <strong>Passive: Disaster Heat Aura</strong> &bull; Passively scorches nearby foes with continuous burning ticks.
+                    </div>
+                </article>
+
+                <!-- 11. MAHITO -->
+                <article class="fighter-detail-card" style="border-top-color: #8e24aa;">
+                    <div class="fighter-detail-header">
+                        <div class="fighter-detail-badge" style="background: #8e24aa;">🪙 1850 PTS</div>
+                        <h3 style="color: #8e24aa;">🪡 Mahito</h3>
+                        <div class="fighter-detail-subtitle">Special Grade Disaster Curse &bull; Idle Transfiguration</div>
+                        <p class="fighter-detail-lore">Reshapes human and curse souls at will. Traps enemies inside Self-Embodiment of Perfection.</p>
+                    </div>
+                    <div class="fighter-passive-box">
+                        <strong>Passive: Soul Regeneration</strong> &bull; Rapidly recovers health by altering the shape of his soul between hits.
+                    </div>
+                </article>
+
+                <!-- 12. HAKARI -->
+                <article class="fighter-detail-card" style="border-top-color: #ab47bc;">
+                    <div class="fighter-detail-header">
+                        <div class="fighter-detail-badge" style="background: #ab47bc;">🪙 2100 PTS</div>
+                        <h3 style="color: #ab47bc;">🎰 Kinji Hakari</h3>
+                        <div class="fighter-detail-subtitle">Special Grade Potential &bull; Restless Gambler</div>
+                        <p class="fighter-detail-lore">Hits the 777 Jackpot in Idle Death Gamble, acquiring 6 seconds of infinite cursed energy and total immortality!</p>
+                    </div>
+                    <div class="fighter-passive-box">
+                        <strong>Passive: Rough Cursed Edge</strong> &bull; Abrasive punches shred through enemy blocking effectiveness.
+                    </div>
+                </article>
+
+                <!-- 13. GETO -->
+                <article class="fighter-detail-card" style="border-top-color: #673ab7;">
+                    <div class="fighter-detail-header">
+                        <div class="fighter-detail-badge" style="background: #673ab7;">🪙 2400 PTS</div>
+                        <h3 style="color: #673ab7;">🌀 Suguru Geto (Kenjaku)</h3>
+                        <div class="fighter-detail-subtitle">Special Grade Sorcerer &bull; Curse Manipulation</div>
+                        <p class="fighter-detail-lore">Commands legions of cursed spirits, inverts gravity with Antigravity System, and fires Maximum: Uzumaki.</p>
+                    </div>
+                    <div class="fighter-passive-box">
+                        <strong>Passive: Curse Absorption</strong> &bull; Absorbs cursed energy whenever the opponent triggers a special technique.
+                    </div>
+                </article>
+
+                <!-- 14. YUTA -->
                 <article class="fighter-detail-card" style="border-top-color: #00e5ff;">
                     <div class="fighter-detail-header">
-                        <div class="fighter-detail-badge" style="background: #00e5ff; color: #000;">1,000 POINTS</div>
-                        <h3 style="color: #00e5ff;">⚡ Zeus</h3>
-                        <div class="fighter-detail-subtitle">Lord of Olympus &bull; Lightning Zoner</div>
-                        <p class="fighter-detail-lore">Supreme Greek sky father commanding piercing lightning and celestial thunderbolts to control the arena from any range.</p>
-                    </div>
-                    <div class="moves-table-wrapper">
-                        <table class="moves-table">
-                            <thead>
-                                <tr><th>Command</th><th>Attack Name</th><th>Damage</th><th>Cooldown</th><th>Unique Effect</th></tr>
-                            </thead>
-                            <tbody>
-                                <tr>
-                                    <td><kbd>J</kbd> / <kbd>Z</kbd></td>
-                                    <td><strong>Thunder Lance</strong></td>
-                                    <td>50</td>
-                                    <td>0.55s</td>
-                                    <td>Hurls a piercing lightning spear across the entire screen through defenses.</td>
-                                </tr>
-                                <tr>
-                                    <td><kbd>K</kbd> / <kbd>X</kbd></td>
-                                    <td><strong>Chain Spark</strong></td>
-                                    <td>95</td>
-                                    <td>4.5s</td>
-                                    <td>Fires a homing electrical ball that seeks the foe and inflicts stun lock.</td>
-                                </tr>
-                                <tr>
-                                    <td><kbd>L</kbd> / <kbd>C</kbd></td>
-                                    <td><strong>Aegis Storm</strong></td>
-                                    <td>120</td>
-                                    <td>7.0s</td>
-                                    <td>360-degree rotating electrical cyclone that destroys projectiles and shocks enemies.</td>
-                                </tr>
-                                <tr class="ultimate-row">
-                                    <td><kbd>U</kbd> / <kbd>V</kbd></td>
-                                    <td><strong>Wrath of Olympus</strong></td>
-                                    <td>340</td>
-                                    <td>15.0s</td>
-                                    <td>Calls down 5 colossal thunderbolts crashing from the heavens sequentially across the stage!</td>
-                                </tr>
-                            </tbody>
-                        </table>
+                        <div class="fighter-detail-badge" style="background: #00e5ff;">🪙 2700 PTS</div>
+                        <h3 style="color: #00e5ff;">💍 Yuta Okkotsu</h3>
+                        <div class="fighter-detail-subtitle">Special Grade Sorcerer &bull; Boundless Energy & Rika</div>
+                        <p class="fighter-detail-lore">Manifests the Queen of Curses Rika, freezes enemies with Cursed Speech, and fires the Pure Love Beam.</p>
                     </div>
                     <div class="fighter-passive-box">
-                        <strong>Passive: Static Overcharge</strong> — Every 4th attack inflicts a paralyzed debuff, freezing enemy actions briefly.
+                        <strong>Passive: Reverse Cursed Output</strong> &bull; Continually restores health when energy remains above 50%.
                     </div>
                 </article>
 
-                <!-- 3. ANUBIS -->
-                <article class="fighter-detail-card" style="border-top-color: #9d4edd;">
-                    <div class="fighter-detail-header">
-                        <div class="fighter-detail-badge" style="background: #9d4edd;">2,200 POINTS</div>
-                        <h3 style="color: #9d4edd;">🐺 Anubis</h3>
-                        <div class="fighter-detail-subtitle">Judge of Souls &bull; Life Drain & Hex Mage</div>
-                        <p class="fighter-detail-lore">Ancient Egyptian guardian of the Scales of Ma'at and god of the underworld. Siphons opponent health to sustain himself.</p>
-                    </div>
-                    <div class="moves-table-wrapper">
-                        <table class="moves-table">
-                            <thead>
-                                <tr><th>Command</th><th>Attack Name</th><th>Damage</th><th>Cooldown</th><th>Unique Effect</th></tr>
-                            </thead>
-                            <tbody>
-                                <tr>
-                                    <td><kbd>J</kbd> / <kbd>Z</kbd></td>
-                                    <td><strong>Soul Siphon</strong></td>
-                                    <td>48</td>
-                                    <td>0.45s</td>
-                                    <td>Launches a ghostly jackal skull that restores 40% of damage dealt back to Anubis as HP!</td>
-                                </tr>
-                                <tr>
-                                    <td><kbd>K</kbd> / <kbd>X</kbd></td>
-                                    <td><strong>Jackal Claws</strong></td>
-                                    <td>100</td>
-                                    <td>4.2s</td>
-                                    <td>Shadow sweep scythe cut that lacerates opponent and inflicts lingering death decay.</td>
-                                </tr>
-                                <tr>
-                                    <td><kbd>L</kbd> / <kbd>C</kbd></td>
-                                    <td><strong>Tomb Quicksand</strong></td>
-                                    <td>115</td>
-                                    <td>6.5s</td>
-                                    <td>Opens a swirling quicksand vortex beneath the foe that slows, grounds, and damages.</td>
-                                </tr>
-                                <tr class="ultimate-row">
-                                    <td><kbd>U</kbd> / <kbd>V</kbd></td>
-                                    <td><strong>Judgment of Ma'at</strong></td>
-                                    <td>310</td>
-                                    <td>16.0s</td>
-                                    <td>Summons the golden Scales of Truth; reaps the enemy soul, dealing huge true damage and healing Anubis!</td>
-                                </tr>
-                            </tbody>
-                        </table>
-                    </div>
-                    <div class="fighter-passive-box">
-                        <strong>Passive: Soul Siphon Aura</strong> — Passively restores 25% of all combat damage directly back into Anubis's health pool.
-                    </div>
-                </article>
-
-                <!-- 4. SUN WUKONG -->
-                <article class="fighter-detail-card" style="border-top-color: #ff9f1c;">
-                    <div class="fighter-detail-header">
-                        <div class="fighter-detail-badge" style="background: #ff9f1c; color: #000;">3,800 POINTS</div>
-                        <h3 style="color: #ff9f1c;">🐵 Sun Wukong</h3>
-                        <div class="fighter-detail-subtitle">The Great Sage &bull; Elusive Clone Master</div>
-                        <p class="fighter-detail-lore">The legendary Monkey King with 72 earthly transformations, golden cloud mobility, and the extending Ruyi staff.</p>
-                    </div>
-                    <div class="moves-table-wrapper">
-                        <table class="moves-table">
-                            <thead>
-                                <tr><th>Command</th><th>Attack Name</th><th>Damage</th><th>Cooldown</th><th>Unique Effect</th></tr>
-                            </thead>
-                            <tbody>
-                                <tr>
-                                    <td><kbd>J</kbd> / <kbd>Z</kbd></td>
-                                    <td><strong>Ruyi Expansion</strong></td>
-                                    <td>58</td>
-                                    <td>0.40s</td>
-                                    <td>Thrusts golden staff, extending it rapidly across 70% of the arena with heavy knockback.</td>
-                                </tr>
-                                <tr>
-                                    <td><kbd>K</kbd> / <kbd>X</kbd></td>
-                                    <td><strong>Nimbus Somersault</strong></td>
-                                    <td>125</td>
-                                    <td>4.8s</td>
-                                    <td>Leaps high on a golden nimbus cloud and crashes down with a massive staff slam.</td>
-                                </tr>
-                                <tr>
-                                    <td><kbd>L</kbd> / <kbd>C</kbd></td>
-                                    <td><strong>Hair Clone Decoy</strong></td>
-                                    <td>90</td>
-                                    <td>6.0s</td>
-                                    <td>Leaves a fighting illusion clone behind while Wukong teleports behind the enemy.</td>
-                                </tr>
-                                <tr class="ultimate-row">
-                                    <td><kbd>U</kbd> / <kbd>V</kbd></td>
-                                    <td><strong>Heaven Havoc (72 Styles)</strong></td>
-                                    <td>350</td>
-                                    <td>15.0s</td>
-                                    <td>Summons three illusionary clones that converge from all angles in a synchronized frenzy!</td>
-                                </tr>
-                            </tbody>
-                        </table>
-                    </div>
-                    <div class="fighter-passive-box">
-                        <strong>Passive: Immortal Stone Body</strong> — Immune to flinching or knockback while attacking, plus constant 1.5% max HP regen every 2s.
-                    </div>
-                </article>
-
-                <!-- 5. SUKUNA -->
+                <!-- 15. SUKUNA -->
                 <article class="fighter-detail-card" style="border-top-color: #ff0033;">
                     <div class="fighter-detail-header">
-                        <div class="fighter-detail-badge" style="background: #ff0033;">5,500 POINTS</div>
-                        <h3 style="color: #ff0033;">⛩️ Ryomen Sukuna</h3>
-                        <div class="fighter-detail-subtitle">King of Curses &bull; Destructive Calamity God</div>
-                        <p class="fighter-detail-lore">The supreme calamity of jujutsu, wielding invisible spatial slashes, divine thermal arrows, and an open-barrier domain.</p>
-                    </div>
-                    <div class="moves-table-wrapper">
-                        <table class="moves-table">
-                            <thead>
-                                <tr><th>Command</th><th>Attack Name</th><th>Damage</th><th>Cooldown</th><th>Unique Effect</th></tr>
-                            </thead>
-                            <tbody>
-                                <tr>
-                                    <td><kbd>J</kbd> / <kbd>Z</kbd></td>
-                                    <td><strong>Dismantle (Kai)</strong></td>
-                                    <td>62</td>
-                                    <td>0.38s</td>
-                                    <td>Fires swift, invisible spatial slashes flying in an X-formation across the screen.</td>
-                                </tr>
-                                <tr>
-                                    <td><kbd>K</kbd> / <kbd>X</kbd></td>
-                                    <td><strong>Cleave (Hachi)</strong></td>
-                                    <td>130</td>
-                                    <td>4.5s</td>
-                                    <td>Teleports to enemy face, executing an armor-piercing slash scaled to enemy max HP.</td>
-                                </tr>
-                                <tr>
-                                    <td><kbd>L</kbd> / <kbd>C</kbd></td>
-                                    <td><strong>Fuga (Flame Arrow)</strong></td>
-                                    <td>155</td>
-                                    <td>7.5s</td>
-                                    <td>Draws a thermal fire arrow that triggers an incinerating explosion upon impact.</td>
-                                </tr>
-                                <tr class="ultimate-row">
-                                    <td><kbd>U</kbd> / <kbd>V</kbd></td>
-                                    <td><strong>Malevolent Shrine</strong></td>
-                                    <td>380</td>
-                                    <td>18.0s</td>
-                                    <td>Expands barrier-less domain; relentless slashes carve the entire arena for 3.5 seconds!</td>
-                                </tr>
-                            </tbody>
-                        </table>
+                        <div class="fighter-detail-badge" style="background: #ff0033;">🪙 3000 PTS</div>
+                        <h3 style="color: #ff0033;">👑 Ryomen Sukuna</h3>
+                        <div class="fighter-detail-subtitle">King of Curses &bull; The Strongest in History</div>
+                        <p class="fighter-detail-lore">Dismantles reality, incinerates the arena with Fūga, and manifests the barrierless Malevolent Shrine.</p>
                     </div>
                     <div class="fighter-passive-box">
-                        <strong>Passive: Reverse Cursed Technique</strong> — Critical strikes and special attacks restore 20% of damage dealt when under 40% HP.
+                        <strong>Passive: King's Aura</strong> &bull; Radiates continuous bleed damage to close targets and reduces incoming hitstun.
+                    </div>
+                </article>
+
+                <!-- 16. GOJO -->
+                <article class="fighter-detail-card" style="border-top-color: #00b0ff;">
+                    <div class="fighter-detail-header">
+                        <div class="fighter-detail-badge" style="background: #00b0ff;">🪙 3000 PTS</div>
+                        <h3 style="color: #00b0ff;">👁️ Satoru Gojo</h3>
+                        <div class="fighter-detail-subtitle">The Honored One &bull; Limitless & Six Eyes</div>
+                        <p class="fighter-detail-lore">Bends space with Lapse Blue, Reversal Red, and obliterates everything with Hollow Technique: Purple.</p>
+                    </div>
+                    <div class="fighter-passive-box">
+                        <strong>Passive: Infinity Barrier</strong> &bull; Completely blocks one incoming attack every 6 seconds and slows enemy projectiles.
                     </div>
                 </article>
             </div>
@@ -455,16 +413,16 @@
                     <h4>🪙 Fair Point Economy System</h4>
                     <p>There are no infinite coin cheats or exploits. Players earn Battle Points through combat skill:</p>
                     <ul>
-                        <li><strong>Starting Balance</strong>: 0 Points (earn every coin through combat victories).</li>
+                        <li><strong>Starting Balance</strong>: 0 Points (Yuji and Nobara are free starter sorcerers).</li>
                         <li><strong>Match Victory</strong>: 300 to 600 Points (scales with Easy, Medium, Hard, Deity).</li>
                         <li><strong>Combo Streaks</strong>: Up to +200 bonus Points for chaining hits.</li>
                         <li><strong>Time Bonus</strong>: Earn bonus points for fast victories.</li>
-                        <li><strong>Arcade Ladder</strong>: Defeat Zeus, Anubis, Wukong, and Sukuna in order to claim the Grand Pantheon Purse!</li>
-                        <li><strong>Safe Storage</strong>: Unlocked deities and points persist in your browser's local storage.</li>
+                        <li><strong>Arcade Ladder</strong>: Defeat Megumi, Nanami, Todo, Mahito, Toji, Yuta, and Sukuna to conquer the Cursed Gauntlet!</li>
+                        <li><strong>Safe Storage</strong>: Unlocked sorcerers and points persist in your browser's local storage.</li>
                     </ul>
                 </div>
                 <div class="info-card">
-                    <h4>🎮 Full Keyboard Controls</h4>
+                    <h4>🎮 Full Controls Guide</h4>
                     <table class="controls-guide-table">
                         <tr><th>Action</th><th>Player 1 (Solo)</th><th>Player 2 (PvP)</th><th>Mobile / Touch Buttons</th></tr>
                         <tr><td>Move Left / Right</td><td><kbd>A</kbd> / <kbd>D</kbd></td><td><kbd>&larr;</kbd> / <kbd>&rarr;</kbd></td><td><kbd>◀</kbd> / <kbd>▶</kbd></td></tr>
