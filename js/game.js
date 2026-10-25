@@ -167,8 +167,8 @@ class BattleArenaGame {
         this.p2RoundsWon = 0;
         this.currentRound = 1;
 
-        this.startRound();
         this.state = 'fighting';
+        this.startRound();
         this.sound.startBGM();
 
         if (window.UI && window.UI.touchControls && window.UI.touchEnabled) {
@@ -249,8 +249,8 @@ class BattleArenaGame {
                 this.handleMatchEnd(this.p1RoundsWon >= roundsToWin);
             } else {
                 this.currentRound++;
-                this.startRound();
                 this.state = 'fighting';
+                this.startRound();
             }
         }, 2200);
     }
@@ -480,10 +480,12 @@ class BattleArenaGame {
                 this.handleRoundEnd(false);
             }
 
-            // 6. Update Projectiles & Particles
+            // 6. Update Projectiles
             this.updateProjectiles();
-            this.particles.update();
         }
+
+        // Always update particle effects & floating text in all states
+        this.particles.update();
 
         // Animate 3D Character Preview in menus
         if (this.previewModel) {
@@ -588,6 +590,11 @@ class BattleArenaGame {
         ctx.textAlign = 'left';
 
         // 2. Central Round Timer
+        ctx.font = "900 13px 'Rajdhani', sans-serif";
+        ctx.fillStyle = '#ffd700';
+        ctx.textAlign = 'center';
+        ctx.fillText(`ROUND ${this.currentRound}`, this.width / 2, 20);
+
         ctx.fillStyle = 'rgba(15, 18, 30, 0.9)';
         ctx.beginPath();
         ctx.arc(this.width / 2, 45, 34, 0, Math.PI * 2);

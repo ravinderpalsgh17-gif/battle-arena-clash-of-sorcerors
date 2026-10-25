@@ -9,7 +9,7 @@ An adrenaline-pumping **3D Open World fighting arena game** featuring 16 legenda
 ### 🥋 Full 3D Characters with Procedural Anime Rigs
 Every character in the 16-sorcerer roster is fully modeled and animated in 3D with distinct anime cel-shaded aesthetics, signature accessories, and hierarchical skeletal rigging:
 * **Satoru Gojo**: 3D spiky white hair, blindfold (reveals Six Eyes during ultimate), shimmering translucent **Infinity Barrier sphere**, and rotating 3D **Lapse Blue** & **Reversal Red** energy orbs!
-* **Ryomen Sukuna**: Open kimono with black obi sash, distinct facial & chest cursed tattoos, four glowing crimson eyes, and manifests 4 muscular arms in ultimate mode!
+* **Ryomen Sukuna**: True Heian Era form with **4 fully articulated muscular arms**, demonic right-side facial carapace mask, **4 glowing crimson eyes**, black cursed tattoos across chest and all 4 arms, black clawed fingers, open kimono with textured obi, and the Enmaten domain mudra!
 * **Yuji Itadori**: Athletic dark uniform with folded red hood, facial slit scars, and glowing pink Divergent Fist cursed knuckle trails!
 * **Nobara Kugisaki**: Steel carpenter's claw hammer with wooden grip and flying 3D cursed nails!
 * **Megumi Fushiguro**: Spiky sea-urchin hair, shadow puppet hand stances, and summoned 3D **Divine Dog (Totality)** shadow wolf companion!

@@ -549,6 +549,54 @@ class SoundEngine {
         });
     }
 
+    // Round Start Gong & Thunder
+    playRoundStart() {
+        this.playThunder();
+        if (this.isMuted || !this.ctx) return;
+        this.resume();
+        const now = this.ctx.currentTime;
+        const osc = this.ctx.createOscillator();
+        const gain = this.ctx.createGain();
+        osc.type = 'sine';
+        osc.frequency.setValueAtTime(220, now);
+        osc.frequency.exponentialRampToValueAtTime(440, now + 0.35);
+        gain.gain.setValueAtTime(0.5 * this.volume, now);
+        gain.gain.exponentialRampToValueAtTime(0.001, now + 0.5);
+        osc.connect(gain);
+        gain.connect(this.ctx.destination);
+        osc.start(now);
+        osc.stop(now + 0.5);
+    }
+
+    // Laser / High-velocity Beam (Reversal Red, Piercing Blood)
+    playLaser() {
+        if (this.isMuted || !this.ctx) return;
+        this.resume();
+        const now = this.ctx.currentTime;
+        const osc = this.ctx.createOscillator();
+        const gain = this.ctx.createGain();
+        osc.type = 'sawtooth';
+        osc.frequency.setValueAtTime(880, now);
+        osc.frequency.exponentialRampToValueAtTime(110, now + 0.25);
+        gain.gain.setValueAtTime(0.4 * this.volume, now);
+        gain.gain.exponentialRampToValueAtTime(0.001, now + 0.25);
+        osc.connect(gain);
+        gain.connect(this.ctx.destination);
+        osc.start(now);
+        osc.stop(now + 0.25);
+        this.playNoise(0.12, 0.35 * this.volume, 2500);
+    }
+
+    // Fireball (Fuga, Ember Insects)
+    playFireball() {
+        this.playFireExplosion();
+    }
+
+    // Ultimate / Domain Finisher
+    playUltimate() {
+        this.playDomainExpansion();
+    }
+
     // Nobara Hammer
     playHammer() {
         if (this.isMuted || !this.ctx) return;
@@ -614,5 +662,19 @@ class SoundEngine {
     }
 }
 
-// Global audio singleton
-const Sound = new SoundEngine();
+// Global audio singleton with safe fallback proxy to guarantee no missing audio call ever crashes combat
+const soundEngineInstance = new SoundEngine();
+const Sound = new Proxy(soundEngineInstance, {
+    get(target, prop) {
+        if (prop in target) {
+            const val = target[prop];
+            return (typeof val === 'function') ? val.bind(target) : val;
+        }
+        if (typeof prop === 'string' && prop.startsWith('play')) {
+            return (...args) => {
+                target.playHit('medium');
+            };
+        }
+        return target[prop];
+    }
+});
