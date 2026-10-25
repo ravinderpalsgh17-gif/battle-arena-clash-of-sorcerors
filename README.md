@@ -1,143 +1,100 @@
-# ⚔️ Battle Arena: Clash of Sorcerors
+# ⚔️ Battle Arena: Clash of Sorcerors — 3D Open World Edition
 
-An adrenaline-pumping 2D fighting arena game featuring 16 legendary characters from **Jujutsu Kaisen**, ranked and balanced according to their canonical power levels, grades, and domain expansions. Built with pure HTML5 Canvas, modern JavaScript (ES6+), procedural Web Audio synthesis, and dynamic particle systems.
-
----
-
-## 🎮 Playable Jujutsu Kaisen Roster & Power Scaling
-
-The game features **16 iconic Jujutsu Kaisen sorcerers and special grade cursed spirits**, organized strictly by their canonical power hierarchy. Players start with two free characters (**Yuji Itadori** and **Nobara Kugisaki**), and can unlock more powerful sorcerers and curses using battle points earned in combat.
-
-### 🌟 Tier 1: Starters (Grade 3 & Grade 1 Vessel)
-1. **🥊 Yuji Itadori** (*The Divine Vessel*) — Free Starter
-   * **Power Level**: Grade 1 / Awakened Vessel &bull; Rushdown Brawler
-   * **Moves**: Divergent Fist (delayed curse impact), Cursed Rush, Manji Kick, Black Flash (Kokusen).
-   * **Passive**: *Unbreakable Resolve* (30% damage reduction below 35% HP).
-
-2. **🔨 Nobara Kugisaki** (*Straw Doll Sorcerer*) — Free Starter
-   * **Power Level**: Grade 3 Sorcerer &bull; Zoner & Trap Specialist
-   * **Moves**: Cursed Nail Hurl, Hairpin (Kanzashi detonation), Iron Hammer Smash, Resonance: Black Flash.
-   * **Passive**: *Cursed Nail Embed* (Lodged nails inflict bleed damage).
+An adrenaline-pumping **3D Open World fighting arena game** featuring 16 legendary characters from **Jujutsu Kaisen**, ranked and balanced according to their canonical power levels, grades, and domain expansions. Built with **Three.js (WebGL 3D)**, hardware-accelerated procedural 3D character rigging, vast open-world environments, procedural Web Audio synthesis, and dynamic combat camera tracking.
 
 ---
 
-### 🌙 Tier 2: Up-and-Coming Prodigies (Grade 2 & Semi-Grade 1)
-3. **🐺 Megumi Fushiguro** (*Ten Shadows Prodigy*) — 200 Points
-   * **Power Level**: Grade 2 Sorcerer &bull; Shikigami Summoner
-   * **Moves**: Divine Dog Totality, Nue Thunder Wings, Shadow Submerge & Toad, Chimera Shadow Garden.
-   * **Passive**: *Shadow Evasion* (Dashing into shadow grants invulnerability).
+## 🌟 Key 3D Features
 
-4. **🐼 Panda** (*Mutant Cursed Corpse*) — 350 Points
-   * **Power Level**: Semi-Grade 1 Sorcerer &bull; Heavy Armor Tank
-   * **Moves**: Heavy Boxing Hook, Gorilla Mode: Drumming Beat (Unblockable), Cannonball Slam, Gorilla Beatdown.
-   * **Passive**: *Three Cores* (Survives lethal blow once with 140 HP).
+### 🥋 Full 3D Characters with Procedural Anime Rigs
+Every character in the 16-sorcerer roster is fully modeled and animated in 3D with distinct anime cel-shaded aesthetics, signature accessories, and hierarchical skeletal rigging:
+* **Satoru Gojo**: 3D spiky white hair, blindfold (reveals Six Eyes during ultimate), shimmering translucent **Infinity Barrier sphere**, and rotating 3D **Lapse Blue** & **Reversal Red** energy orbs!
+* **Ryomen Sukuna**: Open kimono with black obi sash, distinct facial & chest cursed tattoos, four glowing crimson eyes, and manifests 4 muscular arms in ultimate mode!
+* **Yuji Itadori**: Athletic dark uniform with folded red hood, facial slit scars, and glowing pink Divergent Fist cursed knuckle trails!
+* **Nobara Kugisaki**: Steel carpenter's claw hammer with wooden grip and flying 3D cursed nails!
+* **Megumi Fushiguro**: Spiky sea-urchin hair, shadow puppet hand stances, and summoned 3D **Divine Dog (Totality)** shadow wolf companion!
+* **Panda**: Giant 3D panda bear model with ears, snout, black eye patches, and brass knuckle armbands!
+* **Kento Nanami**: Tan double-breasted suit, spotted blue tie, wire sunglasses, and 7:3 spotted cloth wrapped cleaver blade!
+* **Toji Fushiguro**: Muscular physique in black compression shirt, coiled 3D **Cursed Spirit inventory worm** draped over shoulder, and the **Inverted Spear of Heaven**!
+* **Aoi Todo**: Towering physique, samurai topknot hair, diagonal facial scar, and clapping stance!
+* **Jogo**: Hunched cursed spirit robe, cyclops eye, and cone volcano chimney head spewing glowing molten lava and smoke!
+* **Mahito**: Patchwork stitched skin, long grey twin-tail hair, and arm morphing into a curved 3D scythe blade!
+* **Kinji Hakari**: Pompadour hairstyle, pachinko shutter doors, and prismatic Jackpot fever glow!
+* **Suguru Geto**: Buddhist monk kesa robes, sweeping side fringe, and floating black/purple Uzumaki cursed sphere!
+* **Yuta Okkotsu**: White Jujutsu High jacket, katana with scabbard, silver engagement ring, and the spectral Queen of Curses (Rika)!
+* **Maki Zen'in**: Dark green high ponytail, glasses, and Dragon-Bone naginata spear!
+* **Choso**: Dual twintails, dark blood stripe on nose bridge, and floating crimson blood convergence droplets!
 
----
+### 🌍 Expansive 3D Open World Battleground
+Fight across a continuous 3D open-world environment featuring distinct landmarks and zones:
+1. **Central Sorcerer Grand Ring**: Paved stone arena circle with golden boundary and four-pointed Jujutsu arcane emblem.
+2. **Jujutsu High Courtyard**: Massive scarlet Torii gates, glowing stone lanterns (*toro*), blooming Cherry Blossom (*sakura*) trees with drifting petals, and traditional dojo pagoda pavilions.
+3. **Shinjuku Urban District**: Multi-story modern skyscrapers with illuminated window grids, asphalt streets with painted road lines, crosswalks, traffic barriers, and street lampposts with dynamic point lights.
+4. **Shibuya Cursed Crater Ruins**: Blasted circular crater with glowing purple cursed fissure lines and shattered concrete slabs.
+5. **Distant Tokyo Skyline**: Silhouetted skyscrapers along the perimeter horizon under an expansive starry sky dome with real-time shadow casting (`PCFSoftShadowMap`).
 
-### ⚡ Tier 3: Elite Sorcerers & Curse Brother (Grade 1 & Special Grade Womb)
-5. **📐 Kento Nanami** (*7:3 Ratio Master*) — 500 Points
-   * **Power Level**: Grade 1 Sorcerer &bull; Precision Critical Striker
-   * **Moves**: Ratio Technique: 7:3 Cut, Collapse (Kawarawari), Overtime Cleave, Consecutive Black Flash (x4).
-   * **Passive**: *Overtime Shift* (+35% damage boost below 40% HP).
+### 🌌 Live 3D Domain Expansions
+When sorcerers unleash their Domain Expansions, the open world dynamically transforms in real-time:
+* **Unlimited Void (Satoru Gojo)**: The world shifts into a cosmic starfield dome with deep blue celestial nebulae, orbiting gravitational rings, and an abyssal singularity.
+* **Malevolent Shrine (Ryomen Sukuna)**: The sky turns blood-red, a crimson blood pool blankets the ground, and a giant horned demonic skull pagoda rises from the earth with floating dimensional cleave cuts.
+* **Chimera Shadow Garden (Megumi Fushiguro)**: The earth melts into an abyssal shadow liquid pool with reaching shadow claws.
+* **Coffin of the Iron Mountain (Jogo)**: The battlefield transforms into an active volcanic caldera with molten lava cracks and fiery rock spires.
 
-6. **👏 Aoi Todo** (*Boogie Woogie Virtuoso*) — 700 Points
-   * **Power Level**: Grade 1 Sorcerer &bull; 530,000 IQ Mindgames
-   * **Moves**: Brute Force Straight, Boogie Woogie (instant position clap-swap!), Playful Cloud, Brotherly Black Flash.
-   * **Passive**: *530,000 IQ* (Critical damage bonus after position swap).
-
-7. **🩸 Choso** (*Blood Manipulation Elder*) — 900 Points
-   * **Power Level**: Special Grade Cursed Womb #1 &bull; Long-Range Piercer
-   * **Moves**: Blood Edge, Piercing Blood (supersonic laser), Supernova, Flowing Red Scale: Piercing Meteor.
-   * **Passive**: *Toxic Blood* (All blood skills poison the enemy).
-
----
-
-### 🗡️ Tier 4: Disaster Curses & Heavenly Restrictions (Special Grade)
-8. **🗡️ Maki Zenin** (*The Demonic Monster*) — 1,100 Points
-   * **Power Level**: Awakened Heavenly Restriction &bull; True Damage Blade
-   * **Moves**: Split Soul Katana (true damage ignoring defense), Dragon Bone Blast, Air Surface Blitz, Carnage of the Zenin.
-   * **Passive**: *Zero Cursed Energy* (Immune to lock-on, takes 25% less domain damage).
-
-9. **⛓️ Toji Fushiguro** (*The Sorcerer Killer*) — 1,350 Points
-   * **Power Level**: Special Grade Hunter &bull; Anti-Mage Assassin
-   * **Moves**: Inverted Spear of Heaven (drains cursed energy & nullifies buffs), Fly Head Swarm, Playful Cloud Smash, Ghost Execution.
-   * **Passive**: *Heavenly Restriction* (Blinding movement speed and high defense).
-
-10. **🌋 Jogo** (*The Calamitous Volcano*) — 1,600 Points
-    * **Power Level**: Special Grade Disaster Curse &bull; Pyromancy Zoner
-    * **Moves**: Ember Insects (homing fireflies), Volcanic Geyser, Disaster Flames Palm, Maximum: Meteor.
-    * **Passive**: *Disaster Heat Aura* (Continuous burning aura to nearby enemies).
-
-11. **🪡 Mahito** (*The Shape of the Soul*) — 1,850 Points
-    * **Power Level**: Special Grade Disaster Curse &bull; Soul Shaper
-    * **Moves**: Soul Drill Arm, Body Repel, Polymorphic Soul Whip, Domain: Self-Embodiment of Perfection.
-    * **Passive**: *Idle Transfiguration* (Rapid health regeneration between hits).
+### 🎥 Dynamic 3D Combat Camera System
+Toggle between 3 distinct camera modes at any time with the `V` key or top-bar button:
+1. **Action Orbit Cam (Default)**: Cinematic camera dynamically tracking the midpoint between both fighters in 3D space, intelligently zooming in during close melee combat and pulling back when fighters separate across the open arena.
+2. **Third-Person Cam (Follow)**: Over-the-shoulder action RPG perspective following behind Player 1.
+3. **Overview Cam (Bird's Eye)**: High-angle aerial view for tactical arena positioning.
+* Features responsive camera shake during heavy hits, Black Flash critical strikes, and Domain Expansions!
 
 ---
 
-### 👑 Tier 5: Modern Monsters & Cursed Anomalies (Special Grade Sorcerers)
-12. **🎰 Kinji Hakari** (*The Undying Gambler*) — 2,100 Points
-    * **Power Level**: Special Grade Tier &bull; Restless Gambler
-    * **Moves**: Rough Cursed Fist, Train Shutter Slam, Pachinko Ball Shot, Idle Death Gamble (JACKPOT!).
-    * **Passive**: *Rough Cursed Edge* (Punches shred block) + *Jackpot Immortality* (6 seconds of infinite energy and 100 HP/s regeneration!).
+## 🎮 Controls Guide
 
-13. **🌀 Suguru Geto (Kenjaku)** (*Master of Curses*) — 2,400 Points
-    * **Power Level**: Special Grade Sorcerer &bull; Curse Manipulator
-    * **Moves**: Cursed Staff Arc, Cursed Spirit Swarm, Antigravity System, Maximum: Uzumaki.
-    * **Passive**: *Curse Absorption* (Absorbs energy whenever enemy uses a skill).
-
-14. **💍 Yuta Okkotsu** (*The Prodigy of Curses*) — 2,700 Points
-    * **Power Level**: Special Grade Sorcerer &bull; Boundless Energy & Rika
-    * **Moves**: Boundless Katana Cleave, Cursed Speech ("DON'T MOVE!"), Rika Smash, Pure Love Beam.
-    * **Passive**: *Reverse Cursed Output* (Passive health regeneration when energy > 50%).
+| Action | Player 1 (Solo / Versus) | Player 2 (Local PvP) | Mobile / Touch Virtual Controller |
+|:---|:---:|:---:|:---:|
+| **3D Movement** | <kbd>W</kbd> <kbd>A</kbd> <kbd>S</kbd> <kbd>D</kbd> | <kbd>↑</kbd> <kbd>↓</kbd> <kbd>←</kbd> <kbd>→</kbd> | <kbd>▲</kbd> <kbd>▼</kbd> <kbd>◀</kbd> <kbd>▶</kbd> (3D D-Pad) |
+| **Jump** | <kbd>Space</kbd> | <kbd>Numpad 0</kbd> | <kbd>⚡ JUMP</kbd> |
+| **Guard / Block** | <kbd>Shift</kbd> | <kbd>Numpad .</kbd> | <kbd>S</kbd> (GUARD) |
+| **Basic Attack** | <kbd>J</kbd> or <kbd>Z</kbd> | <kbd>Numpad 1</kbd> or <kbd>1</kbd> | <kbd>J</kbd> (ATK) |
+| **Skill 1** | <kbd>K</kbd> or <kbd>X</kbd> | <kbd>Numpad 2</kbd> or <kbd>2</kbd> | <kbd>K</kbd> (SKILL 1) |
+| **Skill 2** | <kbd>L</kbd> or <kbd>C</kbd> | <kbd>Numpad 3</kbd> or <kbd>3</kbd> | <kbd>L</kbd> (SKILL 2) |
+| **Ultimate (100 Energy)** | <kbd>U</kbd> | <kbd>Numpad 5</kbd> or <kbd>5</kbd> | <kbd>U</kbd> (ULT) |
+| **Toggle 3D Camera** | <kbd>V</kbd> | <kbd>V</kbd> | <kbd>🎥</kbd> (CAM) |
+| **Pause Match** | <kbd>Esc</kbd> or <kbd>P</kbd> | <kbd>Esc</kbd> | <kbd>⏸</kbd> (PAUSE) |
 
 ---
 
-### 🌌 Tier 6: Pinnacle of the Verse (The Strongest)
-15. **👑 Ryomen Sukuna** (*King of Curses*) — 3,000 Points
-    * **Power Level**: The Strongest in History &bull; Raid Boss Zoner
-    * **Moves**: Dismantle (flying invisible cut), Cleave (durability grab), Fūga (Divine Flame Arrow), Domain: Malevolent Shrine.
-    * **Passive**: *King's Aura* (Surrounding bleed aura + 30% hitstun resistance).
+## 🚀 How to Run
 
-16. **👁️ Satoru Gojo** (*The Honored One*) — 3,000 Points
-    * **Power Level**: The Strongest Modern Sorcerer &bull; Spatial Dominator
-    * **Moves**: Lapse: Blue (vacuum attraction punch), Reversal: Red (repulsion blast), Teleport Axe Kick, Hollow Technique: Purple & Unlimited Void.
-    * **Passive**: *Limitless Infinity Barrier* (Completely absorbs 1 hit every 6 seconds and slows enemy projectiles).
+### Option 1: Quick Launch
+Double-click `play_game.bat` in the repository root to launch immediately in your default browser.
+
+### Option 2: Browser
+Open `index.html` in any modern web browser (Chrome, Edge, Firefox, Safari).
+* Works 100% offline via local `js/lib/three.min.js` and includes automatic CDN fallback!
 
 ---
 
-## 🕹️ Controls Guide
+## 📦 Project Architecture
 
-### Keyboard (Player 1)
-| Action | Keybinding |
-|---|---|
-| **Move Left / Right** | `A` / `D` |
-| **Jump** | `W` or `Space` |
-| **Block / Guard** | `S` |
-| **Basic Attack** | `J` or `Z` |
-| **Skill 1** | `K` or `X` |
-| **Skill 2** | `L` or `C` |
-| **Ultimate (100 Energy)** | `U` or `V` |
-| **Pause** | `Escape` or `P` |
-
-### Keyboard (Player 2 Local PvP)
-| Action | Keybinding |
-|---|---|
-| **Move Left / Right** | `←` / `→` (Arrow Keys) |
-| **Jump** | `↑` (Up Arrow) |
-| **Block / Guard** | `↓` (Down Arrow) |
-| **Basic Attack** | `Numpad 1` or `1` |
-| **Skill 1** | `Numpad 2` or `2` |
-| **Skill 2** | `Numpad 3` or `3` |
-| **Ultimate** | `Numpad 5` or `5` / `0` |
-
-### 📱 Mobile On-Screen Touch Controls
-The game features built-in virtual arcade buttons:
-* **`◀` / `▶`**: Left / Right Movement D-Pad
-* **`▲ JUMP`**: Jump
-* **`[S]`**: Guard / Block
-* **`[J]`**: Basic Attack
-* **`[K]`**: Skill 1
-* **`[L]`**: Skill 2
-* **`[U]`**: Ultimate (Glows with energy when charged!)
-* **`⏸`**: Pause Match
+```
+battle-arena-clash-of-sorcerors/
+├── index.html            # Main HTML5 layout, UI screens & overlays
+├── css/
+│   └── style.css         # Cyberpunk/Arcade UI stylesheet & touch controller styles
+├── js/
+│   ├── lib/
+│   │   └── three.min.js  # Local Three.js WebGL 3D engine (offline supported)
+│   ├── character3d.js    # Procedural 3D character rigging, materials & animations
+│   ├── world3d.js        # Open world 3D terrain, landmarks, lighting & live domains
+│   ├── characters.js     # Character stats, move lore, power levels & passives
+│   ├── fighter.js        # 3D Fighter physics, spatial hitboxes & state machine
+│   ├── ai.js             # 3D combat AI with flanking, dodging & tactical ranging
+│   ├── game.js           # Master 3D game loop, dynamic camera & 2D arcade HUD
+│   ├── particles.js      # 3D-to-screen projected combat text, shockwaves & sparks
+│   ├── audio.js          # Procedural Web Audio API sound effects & BGM
+│   └── ui.js             # UI state manager, 3D character select preview & shop
+├── play_game.bat         # One-click desktop launcher
+└── README.md             # Documentation
+```

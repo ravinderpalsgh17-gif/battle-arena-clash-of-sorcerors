@@ -1,122 +1,158 @@
-// Master Game Engine: Loop, Stages, Modes, Combat Resolution & Input
-// Battle Arena: Clash of Sorcerors
+// Master 3D Game Engine: Open World Loop, Dynamic 3D Camera, Combat Resolution & HUD
+// Battle Arena: Clash of Sorcerors (Open World 3D)
 
 class BattleArenaGame {
     constructor() {
-        this.canvas = document.getElementById('gameCanvas');
-        this.ctx = this.canvas.getContext('2d');
         this.width = 1280;
         this.height = 720;
+
+        // 1. WebGL 3D Canvas & Three.js Engine
+        this.canvas = document.getElementById('gameCanvas');
         this.canvas.width = this.width;
         this.canvas.height = this.height;
 
+        this.scene = new THREE.Scene();
+        this.camera = new THREE.PerspectiveCamera(50, this.width / this.height, 0.1, 500);
+        this.camera.position.set(0, 14, 28);
+
+        this.renderer = new THREE.WebGLRenderer({
+            canvas: this.canvas,
+            antialias: true,
+            powerPreference: 'high-performance'
+        });
+        this.renderer.setSize(this.width, this.height);
+        this.renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, 2));
+        this.renderer.shadowMap.enabled = true;
+        this.renderer.shadowMap.type = THREE.PCFSoftShadowMap;
+        this.renderer.toneMapping = THREE.ACESFilmicToneMapping;
+        this.renderer.toneMappingExposure = 1.05;
+
+        // 2. HUD 2D Overlay Canvas
+        this.hudCanvas = document.getElementById('hudCanvas');
+        if (!this.hudCanvas) {
+            this.hudCanvas = document.createElement('canvas');
+            this.hudCanvas.id = 'hudCanvas';
+            this.hudCanvas.width = this.width;
+            this.hudCanvas.height = this.height;
+            this.hudCanvas.style.cssText = 'position:absolute;top:0;left:0;width:100%;height:100%;pointer-events:none;z-index:4;';
+            this.canvas.parentElement.appendChild(this.hudCanvas);
+        }
+        this.hudCtx = this.hudCanvas.getContext('2d');
+
+        // 3. Subsystems
         this.particles = new ParticleEngine();
         this.sound = Sound;
+        this.world3d = new World3D(this.scene);
 
+        // Game Configuration
         this.mode = 'arcade'; // arcade, versus, pvp, training
-        this.stage = 'olympus'; // olympus, underworld, celestial, shinjuku
         this.difficulty = 'medium';
+        this.state = 'menu'; // menu, char_select, shop, fighting, round_over, match_over, paused
 
-        // Fighters
+        // 3D Fighters & AI
         this.p1 = null;
         this.p2 = null;
         this.p2AI = null;
+        this.projectiles3D = [];
+        this.previewModel = null;
 
-        // Round & Game State
-        this.state = 'menu'; // menu, char_select, shop, fighting, round_over, match_over, paused
+        // Camera System & View Modes
+        this.cameraMode = 'action'; // 'action', 'follow', 'overview'
+        this.camShakeX = 0;
+        this.camShakeY = 0;
+
+        // Round & Progression
         this.roundTimer = 99;
         this.timerInterval = null;
         this.p1RoundsWon = 0;
         this.p2RoundsWon = 0;
         this.currentRound = 1;
-
-        // Arcade Ladder Progression (Jujutsu Kaisen Cursed Gauntlet)
         this.arcadeLadder = ['megumi', 'nanami', 'todo', 'mahito', 'toji', 'yuta', 'sukuna'];
         this.arcadeIndex = 0;
 
-        // Input tracking
+        // Input Tracking
         this.keys = {};
         this.initInputListeners();
 
-        // Projectiles container
-        this.particles.projectiles = [];
-
-        // Animation frame
-        this.lastTime = 0;
+        // Animation Loop
         this.animId = null;
+        this.lastTime = performance.now();
+        this.menuOrbitAngle = 0;
 
-        // Screen Freeze / Hitstop for juicy arcade impact feel
-        this.hitstopFrames = 0;
+        // Start continuous render loop
+        this.loop(0);
     }
 
     initInputListeners() {
         window.addEventListener('keydown', (e) => {
             this.keys[e.code] = true;
-
-            // Audio unlock on first user gesture
             this.sound.resume();
+
+            // Toggle Camera View with 'V' key
+            if (e.code === 'KeyV' && this.state === 'fighting') {
+                this.cycleCameraMode();
+            }
 
             if (this.state !== 'fighting') return;
 
-            // Player 1 Controls (WASD + J, K, L, U + Space)
+            // Player 1 Combat Triggers (J, K, L, U + Space)
             if (this.p1 && this.p1.canAct()) {
-                if (e.code === 'KeyW' || e.code === 'Space') this.p1.jump();
-                if (e.code === 'KeyS') this.p1.startBlock();
-                if (e.code === 'KeyJ') this.p1.triggerBasicAttack();
-                if (e.code === 'KeyK') this.p1.triggerSkill1();
-                if (e.code === 'KeyL') this.p1.triggerSkill2();
+                if (e.code === 'Space') this.p1.jump();
+                if (e.code === 'KeyJ' || e.code === 'KeyZ') this.p1.triggerBasicAttack();
+                if (e.code === 'KeyK' || e.code === 'KeyX') this.p1.triggerSkill1();
+                if (e.code === 'KeyL' || e.code === 'KeyC') this.p1.triggerSkill2();
                 if (e.code === 'KeyU') this.p1.triggerUltimate();
             }
 
-            // Player 2 Controls for Local PvP (Arrow Keys + Numpad / Alternate Keys)
+            // Player 2 Combat Triggers (Local PvP)
             if (this.mode === 'pvp' && this.p2 && this.p2.canAct()) {
-                if (e.code === 'ArrowUp') this.p2.jump();
-                if (e.code === 'ArrowDown') this.p2.startBlock();
+                if (e.code === 'Numpad0') this.p2.jump();
                 if (e.code === 'Numpad1' || e.code === 'Digit1') this.p2.triggerBasicAttack();
                 if (e.code === 'Numpad2' || e.code === 'Digit2') this.p2.triggerSkill1();
                 if (e.code === 'Numpad3' || e.code === 'Digit3') this.p2.triggerSkill2();
-                if (e.code === 'Numpad5' || e.code === 'Digit5' || e.code === 'Digit0') this.p2.triggerUltimate();
-            }
-
-            // Pause
-            if (e.code === 'Escape' || e.code === 'KeyP') {
-                this.togglePause();
+                if (e.code === 'Numpad5' || e.code === 'Digit5') this.p2.triggerUltimate();
             }
         });
 
         window.addEventListener('keyup', (e) => {
             this.keys[e.code] = false;
 
-            if (this.p1) {
-                if (e.code === 'KeyS') this.p1.stopBlock();
-                if (e.code === 'KeyA' || e.code === 'KeyD') {
-                    if (!this.keys['KeyA'] && !this.keys['KeyD']) this.p1.stopMoving();
-                }
+            if (this.p1 && (e.code === 'KeyS' || e.code === 'ShiftLeft')) {
+                this.p1.stopBlock();
             }
-
-            if (this.mode === 'pvp' && this.p2) {
-                if (e.code === 'ArrowDown') this.p2.stopBlock();
-                if (e.code === 'ArrowLeft' || e.code === 'ArrowRight') {
-                    if (!this.keys['ArrowLeft'] && !this.keys['ArrowRight']) this.p2.stopMoving();
-                }
+            if (this.p2 && (e.code === 'ArrowDown' || e.code === 'NumpadPeriod')) {
+                this.p2.stopBlock();
             }
         });
     }
 
-    // Start a match between selected fighters
+    cycleCameraMode() {
+        if (this.cameraMode === 'action') this.cameraMode = 'follow';
+        else if (this.cameraMode === 'follow') this.cameraMode = 'overview';
+        else this.cameraMode = 'action';
+
+        const btn = document.getElementById('btnToggleCam');
+        if (btn) btn.textContent = `🎥 Cam: ${this.cameraMode.toUpperCase()}`;
+        this.particles.addFloatingText(`CAM: ${this.cameraMode.toUpperCase()}`, (this.p1 ? this.p1.x : 0), 4.5, '#00e5ff', 20);
+    }
+
+    // ----------------------------------------------------
+    // MATCH & ROUND MANAGEMENT
+    // ----------------------------------------------------
     startMatch(p1CharKey, p2CharKey, mode = 'arcade', difficulty = 'medium') {
         this.mode = mode;
         this.difficulty = difficulty;
 
-        // Choose stage appropriate to the opponent or mode (Iconic JJK Locations)
-        if (p2CharKey === 'sukuna' || p2CharKey === 'gojo') this.stage = 'shinjuku';
-        else if (p2CharKey === 'mahito' || p2CharKey === 'choso' || p2CharKey === 'todo' || p2CharKey === 'nanami') this.stage = 'shibuya';
-        else if (p2CharKey === 'jogo' || p2CharKey === 'geto' || p2CharKey === 'toji') this.stage = 'curse_forest';
-        else if (p2CharKey === 'hakari' || p2CharKey === 'yuta') this.stage = 'domain_void';
-        else this.stage = 'jujutsu_high';
+        // Cleanup prior fighters, preview & projectiles
+        this.clearPreview3D();
+        if (this.p1) this.p1.cleanup();
+        if (this.p2) this.p2.cleanup();
+        this.clearProjectiles();
+        if (this.world3d) this.world3d.clearDomain();
 
-        this.p1 = new Fighter(p1CharKey, 280, false, this.particles, this.sound);
-        this.p2 = new Fighter(p2CharKey, 930, true, this.particles, this.sound);
+        // Create 3D Fighters in Open World
+        this.p1 = new Fighter(p1CharKey, -12, 0, false, this.scene, this.particles, this.sound);
+        this.p2 = new Fighter(p2CharKey, 12, 0, true, this.scene, this.particles, this.sound);
 
         this.p1.setOpponent(this.p2);
         this.p2.setOpponent(this.p1);
@@ -138,34 +174,34 @@ class BattleArenaGame {
         if (window.UI && window.UI.touchControls && window.UI.touchEnabled) {
             window.UI.touchControls.classList.remove('hidden');
         }
-
-        // Start render loop if not running
-        if (!this.animId) {
-            this.loop(0);
-        }
     }
 
     startRound() {
         this.p1.hp = this.p1.maxHp;
         this.p1.displayedHp = this.p1.maxHp;
         this.p1.ghostHp = this.p1.maxHp;
-        this.p1.x = 280;
-        this.p1.y = 420;
+        this.p1.x = -12;
+        this.p1.y = 0;
+        this.p1.z = 0;
         this.p1.vx = 0;
         this.p1.vy = 0;
+        this.p1.vz = 0;
+        this.p1.rotationY = 0;
         this.p1.state = 'idle';
-        this.p1.direction = 1;
 
         this.p2.hp = this.p2.maxHp;
         this.p2.displayedHp = this.p2.maxHp;
         this.p2.ghostHp = this.p2.maxHp;
-        this.p2.x = 930;
-        this.p2.y = 420;
+        this.p2.x = 12;
+        this.p2.y = 0;
+        this.p2.z = 0;
         this.p2.vx = 0;
         this.p2.vy = 0;
+        this.p2.vz = 0;
+        this.p2.rotationY = Math.PI;
         this.p2.state = 'idle';
-        this.p2.direction = -1;
 
+        this.clearProjectiles();
         this.particles.reset();
         this.roundTimer = (this.mode === 'training') ? 999 : 99;
 
@@ -175,78 +211,72 @@ class BattleArenaGame {
                 this.roundTimer--;
                 if (this.roundTimer <= 0) {
                     this.roundTimer = 0;
-                    this.handleRoundEnd(true); // Timeout
+                    this.handleRoundEnd(true);
                 }
             }
         }, 1000);
 
-        this.particles.addFloatingText(`ROUND ${this.currentRound}`, this.width / 2, 280, '#ffd700', 48);
-        this.particles.addFloatingText('FIGHT!', this.width / 2, 350, '#ff0033', 54);
-        this.sound.playThunder();
+        this.particles.addFloatingText(`ROUND ${this.currentRound}`, 0, 4.0, '#ffd700', 36, true);
+        this.sound.playRoundStart();
     }
 
     handleRoundEnd(isTimeout = false) {
-        clearInterval(this.timerInterval);
         this.state = 'round_over';
+        if (this.timerInterval) clearInterval(this.timerInterval);
 
-        let winner = null;
+        let roundWinner = 0;
         if (isTimeout) {
-            winner = (this.p1.hp > this.p2.hp) ? this.p1 : ((this.p2.hp > this.p1.hp) ? this.p2 : null);
+            if (this.p1.hp > this.p2.hp) roundWinner = 1;
+            else if (this.p2.hp > this.p1.hp) roundWinner = 2;
         } else {
-            winner = (this.p1.state === 'dead') ? this.p2 : this.p1;
+            if (this.p1.state === 'dead') roundWinner = 2;
+            else if (this.p2.state === 'dead') roundWinner = 1;
         }
 
-        if (winner === this.p1) {
+        if (roundWinner === 1) {
             this.p1RoundsWon++;
-            this.particles.addFloatingText('P1 WINS ROUND!', this.width / 2, 300, '#00e5ff', 44);
-        } else if (winner === this.p2) {
+            this.particles.addFloatingText('PLAYER 1 WINS ROUND!', 0, 4.5, '#00e5ff', 32, true);
+        } else if (roundWinner === 2) {
             this.p2RoundsWon++;
-            this.particles.addFloatingText('P2 WINS ROUND!', this.width / 2, 300, '#ff0055', 44);
+            this.particles.addFloatingText('PLAYER 2 WINS ROUND!', 0, 4.5, '#ff2a5f', 32, true);
         } else {
-            this.particles.addFloatingText('DRAW!', this.width / 2, 300, '#ffffff', 44);
+            this.particles.addFloatingText('DRAW ROUND!', 0, 4.5, '#ffffff', 32);
         }
 
         setTimeout(() => {
-            // Check Match winner (Best of 3)
             const roundsToWin = (this.mode === 'training') ? 999 : 2;
             if (this.p1RoundsWon >= roundsToWin || this.p2RoundsWon >= roundsToWin) {
-                this.handleMatchEnd(winner);
+                this.handleMatchEnd(this.p1RoundsWon >= roundsToWin);
             } else {
                 this.currentRound++;
-                this.state = 'fighting';
                 this.startRound();
+                this.state = 'fighting';
             }
-        }, 2500);
+        }, 2200);
     }
 
-    handleMatchEnd(winner) {
+    handleMatchEnd(p1Won) {
         this.state = 'match_over';
-        const p1Won = (winner === this.p1);
+        this.sound.stopBGM();
 
         let earnedPoints = 0;
         if (p1Won) {
             this.sound.playVictory();
-            // Calculate Points Reward
             const basePoints = (this.difficulty === 'deity') ? 600 : ((this.difficulty === 'hard') ? 450 : 300);
             const comboBonus = Math.min(200, this.p1.comboCount * 20);
             const timeBonus = Math.floor(this.roundTimer * 2);
             earnedPoints = basePoints + comboBonus + timeBonus;
 
-            // Save points to user storage
             StorageManager.addPoints(earnedPoints);
-
-            // Arcade ladder step
             if (this.mode === 'arcade') {
                 this.arcadeIndex++;
             }
         } else {
             this.sound.playKO();
-            // Consolation points
             earnedPoints = 50;
             StorageManager.addPoints(earnedPoints);
         }
 
-        // Show game over UI overlay
         if (window.UI) {
             window.UI.showGameOver(p1Won, earnedPoints, this.p1RoundsWon, this.p2RoundsWon, this.arcadeIndex);
         }
@@ -255,77 +285,135 @@ class BattleArenaGame {
     togglePause() {
         if (this.state === 'fighting') {
             this.state = 'paused';
-            if (window.UI) window.UI.showPause(true);
+            if (window.UI && window.UI.pauseOverlay) window.UI.pauseOverlay.classList.remove('hidden');
         } else if (this.state === 'paused') {
             this.state = 'fighting';
-            if (window.UI) window.UI.showPause(false);
+            if (window.UI && window.UI.pauseOverlay) window.UI.pauseOverlay.classList.add('hidden');
+        }
+    }
+
+    clearProjectiles() {
+        for (const p of this.projectiles3D) {
+            if (p.mesh) {
+                this.scene.remove(p.mesh);
+                p.mesh.geometry.dispose();
+                p.mesh.material.dispose();
+            }
+            if (p.light) this.scene.remove(p.light);
+        }
+        this.projectiles3D = [];
+    }
+
+    showPreview3D(charKey) {
+        this.clearPreview3D();
+        this.previewModel = Character3DFactory.create(charKey, false);
+        this.previewModel.root.position.set(0, 0, 0);
+        this.previewModel.root.rotation.y = 0;
+        this.scene.add(this.previewModel.root);
+    }
+
+    clearPreview3D() {
+        if (this.previewModel) {
+            this.scene.remove(this.previewModel.root);
+            this.previewModel = null;
         }
     }
 
     // ----------------------------------------------------
-    // PROJECTILE PROCESSING & COLLISION
+    // 3D PROJECTILE SIMULATION
     // ----------------------------------------------------
     updateProjectiles() {
-        const projs = this.particles.projectiles;
-        for (let i = projs.length - 1; i >= 0; i--) {
-            const p = projs[i];
+        for (let i = this.projectiles3D.length - 1; i >= 0; i--) {
+            const p = this.projectiles3D[i];
             p.x += p.vx;
             p.y += p.vy;
+            p.z += p.vz;
             p.life--;
 
-            // Homing logic (e.g. Zeus chain spark)
-            if (p.homing && p.owner && p.owner.opponent) {
-                const opp = p.owner.opponent;
-                const targetY = opp.y + 40;
-                if (p.y < targetY) p.y += 2;
-                else if (p.y > targetY) p.y -= 2;
-            }
+            if (p.mesh) p.mesh.position.set(p.x, p.y, p.z);
+            if (p.light) p.light.position.set(p.x, p.y, p.z);
 
-            // Projectile trail particles
-            if (p.life % 2 === 0) {
-                this.particles.particles.push({
-                    x: p.x + p.width / 2,
-                    y: p.y + p.height / 2,
-                    vx: (Math.random() - 0.5) * 2,
-                    vy: (Math.random() - 0.5) * 2,
-                    color: p.color,
-                    size: 3,
-                    alpha: 0.8,
-                    decay: 0.05,
-                    type: 'spark',
-                    gravity: 0
-                });
-            }
-
-            // Check collision with targets
+            // Hit Detection against Target
             const target = (p.owner === this.p1) ? this.p2 : this.p1;
             if (target && target.state !== 'dead') {
-                if (
-                    p.x < target.x + target.width &&
-                    p.x + p.width > target.x &&
-                    p.y < target.y + target.height &&
-                    p.y + p.height > target.y
-                ) {
-                    target.takeDamage(p.damage, p.owner, p.type, p.knockback);
-
-                    if (p.type === 'anubis_skull' && p.owner) {
-                        p.owner.heal(p.damage * 0.40);
-                    } else if (p.type === 'sukuna_fuga') {
-                        this.particles.createFireBurst(p.x, p.y, 40);
-                        this.particles.addShockwave(p.x, p.y, 110, '#ff5500', 6);
-                    } else if (p.type === 'zeus_lance' || p.type === 'zeus_chain') {
-                        this.particles.createLightningSparks(p.x, p.y, 20);
-                    }
-
-                    projs.splice(i, 1);
-                    continue;
+                const dist = Math.hypot(target.x - p.x, target.z - p.z);
+                if (dist < p.radius + 1.2 && Math.abs(target.y - p.y) < 2.5) {
+                    target.takeDamage(p.damage, p.owner, p.type, 0.5);
+                    this.particles.createHitSparks(p.x, p.y, p.z, 16, p.color);
+                    p.life = 0;
                 }
             }
 
-            // Arena boundary or lifetime expiry
-            if (p.life <= 0 || p.x < 10 || p.x > 1270) {
-                projs.splice(i, 1);
+            // Expiry or out of bounds
+            if (p.life <= 0 || Math.abs(p.x) > 95 || Math.abs(p.z) > 95) {
+                if (p.mesh) {
+                    this.scene.remove(p.mesh);
+                    p.mesh.geometry.dispose();
+                    p.mesh.material.dispose();
+                }
+                if (p.light) this.scene.remove(p.light);
+                this.projectiles3D.splice(i, 1);
             }
+        }
+    }
+
+    // ----------------------------------------------------
+    // DYNAMIC 3D COMBAT CAMERA
+    // ----------------------------------------------------
+    updateCamera() {
+        // Compute Camera Shake
+        if (this.particles.screenShake > 0) {
+            const intensity = this.particles.screenShakeIntensity * 0.05;
+            this.camShakeX = (Math.random() - 0.5) * intensity;
+            this.camShakeY = (Math.random() - 0.5) * intensity;
+        } else {
+            this.camShakeX = 0;
+            this.camShakeY = 0;
+        }
+
+        if (this.state === 'fighting' || this.state === 'round_over' || this.state === 'match_over') {
+            if (!this.p1 || !this.p2) return;
+
+            const midX = (this.p1.x + this.p2.x) / 2;
+            const midZ = (this.p1.z + this.p2.z) / 2;
+            const dist = Math.hypot(this.p1.x - this.p2.x, this.p1.z - this.p2.z);
+
+            if (this.cameraMode === 'action') {
+                // Dynamic Arena Orbit: Smoothly tracks midpoint with smart distance framing
+                const targetDist = Math.max(14, dist * 1.35 + 8);
+                const targetY = Math.max(7, 6 + dist * 0.35);
+
+                this.camera.position.x += (midX - this.camera.position.x) * 0.08 + this.camShakeX;
+                this.camera.position.y += (targetY - this.camera.position.y) * 0.08 + this.camShakeY;
+                this.camera.position.z += ((midZ + targetDist) - this.camera.position.z) * 0.08;
+                this.camera.lookAt(midX, 2.2, midZ);
+
+            } else if (this.cameraMode === 'follow') {
+                // Third-person over-the-shoulder behind Player 1
+                const fwdX = Math.sin(this.p1.rotationY);
+                const fwdZ = Math.cos(this.p1.rotationY);
+                const camX = this.p1.x - fwdX * 9 + this.camShakeX;
+                const camZ = this.p1.z - fwdZ * 9;
+                const camY = this.p1.y + 5.5 + this.camShakeY;
+
+                this.camera.position.lerp(new THREE.Vector3(camX, camY, camZ), 0.1);
+                this.camera.lookAt(this.p1.x + fwdX * 8, this.p1.y + 2.5, this.p1.z + fwdZ * 8);
+
+            } else if (this.cameraMode === 'overview') {
+                // High-angle bird's eye view
+                this.camera.position.set(midX, 32, midZ + 24);
+                this.camera.lookAt(midX, 0, midZ);
+            }
+        } else {
+            // Idle Menu Camera Orbit around Grand Sorcerer Ring
+            this.menuOrbitAngle += 0.003;
+            const radius = 34;
+            this.camera.position.set(
+                Math.cos(this.menuOrbitAngle) * radius,
+                14,
+                Math.sin(this.menuOrbitAngle) * radius
+            );
+            this.camera.lookAt(0, 3, 0);
         }
     }
 
@@ -335,502 +423,233 @@ class BattleArenaGame {
     loop(time) {
         this.animId = requestAnimationFrame((t) => this.loop(t));
 
-        if (this.state === 'paused') {
-            this.draw();
-            return;
-        }
-
-        // Screen Freeze / Hitstop
-        if (this.hitstopFrames > 0) {
-            this.hitstopFrames--;
-            this.draw();
-            return;
-        }
-
-        // 1. Process Player 1 continuous inputs (movement)
-        if (this.state === 'fighting' && this.p1 && this.p1.canAct()) {
-            if (this.keys['KeyA']) {
-                this.p1.moveLeft();
-            } else if (this.keys['KeyD']) {
-                this.p1.moveRight();
-            }
-        }
-
-        // 2. Process Player 2 continuous inputs for PvP
-        if (this.state === 'fighting' && this.mode === 'pvp' && this.p2 && this.p2.canAct()) {
-            if (this.keys['ArrowLeft']) {
-                this.p2.moveLeft();
-            } else if (this.keys['ArrowRight']) {
-                this.p2.moveRight();
-            }
-        }
-
-        // 3. Process AI decisions
-        if (this.state === 'fighting' && this.p2AI) {
-            this.p2AI.update();
-        }
-
-        // 4. Update Fighters
-        if (this.p1) this.p1.update();
-        if (this.p2) this.p2.update();
-
-        // 5. Check if a fighter just died
         if (this.state === 'fighting') {
+            // 1. Process Continuous 3D Inputs for Player 1 (WASD)
+            if (this.p1 && this.p1.canAct()) {
+                let dx = 0;
+                let dz = 0;
+                if (this.keys['KeyW']) dz -= 1;
+                if (this.keys['KeyS']) dz += 1;
+                if (this.keys['KeyA']) dx -= 1;
+                if (this.keys['KeyD']) dx += 1;
+
+                if (dx !== 0 || dz !== 0) {
+                    this.p1.move3D(dx, dz);
+                } else {
+                    this.p1.stopMoving();
+                }
+
+                if (this.keys['ShiftLeft']) {
+                    this.p1.startBlock();
+                }
+            }
+
+            // 2. Process Continuous 3D Inputs for Player 2 (Local PvP)
+            if (this.mode === 'pvp' && this.p2 && this.p2.canAct()) {
+                let dx = 0;
+                let dz = 0;
+                if (this.keys['ArrowUp']) dz -= 1;
+                if (this.keys['ArrowDown']) dz += 1;
+                if (this.keys['ArrowLeft']) dx -= 1;
+                if (this.keys['ArrowRight']) dx += 1;
+
+                if (dx !== 0 || dz !== 0) {
+                    this.p2.move3D(dx, dz);
+                } else {
+                    this.p2.stopMoving();
+                }
+
+                if (this.keys['NumpadPeriod']) {
+                    this.p2.startBlock();
+                }
+            }
+
+            // 3. Process 3D AI Decisions
+            if (this.p2AI) {
+                this.p2AI.update();
+            }
+
+            // 4. Update 3D Fighters
+            if (this.p1) this.p1.update();
+            if (this.p2) this.p2.update();
+
+            // 5. Death Checks
             if (this.p1 && this.p1.state === 'dead') {
                 this.handleRoundEnd(false);
             } else if (this.p2 && this.p2.state === 'dead') {
                 this.handleRoundEnd(false);
             }
+
+            // 6. Update Projectiles & Particles
+            this.updateProjectiles();
+            this.particles.update();
         }
 
-        // 6. Update Projectiles & Particles
-        this.updateProjectiles();
-        this.particles.update();
-
-        // 7. Render Everything
-        this.draw();
-    }
-
-    // ----------------------------------------------------
-    // RENDERING: STAGES, FIGHTERS, PARTICLES, HUD
-    // ----------------------------------------------------
-    draw() {
-        this.ctx.clearRect(0, 0, this.width, this.height);
-
-        // Apply screen shake
-        this.ctx.save();
-        if (this.particles.screenShake > 0) {
-            const shake = (Math.random() - 0.5) * this.particles.screenShakeIntensity;
-            this.ctx.translate(shake, shake);
+        // Animate 3D Character Preview in menus
+        if (this.previewModel) {
+            this.previewModel.root.rotation.y += 0.015;
+            this.previewModel.update('idle', 0, 0, 0, 0, true, false, 0);
         }
 
-        // 1. Draw Arena Stage Background
-        this.drawStageBackground();
+        // Update 3D Environment (Sky, Petals, Cursed Wisps)
+        if (this.world3d) this.world3d.update();
 
-        // 2. Draw Projectiles
-        this.drawProjectiles();
+        // Update Dynamic Camera
+        this.updateCamera();
 
-        // 3. Draw Fighters
-        if (this.p1) this.p1.draw(this.ctx);
-        if (this.p2) this.p2.draw(this.ctx);
+        // 7. Render 3D WebGL Scene
+        this.renderer.render(this.scene, this.camera);
 
-        // 4. Draw Particles, Shockwaves, Floating Text
-        this.particles.draw(this.ctx);
-
-        this.ctx.restore();
-
-        // 5. Draw HUD (Health bars, Ultimate gauges, Round timer, Portraits)
+        // 8. Render Sleek 2D Arcade HUD
         this.drawHUD();
-
-        // 6. Update virtual touch controls indicator
-        if (window.UI && this.p1) {
-            window.UI.updateTouchHUD(this.p1);
-        }
-    }
-
-    drawStageBackground() {
-        const ctx = this.ctx;
-
-        if (this.stage === 'jujutsu_high') {
-            // TOKYO JUJUTSU HIGH COURTYARD
-            const grad = ctx.createLinearGradient(0, 0, 0, 720);
-            grad.addColorStop(0, '#0d131f');
-            grad.addColorStop(0.5, '#192336');
-            grad.addColorStop(1, '#0e1420');
-            ctx.fillStyle = grad;
-            ctx.fillRect(0, 0, this.width, this.height);
-
-            // Crescent Moon & Distant Mountain
-            ctx.fillStyle = '#fdfefe';
-            ctx.beginPath();
-            ctx.arc(640, 160, 60, 0, Math.PI * 2);
-            ctx.fill();
-            ctx.fillStyle = '#0d131f';
-            ctx.beginPath();
-            ctx.arc(655, 150, 52, 0, Math.PI * 2);
-            ctx.fill();
-
-            // Traditional Japanese Temple Roofs & Torii Pillars
-            ctx.fillStyle = '#111927';
-            for (let i = 0; i < 4; i++) {
-                ctx.fillRect(120 + i * 320, 260, 24, 300);
-                ctx.fillRect(90 + i * 320, 250, 84, 18);
-            }
-
-            // Stone Courtyard Floor
-            ctx.fillStyle = '#171e2b';
-            ctx.fillRect(0, 560, this.width, 160);
-            ctx.strokeStyle = '#3a7bd5';
-            ctx.lineWidth = 3;
-            ctx.beginPath();
-            ctx.moveTo(0, 560);
-            ctx.lineTo(this.width, 560);
-            ctx.stroke();
-
-        } else if (this.stage === 'shibuya') {
-            // SHIBUYA UNDERGROUND SUBWAY STATION
-            const grad = ctx.createLinearGradient(0, 0, 0, 720);
-            grad.addColorStop(0, '#0c0d12');
-            grad.addColorStop(0.5, '#171a24');
-            grad.addColorStop(1, '#0c0d14');
-            ctx.fillStyle = grad;
-            ctx.fillRect(0, 0, this.width, this.height);
-
-            // Concrete Station Pillars
-            ctx.fillStyle = '#222736';
-            for (let i = 0; i < 6; i++) {
-                ctx.fillRect(100 + i * 210, 140, 48, 420);
-            }
-
-            // Fluorescent Station Neon Glow
-            ctx.fillStyle = 'rgba(0, 229, 255, 0.12)';
-            for (let i = 0; i < 6; i++) {
-                ctx.fillRect(90 + i * 210, 160, 68, 12);
-            }
-
-            // Subway Track Floor & Hazard Yellow Lines
-            ctx.fillStyle = '#12141a';
-            ctx.fillRect(0, 560, this.width, 160);
-            ctx.strokeStyle = '#ffcc00';
-            ctx.lineWidth = 4;
-            ctx.beginPath();
-            ctx.moveTo(0, 560);
-            ctx.lineTo(this.width, 560);
-            ctx.stroke();
-
-        } else if (this.stage === 'curse_forest') {
-            // MISTY CURSED SPIRIT FOREST
-            const grad = ctx.createLinearGradient(0, 0, 0, 720);
-            grad.addColorStop(0, '#070b09');
-            grad.addColorStop(0.5, '#13241b');
-            grad.addColorStop(1, '#09120c');
-            ctx.fillStyle = grad;
-            ctx.fillRect(0, 0, this.width, this.height);
-
-            // Eerie Green Cursed Wisps
-            ctx.fillStyle = 'rgba(0, 230, 118, 0.15)';
-            for (let i = 0; i < 8; i++) {
-                ctx.beginPath();
-                ctx.arc(100 + i * 160, 280 + Math.sin(i * 1.5) * 40, 40, 0, Math.PI * 2);
-                ctx.fill();
-            }
-
-            // Twisted Ancient Trees
-            ctx.fillStyle = '#0a1710';
-            for (let i = 0; i < 5; i++) {
-                ctx.fillRect(150 + i * 260, 180, 50, 380);
-            }
-
-            // Forest Floor
-            ctx.fillStyle = '#0b160f';
-            ctx.fillRect(0, 560, this.width, 160);
-            ctx.strokeStyle = '#00e676';
-            ctx.lineWidth = 3;
-            ctx.beginPath();
-            ctx.moveTo(0, 560);
-            ctx.lineTo(this.width, 560);
-            ctx.stroke();
-
-        } else if (this.stage === 'domain_void') {
-            // UNLIMITED VOID / INFINITE SPATIAL DIMENSION
-            const grad = ctx.createLinearGradient(0, 0, 0, 720);
-            grad.addColorStop(0, '#02000a');
-            grad.addColorStop(0.5, '#0b0024');
-            grad.addColorStop(1, '#03000d');
-            ctx.fillStyle = grad;
-            ctx.fillRect(0, 0, this.width, this.height);
-
-            // Cosmic Nebulae & Infinite Eyes Starlight
-            ctx.fillStyle = 'rgba(123, 31, 162, 0.2)';
-            ctx.beginPath();
-            ctx.arc(640, 240, 280, 0, Math.PI * 2);
-            ctx.fill();
-
-            ctx.fillStyle = 'rgba(0, 176, 255, 0.2)';
-            ctx.beginPath();
-            ctx.arc(640, 240, 160, 0, Math.PI * 2);
-            ctx.fill();
-
-            // Floating Stellar Void Floor
-            ctx.fillStyle = '#070214';
-            ctx.fillRect(0, 560, this.width, 160);
-            ctx.strokeStyle = '#a855f7';
-            ctx.lineWidth = 3;
-            ctx.beginPath();
-            ctx.moveTo(0, 560);
-            ctx.lineTo(this.width, 560);
-            ctx.stroke();
-
-        } else if (this.stage === 'shinjuku') {
-            // CURSED SHINJUKU RUINS (Sukuna & Gojo Showdown)
-            const grad = ctx.createLinearGradient(0, 0, 0, 720);
-            grad.addColorStop(0, '#100003');
-            grad.addColorStop(0.5, '#2e020a');
-            grad.addColorStop(1, '#110103');
-            ctx.fillStyle = grad;
-            ctx.fillRect(0, 0, this.width, this.height);
-
-            // Gigantic Crimson Blood Moon
-            ctx.fillStyle = '#d90429';
-            ctx.shadowColor = '#ff0033';
-            ctx.shadowBlur = 35;
-            ctx.beginPath();
-            ctx.arc(640, 160, 110, 0, Math.PI * 2);
-            ctx.fill();
-            ctx.shadowBlur = 0;
-
-            // Shattered Skyscrapers silhouette
-            ctx.fillStyle = '#1c0307';
-            ctx.fillRect(100, 200, 120, 360);
-            ctx.fillRect(260, 280, 100, 280);
-            ctx.fillRect(800, 240, 140, 320);
-            ctx.fillRect(980, 180, 110, 380);
-
-            // Ruined Concrete Floor
-            ctx.fillStyle = '#150508';
-            ctx.fillRect(0, 560, this.width, 160);
-            ctx.strokeStyle = '#ff0033';
-            ctx.lineWidth = 3;
-            ctx.beginPath();
-            ctx.moveTo(0, 560);
-            ctx.lineTo(this.width, 560);
-            ctx.stroke();
-        }
-    }
-
-    drawProjectiles() {
-        const ctx = this.ctx;
-        for (const p of this.particles.projectiles) {
-            ctx.save();
-            ctx.fillStyle = p.color;
-            ctx.shadowColor = p.color;
-            ctx.shadowBlur = 14;
-
-            if (p.type === 'hollow_purple_sphere') {
-                // Hollow Purple: Massive sphere of imaginary mass
-                ctx.beginPath();
-                ctx.arc(p.x + p.width / 2, p.y + p.height / 2, p.width / 2, 0, Math.PI * 2);
-                ctx.fill();
-                ctx.strokeStyle = '#ffffff';
-                ctx.lineWidth = 4;
-                ctx.stroke();
-            } else if (p.type === 'sukuna_dismantle') {
-                // Dismantle: Flying slash crosses
-                ctx.strokeStyle = p.color;
-                ctx.lineWidth = 4;
-                ctx.beginPath();
-                ctx.moveTo(p.x, p.y);
-                ctx.lineTo(p.x + p.width, p.y + p.height);
-                ctx.moveTo(p.x, p.y + p.height);
-                ctx.lineTo(p.x + p.width, p.y);
-                ctx.stroke();
-            } else if (p.type === 'choso_beam' || p.type === 'choso_meteor') {
-                // Piercing Blood: Dense laser line
-                ctx.fillRect(p.x, p.y, p.width, p.height);
-                ctx.fillStyle = '#ffffff';
-                ctx.fillRect(p.x + 5, p.y + 4, p.width - 10, p.height - 8);
-            } else if (p.type === 'gojo_red') {
-                // Reversal Red: Glowing crimson orb
-                ctx.beginPath();
-                ctx.arc(p.x + p.width / 2, p.y + p.height / 2, p.width / 2, 0, Math.PI * 2);
-                ctx.fill();
-            } else if (p.type === 'love_beam' || p.type === 'uzumaki_beam') {
-                // Colossal Beams
-                ctx.fillRect(p.x, p.y, p.width, p.height);
-                ctx.fillStyle = '#ffffff';
-                ctx.fillRect(p.x + 8, p.y + 8, p.width - 16, p.height - 16);
-            } else if (p.type === 'nobara_nail') {
-                // Metal nail with glowing aura
-                ctx.fillRect(p.x, p.y, p.width, p.height);
-            } else {
-                ctx.fillRect(p.x, p.y, p.width, p.height);
-            }
-            ctx.restore();
-        }
     }
 
     // ----------------------------------------------------
-    // ARCADE HEADS-UP DISPLAY (HUD)
+    // ARCADE HUD OVERLAY RENDERING
     // ----------------------------------------------------
     drawHUD() {
+        const ctx = this.hudCtx;
+        ctx.clearRect(0, 0, this.width, this.height);
+
+        // Always render 3D-projected floating text & screen flashes
+        this.particles.drawHUDOverlay(ctx, this.camera, this.width, this.height);
+
+        if (this.state !== 'fighting' && this.state !== 'round_over' && this.state !== 'paused') {
+            return;
+        }
         if (!this.p1 || !this.p2) return;
-        const ctx = this.ctx;
 
-        const p1 = this.p1;
-        const p2 = this.p2;
+        // 1. Health Bars
+        const barW = 460;
+        const barH = 26;
+        const barY = 28;
 
-        const barWidth = 460;
-        const barHeight = 26;
+        // Player 1 Health Bar (Left to Right)
+        const p1Ratio = Math.max(0, this.p1.displayedHp / this.p1.maxHp);
+        const p1GhostRatio = Math.max(0, this.p1.ghostHp / this.p1.maxHp);
 
-        // --- PLAYER 1 HUD (Left) ---
-        // Character Name & Title
-        ctx.save();
-        ctx.font = "900 22px 'Cinzel', 'Impact', sans-serif";
-        ctx.fillStyle = '#ffffff';
-        ctx.shadowColor = p1.data.color;
-        ctx.shadowBlur = 10;
-        ctx.fillText(p1.data.name.toUpperCase(), 70, 48);
-        ctx.font = "600 13px sans-serif";
-        ctx.fillStyle = p1.data.color;
-        ctx.fillText(p1.data.title, 70, 68);
+        ctx.fillStyle = 'rgba(10, 12, 20, 0.85)';
+        ctx.fillRect(40, barY, barW, barH);
 
-        // P1 Health Bar Container
-        ctx.fillStyle = '#0a0a10';
-        ctx.fillRect(70, 78, barWidth, barHeight);
-        ctx.strokeStyle = '#333';
-        ctx.lineWidth = 2;
-        ctx.strokeRect(70, 78, barWidth, barHeight);
+        // Ghost HP (White/Yellow drain)
+        ctx.fillStyle = '#ffaa33';
+        ctx.fillRect(40, barY, barW * p1GhostRatio, barH);
 
-        // P1 Ghost HP (Yellow trailing)
-        const p1GhostPct = Math.max(0, p1.ghostHp / p1.maxHp);
-        ctx.fillStyle = '#ffcc00';
-        ctx.fillRect(70, 78, barWidth * p1GhostPct, barHeight);
-
-        // P1 Current HP
-        const p1HpPct = Math.max(0, p1.displayedHp / p1.maxHp);
-        const p1Grad = ctx.createLinearGradient(70, 0, 70 + barWidth, 0);
-        p1Grad.addColorStop(0, '#00ff88');
-        p1Grad.addColorStop(1, p1.data.color);
+        // Current HP Gradient
+        const p1Grad = ctx.createLinearGradient(40, 0, 40 + barW, 0);
+        p1Grad.addColorStop(0, '#00e5ff');
+        p1Grad.addColorStop(1, '#0088cc');
         ctx.fillStyle = p1Grad;
-        ctx.fillRect(70, 78, barWidth * p1HpPct, barHeight);
+        ctx.fillRect(40, barY, barW * p1Ratio, barH);
 
-        // P1 HP Numeric text
-        ctx.font = "bold 13px monospace";
-        ctx.fillStyle = '#ffffff';
-        ctx.textAlign = 'right';
-        ctx.fillText(`${Math.round(p1.hp)} / ${p1.maxHp}`, 70 + barWidth - 8, 96);
-
-        // P1 Energy / Ultimate Gauge
-        ctx.fillStyle = '#0a0a10';
-        ctx.fillRect(70, 110, barWidth * 0.75, 12);
-        const p1EnergyPct = Math.min(1, p1.energy / 100);
-        ctx.fillStyle = (p1.energy >= 100) ? '#ff0055' : '#00e5ff';
-        ctx.shadowColor = (p1.energy >= 100) ? '#ff0055' : '#00e5ff';
-        ctx.shadowBlur = (p1.energy >= 100) ? 12 : 4;
-        ctx.fillRect(70, 110, barWidth * 0.75 * p1EnergyPct, 12);
-        ctx.shadowBlur = 0;
-
-        ctx.textAlign = 'left';
-        ctx.font = "bold 11px sans-serif";
-        ctx.fillStyle = '#ffffff';
-        ctx.fillText((p1.energy >= 100) ? 'ULTIMATE READY! [U]' : `ENERGY: ${Math.round(p1.energy)}%`, 72, 120);
-
-        // P1 Rounds Won
-        for (let r = 0; r < 2; r++) {
-            ctx.fillStyle = (r < this.p1RoundsWon) ? '#ffd700' : '#222';
-            ctx.beginPath();
-            ctx.arc(70 + r * 22, 136, 6, 0, Math.PI * 2);
-            ctx.fill();
-        }
-
-        // --- PLAYER 2 HUD (Right) ---
-        const p2X = this.width - 70 - barWidth;
-
-        // P2 Name & Title
-        ctx.textAlign = 'right';
-        ctx.font = "900 22px 'Cinzel', 'Impact', sans-serif";
-        ctx.fillStyle = '#ffffff';
-        ctx.shadowColor = p2.data.color;
-        ctx.shadowBlur = 10;
-        ctx.fillText(p2.data.name.toUpperCase(), this.width - 70, 48);
-        ctx.font = "600 13px sans-serif";
-        ctx.fillStyle = p2.data.color;
-        ctx.fillText(p2.data.title, this.width - 70, 68);
-
-        // P2 Health Bar Container
-        ctx.fillStyle = '#0a0a10';
-        ctx.fillRect(p2X, 78, barWidth, barHeight);
-        ctx.strokeStyle = '#333';
+        // Border Glow
+        ctx.strokeStyle = '#00e5ff';
         ctx.lineWidth = 2;
-        ctx.strokeRect(p2X, 78, barWidth, barHeight);
+        ctx.strokeRect(40, barY, barW, barH);
 
-        // P2 Ghost HP
-        const p2GhostPct = Math.max(0, p2.ghostHp / p2.maxHp);
-        ctx.fillStyle = '#ffcc00';
-        ctx.fillRect(p2X + barWidth * (1 - p2GhostPct), 78, barWidth * p2GhostPct, barHeight);
+        // P1 Name & Grade Tag
+        ctx.font = "900 20px 'Cinzel', serif";
+        ctx.fillStyle = '#ffffff';
+        ctx.fillText(this.p1.data.name.toUpperCase(), 45, barY - 8);
 
-        // P2 Current HP
-        const p2HpPct = Math.max(0, p2.displayedHp / p2.maxHp);
-        const p2Grad = ctx.createLinearGradient(p2X, 0, p2X + barWidth, 0);
-        p2Grad.addColorStop(0, p2.data.color);
-        p2Grad.addColorStop(1, '#ff3366');
+        ctx.font = "700 13px 'Rajdhani', sans-serif";
+        ctx.fillStyle = '#00e5ff';
+        ctx.fillText(`${this.p1.data.grade} • HP: ${Math.round(this.p1.hp)}/${this.p1.maxHp}`, 45, barY + barH + 16);
+
+        // Player 2 Health Bar (Right to Left)
+        const p2Ratio = Math.max(0, this.p2.displayedHp / this.p2.maxHp);
+        const p2GhostRatio = Math.max(0, this.p2.ghostHp / this.p2.maxHp);
+        const p2X = this.width - 40 - barW;
+
+        ctx.fillStyle = 'rgba(10, 12, 20, 0.85)';
+        ctx.fillRect(p2X, barY, barW, barH);
+
+        ctx.fillStyle = '#ffaa33';
+        ctx.fillRect(p2X + barW * (1 - p2GhostRatio), barY, barW * p2GhostRatio, barH);
+
+        const p2Grad = ctx.createLinearGradient(p2X, 0, p2X + barW, 0);
+        p2Grad.addColorStop(0, '#ff0055');
+        p2Grad.addColorStop(1, '#ff6600');
         ctx.fillStyle = p2Grad;
-        ctx.fillRect(p2X + barWidth * (1 - p2HpPct), 78, barWidth * p2HpPct, barHeight);
+        ctx.fillRect(p2X + barW * (1 - p2Ratio), barY, barW * p2Ratio, barH);
 
-        // P2 HP Numeric text
-        ctx.font = "bold 13px monospace";
+        ctx.strokeStyle = '#ff0055';
+        ctx.lineWidth = 2;
+        ctx.strokeRect(p2X, barY, barW, barH);
+
+        ctx.font = "900 20px 'Cinzel', serif";
         ctx.fillStyle = '#ffffff';
-        ctx.textAlign = 'left';
-        ctx.fillText(`${Math.round(p2.hp)} / ${p2.maxHp}`, p2X + 8, 96);
-
-        // P2 Energy Gauge
-        const p2EnergyW = barWidth * 0.75;
-        const p2EnergyX = this.width - 70 - p2EnergyW;
-        ctx.fillStyle = '#0a0a10';
-        ctx.fillRect(p2EnergyX, 110, p2EnergyW, 12);
-        const p2EnergyPct = Math.min(1, p2.energy / 100);
-        ctx.fillStyle = (p2.energy >= 100) ? '#ff0055' : '#ff9f1c';
-        ctx.shadowColor = (p2.energy >= 100) ? '#ff0055' : '#ff9f1c';
-        ctx.shadowBlur = (p2.energy >= 100) ? 12 : 4;
-        ctx.fillRect(p2EnergyX + p2EnergyW * (1 - p2EnergyPct), 110, p2EnergyW * p2EnergyPct, 12);
-        ctx.shadowBlur = 0;
-
         ctx.textAlign = 'right';
-        ctx.font = "bold 11px sans-serif";
-        ctx.fillStyle = '#ffffff';
-        ctx.fillText((p2.energy >= 100) ? 'ULTIMATE READY!' : `ENERGY: ${Math.round(p2.energy)}%`, this.width - 72, 120);
+        ctx.fillText(this.p2.data.name.toUpperCase(), this.width - 45, barY - 8);
 
-        // P2 Rounds Won
-        for (let r = 0; r < 2; r++) {
-            ctx.fillStyle = (r < this.p2RoundsWon) ? '#ffd700' : '#222';
-            ctx.beginPath();
-            ctx.arc(this.width - 70 - r * 22, 136, 6, 0, Math.PI * 2);
-            ctx.fill();
-        }
+        ctx.font = "700 13px 'Rajdhani', sans-serif";
+        ctx.fillStyle = '#ff2a5f';
+        ctx.fillText(`${this.p2.data.grade} • HP: ${Math.round(this.p2.hp)}/${this.p2.maxHp}`, this.width - 45, barY + barH + 16);
+        ctx.textAlign = 'left';
 
-        // --- ROUND TIMER (Center) ---
-        ctx.textAlign = 'center';
-        ctx.fillStyle = '#0f0e17';
+        // 2. Central Round Timer
+        ctx.fillStyle = 'rgba(15, 18, 30, 0.9)';
         ctx.beginPath();
-        ctx.arc(640, 75, 42, 0, Math.PI * 2);
+        ctx.arc(this.width / 2, 45, 34, 0, Math.PI * 2);
         ctx.fill();
         ctx.strokeStyle = '#ffd700';
         ctx.lineWidth = 3;
         ctx.stroke();
 
-        ctx.font = "900 36px 'Impact', 'Cinzel', sans-serif";
-        ctx.fillStyle = (this.roundTimer <= 10) ? '#ff0033' : '#ffd700';
-        ctx.fillText(this.roundTimer, 640, 88);
+        ctx.font = "900 32px 'Rajdhani', sans-serif";
+        ctx.fillStyle = this.roundTimer <= 10 ? '#ff0044' : '#ffd700';
+        ctx.textAlign = 'center';
+        ctx.fillText(this.roundTimer.toString(), this.width / 2, 56);
+        ctx.textAlign = 'left';
 
-        // Round Label
-        ctx.font = "bold 12px sans-serif";
+        // 3. Round Win Counters (Orbs)
+        for (let i = 0; i < 2; i++) {
+            // P1 Orbs
+            ctx.fillStyle = (i < this.p1RoundsWon) ? '#00e5ff' : '#222636';
+            ctx.beginPath();
+            ctx.arc(this.width / 2 - 55 - (i * 18), 45, 6, 0, Math.PI * 2);
+            ctx.fill();
+
+            // P2 Orbs
+            ctx.fillStyle = (i < this.p2RoundsWon) ? '#ff0055' : '#222636';
+            ctx.beginPath();
+            ctx.arc(this.width / 2 + 55 + (i * 18), 45, 6, 0, Math.PI * 2);
+            ctx.fill();
+        }
+
+        // 4. Cursed Energy Meters (Bottom Screen)
+        const nrgW = 280;
+        const nrgH = 14;
+        const nrgY = this.height - 35;
+
+        // P1 Energy
+        ctx.fillStyle = 'rgba(15, 18, 30, 0.85)';
+        ctx.fillRect(40, nrgY, nrgW, nrgH);
+        ctx.fillStyle = (this.p1.energy >= 100) ? '#ffd700' : '#9d4edd';
+        ctx.fillRect(40, nrgY, nrgW * (this.p1.energy / 100), nrgH);
+        ctx.strokeStyle = '#9d4edd';
+        ctx.lineWidth = 1.5;
+        ctx.strokeRect(40, nrgY, nrgW, nrgH);
+
+        ctx.font = "700 12px 'Rajdhani', sans-serif";
         ctx.fillStyle = '#ffffff';
-        ctx.fillText(`ROUND ${this.currentRound}`, 640, 30);
+        ctx.fillText(`CURSED ENERGY: ${Math.round(this.p1.energy)}% ${this.p1.energy >= 100 ? '[ULTIMATE READY!]' : ''}`, 42, nrgY - 5);
 
-        // --- COMBOS & STATS ---
-        if (p1.comboCount > 1) {
-            ctx.textAlign = 'left';
-            ctx.font = "900 28px 'Cinzel', 'Impact', sans-serif";
-            ctx.fillStyle = '#ffdd00';
-            ctx.shadowColor = '#ff6600';
-            ctx.shadowBlur = 12;
-            ctx.fillText(`${p1.comboCount} HITS!`, 70, 180);
-            ctx.shadowBlur = 0;
-        }
+        // P2 Energy
+        ctx.fillStyle = 'rgba(15, 18, 30, 0.85)';
+        ctx.fillRect(this.width - 40 - nrgW, nrgY, nrgW, nrgH);
+        ctx.fillStyle = (this.p2.energy >= 100) ? '#ffd700' : '#9d4edd';
+        ctx.fillRect(this.width - 40 - nrgW, nrgY, nrgW * (this.p2.energy / 100), nrgH);
+        ctx.strokeStyle = '#9d4edd';
+        ctx.lineWidth = 1.5;
+        ctx.strokeRect(this.width - 40 - nrgW, nrgY, nrgW, nrgH);
 
-        if (p2.comboCount > 1) {
-            ctx.textAlign = 'right';
-            ctx.font = "900 28px 'Cinzel', 'Impact', sans-serif";
-            ctx.fillStyle = '#ffdd00';
-            ctx.shadowColor = '#ff6600';
-            ctx.shadowBlur = 12;
-            ctx.fillText(`${p2.comboCount} HITS!`, this.width - 70, 180);
-            ctx.shadowBlur = 0;
-        }
-
-        ctx.restore();
+        ctx.textAlign = 'right';
+        ctx.fillText(`CURSED ENERGY: ${Math.round(this.p2.energy)}% ${this.p2.energy >= 100 ? '[ULTIMATE READY!]' : ''}`, this.width - 42, nrgY - 5);
+        ctx.textAlign = 'left';
     }
 }
 
-// Global Game Instance
+// Global Game Singleton Instance
 window.GameInstance = new BattleArenaGame();
+

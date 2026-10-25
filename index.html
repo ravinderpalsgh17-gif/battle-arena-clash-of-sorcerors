@@ -10,8 +10,9 @@
 <body>
 
     <div id="gameContainer">
-        <!-- 1. The High Performance Battle Canvas -->
+        <!-- 1. The High Performance 3D Battle Canvas & HUD Overlay -->
         <canvas id="gameCanvas" width="1280" height="720"></canvas>
+        <canvas id="hudCanvas" width="1280" height="720" style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; pointer-events: none; z-index: 4;"></canvas>
 
         <!-- 2. Global Top Status Bar -->
         <div class="top-bar">
@@ -19,6 +20,7 @@
                 <span class="points-val">🪙 0</span>
             </div>
             <div style="display: flex; gap: 8px; align-items: center; flex-wrap: wrap;">
+                <button id="btnToggleCam" class="btn btn-secondary" style="padding: 6px 14px; font-size: 14px;" title="Switch 3D Camera View (Action / 3rd Person / Overview)">🎥 Cam: DYNAMIC</button>
                 <button id="btnToggleTouch" class="btn btn-secondary" style="padding: 6px 14px; font-size: 14px;" title="Toggle On-Screen Touch Controls">📱 Touch: ON</button>
                 <button id="btnToggleMute" class="btn btn-secondary" style="padding: 6px 14px; font-size: 14px;">🔊 Sound: ON</button>
                 <button id="btnMoveList" class="btn btn-secondary" style="padding: 6px 14px; font-size: 14px;">📖 Move List</button>
@@ -28,7 +30,7 @@
         <!-- 3. Main Menu Screen -->
         <div id="menuScreen" class="ui-screen">
             <h1 class="menu-title">BATTLE ARENA</h1>
-            <div class="menu-subtitle">⚡ CLASH OF SORCERORS ⚡</div>
+            <div class="menu-subtitle">⚡ 3D OPEN WORLD • CLASH OF SORCERORS ⚡</div>
 
             <div class="menu-buttons">
                 <button id="btnModeArcade" class="btn btn-primary">🏆 ARCADE LADDER</button>
@@ -91,20 +93,31 @@
 
         <!-- Mobile & Touch Virtual Arcade Controller Overlay -->
         <div id="touchControls" class="touch-controls hidden">
-            <!-- Left Side: Movement D-Pad -->
+            <!-- Left Side: 3D Movement D-Pad -->
             <div class="touch-group touch-left">
-                <button type="button" class="touch-btn touch-jump" id="btnTouchJump" aria-label="Jump">
-                    <span class="btn-icon">▲</span>
-                    <span class="btn-label">JUMP</span>
-                </button>
-                <div class="touch-dpad-row">
-                    <button type="button" class="touch-btn touch-dir" id="btnTouchLeft" aria-label="Move Left">
-                        <span class="btn-icon">◀</span>
+                <div class="touch-dpad-3d">
+                    <button type="button" class="touch-btn touch-dir" id="btnTouchUp" aria-label="Move Forward">
+                        <span class="btn-icon">▲</span>
                     </button>
-                    <button type="button" class="touch-btn touch-dir" id="btnTouchRight" aria-label="Move Right">
-                        <span class="btn-icon">▶</span>
+                    <div class="touch-dpad-row">
+                        <button type="button" class="touch-btn touch-dir" id="btnTouchLeft" aria-label="Move Left">
+                            <span class="btn-icon">◀</span>
+                        </button>
+                        <button type="button" class="touch-btn touch-cam" id="btnTouchCam" aria-label="Switch Camera">
+                            <span class="btn-icon">🎥</span>
+                        </button>
+                        <button type="button" class="touch-btn touch-dir" id="btnTouchRight" aria-label="Move Right">
+                            <span class="btn-icon">▶</span>
+                        </button>
+                    </div>
+                    <button type="button" class="touch-btn touch-dir" id="btnTouchDown" aria-label="Move Backward">
+                        <span class="btn-icon">▼</span>
                     </button>
                 </div>
+                <button type="button" class="touch-btn touch-jump" id="btnTouchJump" aria-label="Jump" style="margin-top: 6px;">
+                    <span class="btn-icon">⚡</span>
+                    <span class="btn-label">JUMP</span>
+                </button>
             </div>
 
             <!-- Mobile Pause Button -->
@@ -422,17 +435,18 @@
                     </ul>
                 </div>
                 <div class="info-card">
-                    <h4>🎮 Full Controls Guide</h4>
+                    <h4>🎮 Full 3D Controls Guide</h4>
                     <table class="controls-guide-table">
                         <tr><th>Action</th><th>Player 1 (Solo)</th><th>Player 2 (PvP)</th><th>Mobile / Touch Buttons</th></tr>
-                        <tr><td>Move Left / Right</td><td><kbd>A</kbd> / <kbd>D</kbd></td><td><kbd>&larr;</kbd> / <kbd>&rarr;</kbd></td><td><kbd>◀</kbd> / <kbd>▶</kbd></td></tr>
-                        <tr><td>Jump</td><td><kbd>W</kbd> or <kbd>Space</kbd></td><td><kbd>&uarr;</kbd></td><td><kbd>▲ JUMP</kbd></td></tr>
-                        <tr><td>Block / Guard</td><td><kbd>S</kbd></td><td><kbd>&darr;</kbd></td><td><kbd>S</kbd> (GUARD)</td></tr>
+                        <tr><td>3D Movement (Forward/Back/Left/Right)</td><td><kbd>W</kbd> <kbd>A</kbd> <kbd>S</kbd> <kbd>D</kbd></td><td><kbd>&uarr;</kbd> <kbd>&darr;</kbd> <kbd>&larr;</kbd> <kbd>&rarr;</kbd></td><td><kbd>▲</kbd> <kbd>▼</kbd> <kbd>◀</kbd> <kbd>▶</kbd></td></tr>
+                        <tr><td>Jump</td><td><kbd>Space</kbd></td><td><kbd>Numpad 0</kbd></td><td><kbd>⚡ JUMP</kbd></td></tr>
+                        <tr><td>Block / Guard</td><td><kbd>Shift</kbd></td><td><kbd>Numpad .</kbd></td><td><kbd>S</kbd> (GUARD)</td></tr>
                         <tr><td>Basic Attack</td><td><kbd>J</kbd> or <kbd>Z</kbd></td><td><kbd>Numpad 1</kbd> or <kbd>1</kbd></td><td><kbd>J</kbd> (ATK)</td></tr>
                         <tr><td>Skill 1</td><td><kbd>K</kbd> or <kbd>X</kbd></td><td><kbd>Numpad 2</kbd> or <kbd>2</kbd></td><td><kbd>K</kbd> (SKILL 1)</td></tr>
                         <tr><td>Skill 2</td><td><kbd>L</kbd> or <kbd>C</kbd></td><td><kbd>Numpad 3</kbd> or <kbd>3</kbd></td><td><kbd>L</kbd> (SKILL 2)</td></tr>
-                        <tr><td>Ultimate (100 Energy)</td><td><kbd>U</kbd> or <kbd>V</kbd></td><td><kbd>Numpad 5</kbd> or <kbd>5</kbd></td><td><kbd>U</kbd> (ULT)</td></tr>
-                        <tr><td>Pause</td><td><kbd>Esc</kbd> or <kbd>P</kbd></td><td><kbd>Esc</kbd></td><td><kbd>⏸</kbd> Button</td></tr>
+                        <tr><td>Ultimate (100 Energy)</td><td><kbd>U</kbd></td><td><kbd>Numpad 5</kbd> or <kbd>5</kbd></td><td><kbd>U</kbd> (ULT)</td></tr>
+                        <tr><td>Toggle Camera (Action/3rd/Overview)</td><td><kbd>V</kbd></td><td><kbd>V</kbd></td><td><kbd>🎥</kbd> (CAM)</td></tr>
+                        <tr><td>Pause Match</td><td><kbd>Esc</kbd> or <kbd>P</kbd></td><td><kbd>Esc</kbd></td><td><kbd>⏸</kbd> Button</td></tr>
                     </table>
                 </div>
             </div>
@@ -444,9 +458,13 @@
     </section>
 
     <!-- Script Includes in Dependency Order -->
+    <script src="js/lib/three.min.js"></script>
+    <script>if (typeof THREE === 'undefined') { document.write('<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"><\\/script>'); }</script>
     <script src="js/audio.js"></script>
     <script src="js/particles.js"></script>
     <script src="js/characters.js"></script>
+    <script src="js/character3d.js"></script>
+    <script src="js/world3d.js"></script>
     <script src="js/fighter.js"></script>
     <script src="js/ai.js"></script>
     <script src="js/game.js"></script>

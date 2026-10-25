@@ -77,6 +77,14 @@ class UIManager {
             if (btn) btn.textContent = muted ? '🔇 Sound: OFF' : '🔊 Sound: ON';
         });
 
+        // 3D Camera View Toggle
+        document.getElementById('btnToggleCam')?.addEventListener('click', () => {
+            Sound.playClick();
+            if (window.GameInstance) {
+                window.GameInstance.cycleCameraMode();
+            }
+        });
+
         // Pause Menu buttons
         document.getElementById('btnResume')?.addEventListener('click', () => {
             Sound.playClick();
@@ -121,6 +129,7 @@ class UIManager {
         // Back from Char Select
         document.getElementById('btnCharSelectBack')?.addEventListener('click', () => {
             Sound.playClick();
+            if (window.GameInstance && window.GameInstance.clearPreview3D) window.GameInstance.clearPreview3D();
             this.charSelectScreen.classList.add('hidden');
             this.menuScreen.classList.remove('hidden');
         });
@@ -157,6 +166,11 @@ class UIManager {
         if (window.GameInstance) {
             window.GameInstance.state = 'menu';
             window.GameInstance.sound.stopBGM();
+            if (window.GameInstance.clearPreview3D) window.GameInstance.clearPreview3D();
+            if (window.GameInstance.p1) window.GameInstance.p1.cleanup();
+            if (window.GameInstance.p2) window.GameInstance.p2.cleanup();
+            window.GameInstance.clearProjectiles();
+            if (window.GameInstance.world3d) window.GameInstance.world3d.clearDomain();
         }
         this.pauseOverlay.classList.add('hidden');
         this.gameOverOverlay.classList.add('hidden');
@@ -230,6 +244,11 @@ class UIManager {
         document.querySelectorAll('.char-card').forEach(c => c.classList.remove('active'));
         const activeCard = document.getElementById(`card-${key}`);
         if (activeCard) activeCard.classList.add('active');
+
+        // Show live 3D preview model in 3D Arena
+        if (window.GameInstance && window.GameInstance.showPreview3D) {
+            window.GameInstance.showPreview3D(key);
+        }
 
         const char = CHARACTERS_DATA[key];
         const unlocked = StorageManager.isUnlocked(key);
@@ -557,20 +576,44 @@ class UIManager {
             btn.addEventListener('pointercancel', release, { passive: false });
         };
 
+        // 3D Navigation: Forward (KeyW)
+        bindKey('btnTouchUp',
+            () => {
+                if (window.GameInstance) {
+                    window.GameInstance.keys['KeyW'] = true;
+                }
+            },
+            () => {
+                if (window.GameInstance) {
+                    window.GameInstance.keys['KeyW'] = false;
+                }
+            }
+        );
+
+        // 3D Navigation: Backward (KeyS)
+        bindKey('btnTouchDown',
+            () => {
+                if (window.GameInstance) {
+                    window.GameInstance.keys['KeyS'] = true;
+                }
+            },
+            () => {
+                if (window.GameInstance) {
+                    window.GameInstance.keys['KeyS'] = false;
+                }
+            }
+        );
+
         // Move Left (KeyA)
         bindKey('btnTouchLeft',
             () => {
                 if (window.GameInstance) {
                     window.GameInstance.keys['KeyA'] = true;
-                    if (window.GameInstance.p1) window.GameInstance.p1.moveLeft();
                 }
             },
             () => {
                 if (window.GameInstance) {
                     window.GameInstance.keys['KeyA'] = false;
-                    if (window.GameInstance.p1 && !window.GameInstance.keys['KeyD']) {
-                        window.GameInstance.p1.stopMoving();
-                    }
                 }
             }
         );
@@ -580,18 +623,21 @@ class UIManager {
             () => {
                 if (window.GameInstance) {
                     window.GameInstance.keys['KeyD'] = true;
-                    if (window.GameInstance.p1) window.GameInstance.p1.moveRight();
                 }
             },
             () => {
                 if (window.GameInstance) {
                     window.GameInstance.keys['KeyD'] = false;
-                    if (window.GameInstance.p1 && !window.GameInstance.keys['KeyA']) {
-                        window.GameInstance.p1.stopMoving();
-                    }
                 }
             }
         );
+
+        // Camera Toggle
+        bindKey('btnTouchCam', () => {
+            if (window.GameInstance) {
+                window.GameInstance.cycleCameraMode();
+            }
+        });
 
         // Jump (KeyW / Space)
         bindKey('btnTouchJump', () => {
