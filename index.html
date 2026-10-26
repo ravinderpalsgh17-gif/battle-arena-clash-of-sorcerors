@@ -10,9 +10,9 @@
 <body>
 
     <div id="gameContainer">
-        <!-- 1. The High Performance 3D Battle Canvas & HUD Overlay -->
-        <canvas id="gameCanvas" width="1280" height="720"></canvas>
-        <canvas id="hudCanvas" width="1280" height="720" style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; pointer-events: none; z-index: 4;"></canvas>
+        <!-- 1. The High Performance 4K Ultra 3D Battle Canvas & HUD Overlay -->
+        <canvas id="gameCanvas" width="1920" height="1080"></canvas>
+        <canvas id="hudCanvas" width="1920" height="1080" style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; pointer-events: none; z-index: 4;"></canvas>
 
         <!-- 2. Global Top Status Bar -->
         <div class="top-bar">
@@ -20,6 +20,7 @@
                 <span class="points-val">🪙 0</span>
             </div>
             <div style="display: flex; gap: 8px; align-items: center; flex-wrap: wrap;">
+                <button id="btnToggle4K" class="btn btn-gold" style="padding: 6px 14px; font-size: 14px; font-weight: 800;" title="Toggle 4K Ultra High Definition Rendering Scale">✨ 4K ULTRA: ON</button>
                 <button id="btnToggleCam" class="btn btn-secondary" style="padding: 6px 14px; font-size: 14px;" title="Switch 3D Camera View (Action / 3rd Person / Overview)">🎥 Cam: DYNAMIC</button>
                 <button id="btnToggleTouch" class="btn btn-secondary" style="padding: 6px 14px; font-size: 14px;" title="Toggle On-Screen Touch Controls">📱 Touch: ON</button>
                 <button id="btnToggleMute" class="btn btn-secondary" style="padding: 6px 14px; font-size: 14px;">🔊 Sound: ON</button>

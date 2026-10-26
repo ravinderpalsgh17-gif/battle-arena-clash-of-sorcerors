@@ -32,37 +32,44 @@ class World3D {
     }
 
     // ----------------------------------------------------
-    // LIGHTING & ATMOSPHERE
+    // LIGHTING & ATMOSPHERE (4K ULTRA FIDELITY)
     // ----------------------------------------------------
     initLighting() {
         // Ambient Light
-        this.ambientLight = new THREE.AmbientLight(0xddeeff, 0.45);
+        this.ambientLight = new THREE.AmbientLight(0xddeeff, 0.5);
         this.scene.add(this.ambientLight);
 
         // Hemisphere Light (Sky and Ground Bounce)
-        this.hemiLight = new THREE.HemisphereLight(0xaaccff, 0x334422, 0.45);
+        this.hemiLight = new THREE.HemisphereLight(0xaaccff, 0x2e3b26, 0.5);
         this.hemiLight.position.set(0, 50, 0);
         this.scene.add(this.hemiLight);
 
-        // Main Sun / Moon Directional Light with Shadows
-        this.dirLight = new THREE.DirectionalLight(0xfff5e6, 1.1);
-        this.dirLight.position.set(45, 80, 40);
+        // Main Sun / Moon Directional Light with 4K Soft Shadows
+        this.dirLight = new THREE.DirectionalLight(0xfff5e6, 1.25);
+        this.dirLight.position.set(45, 85, 40);
         this.dirLight.castShadow = true;
-        this.dirLight.shadow.mapSize.width = 2048;
-        this.dirLight.shadow.mapSize.height = 2048;
+        this.dirLight.shadow.mapSize.width = 4096; // 4K Ultra Shadow Resolution
+        this.dirLight.shadow.mapSize.height = 4096;
         this.dirLight.shadow.camera.near = 1;
-        this.dirLight.shadow.camera.far = 250;
+        this.dirLight.shadow.camera.far = 280;
 
-        const d = 75;
+        const d = 80;
         this.dirLight.shadow.camera.left = -d;
         this.dirLight.shadow.camera.right = d;
         this.dirLight.shadow.camera.top = d;
         this.dirLight.shadow.camera.bottom = -d;
-        this.dirLight.shadow.bias = -0.0008;
+        this.dirLight.shadow.bias = -0.0003;
+        this.dirLight.shadow.normalBias = 0.035;
         this.scene.add(this.dirLight);
 
-        // Atmospheric Fog
-        this.scene.fog = new THREE.FogExp2(0x121422, 0.0075);
+        // Cinematic 4K Rim / Silhouette Light
+        this.rimLight = new THREE.DirectionalLight(0x70d6ff, 0.75);
+        this.rimLight.position.set(-35, 45, -35);
+        this.scene.add(this.rimLight);
+
+        // Atmospheric Volumetric Fog
+        this.scene.fog = new THREE.FogExp2(0x101322, 0.007);
+        this.lanternLights = [];
     }
 
     initSky() {
@@ -180,58 +187,57 @@ class World3D {
         this.ground.receiveShadow = true;
         this.scene.add(this.ground);
 
-        // Central Battle Arena Circle (The Sorcerer Grand Ring)
-        const arenaGeo = new THREE.RingGeometry(0, 24, 64);
+        // Central Battle Arena Circle (The Sorcerer Grand Ring with 4K Procedural Inlaid Runes)
+        const arenaGeo = new THREE.RingGeometry(0, 24, 96);
         arenaGeo.rotateX(-Math.PI / 2);
 
-        const ringCanvas = document.createElement('canvas');
-        ringCanvas.width = 512;
-        ringCanvas.height = 512;
-        const rCtx = ringCanvas.getContext('2d');
-        rCtx.fillStyle = '#181e2e';
-        rCtx.beginPath();
-        rCtx.arc(256, 256, 250, 0, Math.PI * 2);
-        rCtx.fill();
+        const ringTex = (typeof ProceduralTextureFactory !== 'undefined' && ProceduralTextureFactory.createArenaGround4KTexture)
+            ? ProceduralTextureFactory.createArenaGround4KTexture()
+            : null;
 
-        rCtx.strokeStyle = '#ffd700';
-        rCtx.lineWidth = 8;
-        rCtx.beginPath();
-        rCtx.arc(256, 256, 240, 0, Math.PI * 2);
-        rCtx.stroke();
-
-        rCtx.strokeStyle = '#00e5ff';
-        rCtx.lineWidth = 4;
-        rCtx.beginPath();
-        rCtx.arc(256, 256, 180, 0, Math.PI * 2);
-        rCtx.stroke();
-
-        // Jujutsu Arcane Emblem
-        rCtx.strokeStyle = '#ff0055';
-        rCtx.lineWidth = 6;
-        for (let i = 0; i < 4; i++) {
-            rCtx.save();
-            rCtx.translate(256, 256);
-            rCtx.rotate((i * Math.PI) / 2);
-            rCtx.beginPath();
-            rCtx.moveTo(0, -140);
-            rCtx.lineTo(35, -70);
-            rCtx.lineTo(0, 0);
-            rCtx.lineTo(-35, -70);
-            rCtx.closePath();
-            rCtx.stroke();
-            rCtx.restore();
-        }
-
-        const ringTex = new THREE.CanvasTexture(ringCanvas);
-        const ringMat = new THREE.MeshBasicMaterial({
+        const ringMat = new THREE.MeshStandardMaterial({
             map: ringTex,
+            roughness: 0.75,
+            metalness: 0.15,
             transparent: true,
-            opacity: 0.85
+            opacity: 0.95
         });
 
         const arenaRing = new THREE.Mesh(arenaGeo, ringMat);
         arenaRing.position.y = 0.05;
+        arenaRing.receiveShadow = true;
         this.scene.add(arenaRing);
+
+        // 8 Inscribed 3D Stone Boundary Ward Pillars around Perimeter
+        const pillarMat = new THREE.MeshStandardMaterial({ color: 0x222633, roughness: 0.8 });
+        const sealMat = new THREE.MeshBasicMaterial({ color: 0xff0044 });
+
+        for (let i = 0; i < 8; i++) {
+            const angle = (i / 8) * Math.PI * 2;
+            const px = Math.cos(angle) * 24.5;
+            const pz = Math.sin(angle) * 24.5;
+
+            const pillar = new THREE.Group();
+            pillar.position.set(px, 0, pz);
+
+            const baseMesh = new THREE.Mesh(new THREE.BoxGeometry(0.8, 2.6, 0.8), pillarMat);
+            baseMesh.position.y = 1.3;
+            baseMesh.castShadow = true;
+            pillar.add(baseMesh);
+
+            const topPyramid = new THREE.Mesh(new THREE.ConeGeometry(0.6, 0.5, 4), pillarMat);
+            topPyramid.position.y = 2.85;
+            topPyramid.rotation.y = Math.PI / 4;
+            pillar.add(topPyramid);
+
+            // Glowing Cursed Ward Talisman
+            const seal = new THREE.Mesh(new THREE.BoxGeometry(0.35, 0.9, 0.04), sealMat);
+            seal.position.set(0, 1.4, 0.42);
+            pillar.add(seal);
+
+            pillar.lookAt(0, 0, 0);
+            this.scene.add(pillar);
+        }
     }
 
     // ----------------------------------------------------
@@ -697,15 +703,32 @@ class World3D {
             // Horns
             for (let side of [-1, 1]) {
                 const horn = new THREE.Mesh(
-                    new THREE.ConeGeometry(0.8, 5, 8),
-                    new THREE.MeshStandardMaterial({ color: 0xddddcc })
+                    new THREE.ConeGeometry(0.9, 6.5, 8),
+                    new THREE.MeshStandardMaterial({ color: 0xddddcc, roughness: 0.5 })
                 );
-                horn.position.set(side * 6, 8.5, 0);
-                horn.rotation.z = side * -0.6;
+                horn.position.set(side * 6.5, 9.5, 0);
+                horn.rotation.z = side * -0.65;
                 shrineGroup.add(horn);
             }
 
+            // Demonic Skulls lining the eaves
+            const skullMat = new THREE.MeshStandardMaterial({ color: 0xd8d4c8, roughness: 0.75 });
+            for (let s = -5.5; s <= 5.5; s += 2.2) {
+                const skull = new THREE.Mesh(new THREE.SphereGeometry(0.38, 8, 8), skullMat);
+                skull.position.set(s, 5.2, 7.2);
+                shrineGroup.add(skull);
+            }
+
             this.domainGroup.add(shrineGroup);
+
+            // Flying Slicing Cleave Cut Planes crisscrossing the entire arena in 3D
+            const cutMat = new THREE.MeshBasicMaterial({ color: 0xff2255, transparent: true, opacity: 0.75, side: THREE.DoubleSide });
+            for (let c = 0; c < 18; c++) {
+                const cutMesh = new THREE.Mesh(new THREE.PlaneGeometry(18, 0.09), cutMat);
+                cutMesh.position.set((Math.random() - 0.5) * 45, 0.8 + Math.random() * 5.5, (Math.random() - 0.5) * 45);
+                cutMesh.rotation.set(Math.random() * Math.PI, Math.random() * Math.PI, Math.random() * Math.PI);
+                this.domainGroup.add(cutMesh);
+            }
 
             // Malevolent Crimson Light
             const shrineLight = new THREE.PointLight(0xff0022, 4.0, 80);

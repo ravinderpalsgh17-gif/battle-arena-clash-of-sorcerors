@@ -77,6 +77,14 @@ class UIManager {
             if (btn) btn.textContent = muted ? '🔇 Sound: OFF' : '🔊 Sound: ON';
         });
 
+        // 4K Ultra Mode Toggle
+        document.getElementById('btnToggle4K')?.addEventListener('click', () => {
+            Sound.playClick();
+            if (window.GameInstance && window.GameInstance.toggle4KMode) {
+                window.GameInstance.toggle4KMode();
+            }
+        });
+
         // 3D Camera View Toggle
         document.getElementById('btnToggleCam')?.addEventListener('click', () => {
             Sound.playClick();

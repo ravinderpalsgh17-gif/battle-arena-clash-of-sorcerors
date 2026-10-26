@@ -3,8 +3,10 @@
 
 class BattleArenaGame {
     constructor() {
-        this.width = 1280;
-        this.height = 720;
+        // 4K Ultra High-DPI Engine Scaling
+        this.is4K = true;
+        this.width = 1920;
+        this.height = 1080;
 
         // 1. WebGL 3D Canvas & Three.js Engine
         this.canvas = document.getElementById('gameCanvas');
@@ -18,26 +20,29 @@ class BattleArenaGame {
         this.renderer = new THREE.WebGLRenderer({
             canvas: this.canvas,
             antialias: true,
-            powerPreference: 'high-performance'
+            powerPreference: 'high-performance',
+            precision: 'highp'
         });
         this.renderer.setSize(this.width, this.height);
-        this.renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, 2));
+        this.updatePixelRatio();
         this.renderer.shadowMap.enabled = true;
         this.renderer.shadowMap.type = THREE.PCFSoftShadowMap;
         this.renderer.toneMapping = THREE.ACESFilmicToneMapping;
-        this.renderer.toneMappingExposure = 1.05;
+        this.renderer.toneMappingExposure = 1.15;
 
-        // 2. HUD 2D Overlay Canvas
+        // 2. HUD 2D Overlay Canvas (High-DPI 4K Crisp Vector Rendering)
         this.hudCanvas = document.getElementById('hudCanvas');
         if (!this.hudCanvas) {
             this.hudCanvas = document.createElement('canvas');
             this.hudCanvas.id = 'hudCanvas';
-            this.hudCanvas.width = this.width;
-            this.hudCanvas.height = this.height;
-            this.hudCanvas.style.cssText = 'position:absolute;top:0;left:0;width:100%;height:100%;pointer-events:none;z-index:4;';
             this.canvas.parentElement.appendChild(this.hudCanvas);
         }
+        this.hudCanvas.width = this.width;
+        this.hudCanvas.height = this.height;
+        this.hudCanvas.style.cssText = 'position:absolute;top:0;left:0;width:100%;height:100%;pointer-events:none;z-index:4;';
         this.hudCtx = this.hudCanvas.getContext('2d');
+        this.hudCtx.imageSmoothingEnabled = true;
+        this.hudCtx.imageSmoothingQuality = 'high';
 
         // 3. Subsystems
         this.particles = new ParticleEngine();
@@ -146,6 +151,30 @@ class BattleArenaGame {
         const btn = document.getElementById('btnToggleCam');
         if (btn) btn.textContent = `🎥 Cam: ${this.cameraMode.toUpperCase()}`;
         this.particles.addFloatingText(`CAM: ${this.cameraMode.toUpperCase()}`, (this.p1 ? this.p1.x : 0), 4.5, '#00e5ff', 20);
+    }
+
+    updatePixelRatio() {
+        const dpr = window.devicePixelRatio || 1;
+        const targetPixelRatio = this.is4K ? Math.min(Math.max(dpr, 2.0), 3.0) : Math.min(dpr, 1.5);
+        this.renderer.setPixelRatio(targetPixelRatio);
+    }
+
+    toggle4KMode() {
+        this.is4K = !this.is4K;
+        this.updatePixelRatio();
+        const btn = document.getElementById('btnToggle4K');
+        if (btn) {
+            btn.textContent = this.is4K ? '✨ 4K ULTRA: ON' : '✨ 4K ULTRA: OFF';
+            btn.className = this.is4K ? 'btn btn-gold' : 'btn btn-secondary';
+        }
+        this.particles.addFloatingText(
+            this.is4K ? '4K ULTRA FIDELITY: ACTIVATED' : 'STANDARD FIDELITY: ON',
+            (this.p1 ? this.p1.x : 0),
+            4.2,
+            this.is4K ? '#ffd700' : '#00e5ff',
+            24,
+            true
+        );
     }
 
     // ----------------------------------------------------
@@ -541,49 +570,49 @@ class BattleArenaGame {
         }
         if (!this.p1 || !this.p2) return;
 
-        // 1. Health Bars
-        const barW = 460;
-        const barH = 26;
-        const barY = 28;
+        // 1. Health Bars (4K Scaled Ultra Definition)
+        const barW = 680;
+        const barH = 34;
+        const barY = 36;
 
         // Player 1 Health Bar (Left to Right)
         const p1Ratio = Math.max(0, this.p1.displayedHp / this.p1.maxHp);
         const p1GhostRatio = Math.max(0, this.p1.ghostHp / this.p1.maxHp);
 
-        ctx.fillStyle = 'rgba(10, 12, 20, 0.85)';
-        ctx.fillRect(40, barY, barW, barH);
+        ctx.fillStyle = 'rgba(10, 12, 20, 0.88)';
+        ctx.fillRect(50, barY, barW, barH);
 
         // Ghost HP (White/Yellow drain)
         ctx.fillStyle = '#ffaa33';
-        ctx.fillRect(40, barY, barW * p1GhostRatio, barH);
+        ctx.fillRect(50, barY, barW * p1GhostRatio, barH);
 
         // Current HP Gradient
-        const p1Grad = ctx.createLinearGradient(40, 0, 40 + barW, 0);
+        const p1Grad = ctx.createLinearGradient(50, 0, 50 + barW, 0);
         p1Grad.addColorStop(0, '#00e5ff');
         p1Grad.addColorStop(1, '#0088cc');
         ctx.fillStyle = p1Grad;
-        ctx.fillRect(40, barY, barW * p1Ratio, barH);
+        ctx.fillRect(50, barY, barW * p1Ratio, barH);
 
         // Border Glow
         ctx.strokeStyle = '#00e5ff';
-        ctx.lineWidth = 2;
-        ctx.strokeRect(40, barY, barW, barH);
+        ctx.lineWidth = 2.5;
+        ctx.strokeRect(50, barY, barW, barH);
 
         // P1 Name & Grade Tag
-        ctx.font = "900 20px 'Cinzel', serif";
+        ctx.font = "900 24px 'Cinzel', serif";
         ctx.fillStyle = '#ffffff';
-        ctx.fillText(this.p1.data.name.toUpperCase(), 45, barY - 8);
+        ctx.fillText(this.p1.data.name.toUpperCase(), 55, barY - 10);
 
-        ctx.font = "700 13px 'Rajdhani', sans-serif";
+        ctx.font = "700 16px 'Rajdhani', sans-serif";
         ctx.fillStyle = '#00e5ff';
-        ctx.fillText(`${this.p1.data.grade} • HP: ${Math.round(this.p1.hp)}/${this.p1.maxHp}`, 45, barY + barH + 16);
+        ctx.fillText(`${this.p1.data.grade} • HP: ${Math.round(this.p1.hp)}/${this.p1.maxHp}`, 55, barY + barH + 20);
 
         // Player 2 Health Bar (Right to Left)
         const p2Ratio = Math.max(0, this.p2.displayedHp / this.p2.maxHp);
         const p2GhostRatio = Math.max(0, this.p2.ghostHp / this.p2.maxHp);
-        const p2X = this.width - 40 - barW;
+        const p2X = this.width - 50 - barW;
 
-        ctx.fillStyle = 'rgba(10, 12, 20, 0.85)';
+        ctx.fillStyle = 'rgba(10, 12, 20, 0.88)';
         ctx.fillRect(p2X, barY, barW, barH);
 
         ctx.fillStyle = '#ffaa33';
@@ -596,37 +625,37 @@ class BattleArenaGame {
         ctx.fillRect(p2X + barW * (1 - p2Ratio), barY, barW * p2Ratio, barH);
 
         ctx.strokeStyle = '#ff0055';
-        ctx.lineWidth = 2;
+        ctx.lineWidth = 2.5;
         ctx.strokeRect(p2X, barY, barW, barH);
 
-        ctx.font = "900 20px 'Cinzel', serif";
+        ctx.font = "900 24px 'Cinzel', serif";
         ctx.fillStyle = '#ffffff';
         ctx.textAlign = 'right';
-        ctx.fillText(this.p2.data.name.toUpperCase(), this.width - 45, barY - 8);
+        ctx.fillText(this.p2.data.name.toUpperCase(), this.width - 55, barY - 10);
 
-        ctx.font = "700 13px 'Rajdhani', sans-serif";
+        ctx.font = "700 16px 'Rajdhani', sans-serif";
         ctx.fillStyle = '#ff2a5f';
-        ctx.fillText(`${this.p2.data.grade} • HP: ${Math.round(this.p2.hp)}/${this.p2.maxHp}`, this.width - 45, barY + barH + 16);
+        ctx.fillText(`${this.p2.data.grade} • HP: ${Math.round(this.p2.hp)}/${this.p2.maxHp}`, this.width - 55, barY + barH + 20);
         ctx.textAlign = 'left';
 
         // 2. Central Round Timer
-        ctx.font = "900 13px 'Rajdhani', sans-serif";
+        ctx.font = "900 16px 'Rajdhani', sans-serif";
         ctx.fillStyle = '#ffd700';
         ctx.textAlign = 'center';
-        ctx.fillText(`ROUND ${this.currentRound}`, this.width / 2, 20);
+        ctx.fillText(`ROUND ${this.currentRound}`, this.width / 2, 24);
 
         ctx.fillStyle = 'rgba(15, 18, 30, 0.9)';
         ctx.beginPath();
-        ctx.arc(this.width / 2, 45, 34, 0, Math.PI * 2);
+        ctx.arc(this.width / 2, 54, 42, 0, Math.PI * 2);
         ctx.fill();
         ctx.strokeStyle = '#ffd700';
-        ctx.lineWidth = 3;
+        ctx.lineWidth = 3.5;
         ctx.stroke();
 
-        ctx.font = "900 32px 'Rajdhani', sans-serif";
+        ctx.font = "900 40px 'Rajdhani', sans-serif";
         ctx.fillStyle = this.roundTimer <= 10 ? '#ff0044' : '#ffd700';
         ctx.textAlign = 'center';
-        ctx.fillText(this.roundTimer.toString(), this.width / 2, 56);
+        ctx.fillText(this.roundTimer.toString(), this.width / 2, 68);
         ctx.textAlign = 'left';
 
         // 3. Round Win Counters (Orbs)
@@ -634,45 +663,46 @@ class BattleArenaGame {
             // P1 Orbs
             ctx.fillStyle = (i < this.p1RoundsWon) ? '#00e5ff' : '#222636';
             ctx.beginPath();
-            ctx.arc(this.width / 2 - 55 - (i * 18), 45, 6, 0, Math.PI * 2);
+            ctx.arc(this.width / 2 - 70 - (i * 24), 54, 8, 0, Math.PI * 2);
             ctx.fill();
 
             // P2 Orbs
             ctx.fillStyle = (i < this.p2RoundsWon) ? '#ff0055' : '#222636';
             ctx.beginPath();
-            ctx.arc(this.width / 2 + 55 + (i * 18), 45, 6, 0, Math.PI * 2);
+            ctx.arc(this.width / 2 + 70 + (i * 24), 54, 8, 0, Math.PI * 2);
             ctx.fill();
         }
 
         // 4. Cursed Energy Meters (Bottom Screen)
-        const nrgW = 280;
-        const nrgH = 14;
-        const nrgY = this.height - 35;
+        const nrgW = 420;
+        const nrgH = 20;
+        const nrgY = this.height - 48;
 
         // P1 Energy
-        ctx.fillStyle = 'rgba(15, 18, 30, 0.85)';
-        ctx.fillRect(40, nrgY, nrgW, nrgH);
+        ctx.fillStyle = 'rgba(15, 18, 30, 0.88)';
+        ctx.fillRect(50, nrgY, nrgW, nrgH);
         ctx.fillStyle = (this.p1.energy >= 100) ? '#ffd700' : '#9d4edd';
-        ctx.fillRect(40, nrgY, nrgW * (this.p1.energy / 100), nrgH);
+        ctx.fillRect(50, nrgY, nrgW * (this.p1.energy / 100), nrgH);
         ctx.strokeStyle = '#9d4edd';
-        ctx.lineWidth = 1.5;
-        ctx.strokeRect(40, nrgY, nrgW, nrgH);
+        ctx.lineWidth = 2;
+        ctx.strokeRect(50, nrgY, nrgW, nrgH);
 
-        ctx.font = "700 12px 'Rajdhani', sans-serif";
+        ctx.font = "700 15px 'Rajdhani', sans-serif";
         ctx.fillStyle = '#ffffff';
-        ctx.fillText(`CURSED ENERGY: ${Math.round(this.p1.energy)}% ${this.p1.energy >= 100 ? '[ULTIMATE READY!]' : ''}`, 42, nrgY - 5);
+        ctx.fillText(`CURSED ENERGY: ${Math.round(this.p1.energy)}% ${this.p1.energy >= 100 ? '[ULTIMATE READY!]' : ''}`, 52, nrgY - 7);
 
         // P2 Energy
-        ctx.fillStyle = 'rgba(15, 18, 30, 0.85)';
-        ctx.fillRect(this.width - 40 - nrgW, nrgY, nrgW, nrgH);
+        ctx.fillStyle = 'rgba(15, 18, 30, 0.88)';
+        ctx.fillRect(this.width - 50 - nrgW, nrgY, nrgW, nrgH);
         ctx.fillStyle = (this.p2.energy >= 100) ? '#ffd700' : '#9d4edd';
-        ctx.fillRect(this.width - 40 - nrgW, nrgY, nrgW * (this.p2.energy / 100), nrgH);
+        ctx.fillRect(this.width - 50 - nrgW, nrgY, nrgW * (this.p2.energy / 100), nrgH);
         ctx.strokeStyle = '#9d4edd';
-        ctx.lineWidth = 1.5;
-        ctx.strokeRect(this.width - 40 - nrgW, nrgY, nrgW, nrgH);
+        ctx.lineWidth = 2;
+        ctx.strokeRect(this.width - 50 - nrgW, nrgY, nrgW, nrgH);
 
         ctx.textAlign = 'right';
-        ctx.fillText(`CURSED ENERGY: ${Math.round(this.p2.energy)}% ${this.p2.energy >= 100 ? '[ULTIMATE READY!]' : ''}`, this.width - 42, nrgY - 5);
+        ctx.fillText(`CURSED ENERGY: ${Math.round(this.p2.energy)}% ${this.p2.energy >= 100 ? '[ULTIMATE READY!]' : ''}`, this.width - 52, nrgY - 7);
+        ctx.textAlign = 'left';
         ctx.textAlign = 'left';
     }
 }

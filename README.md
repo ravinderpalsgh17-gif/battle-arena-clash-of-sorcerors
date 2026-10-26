@@ -1,27 +1,32 @@
-# ⚔️ Battle Arena: Clash of Sorcerors — 3D Open World Edition
+# ⚔️ Battle Arena: Clash of Sorcerors — 4K Ultra 3D Edition
 
-An adrenaline-pumping **3D Open World fighting arena game** featuring 16 legendary characters from **Jujutsu Kaisen**, ranked and balanced according to their canonical power levels, grades, and domain expansions. Built with **Three.js (WebGL 3D)**, hardware-accelerated procedural 3D character rigging, vast open-world environments, procedural Web Audio synthesis, and dynamic combat camera tracking.
+An adrenaline-pumping **4K Ultra 3D Open World fighting arena game** featuring 16 legendary characters from **Jujutsu Kaisen**, ranked and balanced according to their canonical power levels, grades, and domain expansions. Built with **Three.js (WebGL 3D)**, hardware-accelerated procedural 4K textures, 4096x4096 soft PCF shadows, procedural Web Audio synthesis, and dynamic combat camera tracking.
 
 ---
 
-## 🌟 Key 3D Features
+## 🌟 Key 4K Ultra Features
+
+### ✨ True 4K Ultra High-DPI Engine Pipeline
+* **High-DPI Scaler**: Dynamically scales up to native 4K UHD (3840x2160) and Retina displays with supersampled pixel ratios.
+* **4K Ultra Toggle**: Instant toggle button (`✨ 4K ULTRA: ON`) on the top navigation bar to switch between standard and 4K Ultra fidelity.
+* **Procedural 4K Textures**: 2048x2048 weathered stone paving tiles, inlaid gold Jujutsu seals, authentic Heian cursed tattoo maps, and woven silk kimono cloth patterns.
+* **4096x4096 Soft Shadows & HDR Tone Mapping**: Real-time PCF soft contact shadows, ACESFilmic high dynamic range tone mapping, and cool rim lighting highlighting fighter silhouettes.
+* **Razor-Sharp 4K HUD**: High-DPI vector health bars, glowing cursed energy gauges, combo counter, and floating damage typography.
 
 ### 🥋 Full 3D Characters with Procedural Anime Rigs
-Every character in the 16-sorcerer roster is fully modeled and animated in 3D with distinct anime cel-shaded aesthetics, signature accessories, and hierarchical skeletal rigging:
-* **Satoru Gojo**: 3D spiky white hair, blindfold (reveals Six Eyes during ultimate), shimmering translucent **Infinity Barrier sphere**, and rotating 3D **Lapse Blue** & **Reversal Red** energy orbs!
-* **Ryomen Sukuna**: True Heian Era form with **4 fully articulated muscular arms**, demonic right-side facial carapace mask, **4 glowing crimson eyes**, black cursed tattoos across chest and all 4 arms, black clawed fingers, open kimono with textured obi, and the Enmaten domain mudra!
-* **Yuji Itadori**: Athletic dark uniform with folded red hood, facial slit scars, and glowing pink Divergent Fist cursed knuckle trails!
-* **Nobara Kugisaki**: Steel carpenter's claw hammer with wooden grip and flying 3D cursed nails!
+Every character in the 16-sorcerer roster is fully modeled and animated in 3D with distinct anime aesthetics, signature accessories, and hierarchical skeletal rigging:
+* **Ryomen Sukuna (Heian Form)**: True 4-armed Heian Era King of Curses with **4 fully articulated muscular arms**, 4 glowing crimson eyes with animated pulse, right-side demonic carapace mask with horn spur, authentic black cursed tattoos mapped across chest and arms, obsidian black claws with glowing red tips, open silk kimono with gold embroidery, textured rope obi, and the Enmaten domain mudra!
+* **Satoru Gojo**: 3D spiky white hair with anisotropic shimmer, blindfold that slides down during ultimate/attacks revealing the legendary **Six Eyes** (celestial starlight iris with radiant cyan glow), shimmering translucent **Infinity Barrier sphere**, and rotating 3D **Lapse Blue** & **Reversal Red** energy orbs!
+* **Toji Fushiguro**: Chiseled vascular physique in black compression shirt, articulated 12-segment 3D **Cursed Spirit inventory worm** coiled around torso with toothy mouth and demonic eye, and the **Inverted Spear of Heaven** with iron chain links!
 * **Megumi Fushiguro**: Spiky sea-urchin hair, shadow puppet hand stances, and summoned 3D **Divine Dog (Totality)** shadow wolf companion!
-* **Panda**: Giant 3D panda bear model with ears, snout, black eye patches, and brass knuckle armbands!
+* **Panda**: Giant 3D panda bear model with sculpted ears, snout, black eye patches, and heavy studded brass knuckles!
 * **Kento Nanami**: Tan double-breasted suit, spotted blue tie, wire sunglasses, and 7:3 spotted cloth wrapped cleaver blade!
-* **Toji Fushiguro**: Muscular physique in black compression shirt, coiled 3D **Cursed Spirit inventory worm** draped over shoulder, and the **Inverted Spear of Heaven**!
-* **Aoi Todo**: Towering physique, samurai topknot hair, diagonal facial scar, and clapping stance!
-* **Jogo**: Hunched cursed spirit robe, cyclops eye, and cone volcano chimney head spewing glowing molten lava and smoke!
+* **Aoi Todo**: Towering physique, samurai topknot hair, diagonal facial scar, and Boogie Woogie clapping stance!
+* **Jogo**: Volcanic crater head spewing flowing incandescent lava rivers and rising smoke/ember particles, with glowing cyclops eye!
 * **Mahito**: Patchwork stitched skin, long grey twin-tail hair, and arm morphing into a curved 3D scythe blade!
 * **Kinji Hakari**: Pompadour hairstyle, pachinko shutter doors, and prismatic Jackpot fever glow!
 * **Suguru Geto**: Buddhist monk kesa robes, sweeping side fringe, and floating black/purple Uzumaki cursed sphere!
-* **Yuta Okkotsu**: White Jujutsu High jacket, katana with scabbard, silver engagement ring, and the spectral Queen of Curses (Rika)!
+* **Yuta Okkotsu**: White Jujutsu High jacket, katana with scabbard, and the spectral Queen of Curses (Rika) hovering with monstrous claws!
 * **Maki Zen'in**: Dark green high ponytail, glasses, and Dragon-Bone naginata spear!
 * **Choso**: Dual twintails, dark blood stripe on nose bridge, and floating crimson blood convergence droplets!
 
