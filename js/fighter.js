@@ -393,15 +393,21 @@ class Fighter {
             return;
         }
 
-        // Guard Block Damage Reduction
+        // Guard Block Damage Reduction & Energy Gain
         let finalDamage = amount / this.defense;
         if (this.isBlocking) {
             finalDamage *= 0.25;
-            this.energy = Math.min(this.maxEnergy, this.energy + 5);
+            this.gainEnergy(8);
             this.sound.playHit('light');
             this.particles.createCursedBurst(this.x, this.y + 1.5, this.z, '#00e5ff', 8);
             this.particles.addFloatingText('GUARD!', this.x, this.y + 2.8, '#00e5ff', 16);
             return;
+        }
+
+        // Toji Inverted Spear of Heaven CE Drain
+        if (hitType && hitType.includes('toji')) {
+            this.energy = Math.max(0, this.energy - 15);
+            this.particles.addFloatingText('-15 CE DRAINED!', this.x, this.y + 3.2, '#78909c', 16);
         }
 
         // Apply Damage
@@ -409,6 +415,9 @@ class Fighter {
         this.state = 'hurt';
         this.stateTimer = 16;
         if (this.model3D) this.model3D.flashHurt();
+
+        // Energy gain from taking damage (Adrenaline / Cursed Spark rush)
+        this.gainEnergy(Math.min(18, finalDamage * 0.16 + 5));
 
         // 3D Knockback along attack vector
         if (attacker) {
@@ -423,11 +432,33 @@ class Fighter {
         this.particles.createHitSparks(this.x, this.y + 1.5, this.z, 14, '#ffcc00');
         this.particles.addFloatingText(`-${Math.round(finalDamage)}`, this.x, this.y + 3, '#ff2a5f', 20);
 
-        // Death Check
+        // Death Check & Panda Core Revive
         if (this.hp <= 0) {
+            if (this.charKey === 'panda' && !this.hasPandaRevived) {
+                this.hasPandaRevived = true;
+                this.hp = 120;
+                this.displayedHp = 120;
+                this.ghostHp = 120;
+                this.gainEnergy(35);
+                this.particles.addFloatingText('GORILLA CORE REVIVE!', this.x, this.y + 3.2, '#ffd700', 24, true);
+                this.sound.playUltimate();
+                return;
+            }
             this.hp = 0;
             this.state = 'dead';
             this.sound.playKO();
+        }
+    }
+
+    gainEnergy(amt) {
+        if (this.state === 'dead' || this.isJackpotActive) return;
+        const mult = (this.data.passive && this.data.passive.energyGain) ? this.data.passive.energyGain : 1.0;
+        const oldEnergy = this.energy;
+        this.energy = Math.min(this.maxEnergy, this.energy + amt * mult);
+
+        // Notify when Ultimate is ready!
+        if (this.energy >= 100 && oldEnergy < 100) {
+            this.particles.addFloatingText('MAX CURSED ENERGY!', this.x, this.y + 3.2, '#ffd700', 22, true);
         }
     }
 
@@ -473,6 +504,18 @@ class Fighter {
             }
         }
 
+        // Natural Cursed Energy Circulation during battle (~5 CE/sec)
+        if (this.state !== 'dead' && !this.isJackpotActive) {
+            const mult = (this.data.passive && this.data.passive.energyGain) ? this.data.passive.energyGain : 1.0;
+            this.energy = Math.min(this.maxEnergy, this.energy + 0.085 * mult);
+        }
+
+        // Yuta Reverse Cursed Technique: Passively heals 12 HP/s when maintaining >= 50 CE
+        if (this.charKey === 'yuta' && this.energy >= 50 && this.animFrame % 60 === 0 && this.state !== 'dead') {
+            this.heal(12);
+            this.particles.addFloatingText('+12 HP', this.x, this.y + 3.0, '#00e5ff', 16);
+        }
+
         // Smooth Health Bar Transition
         if (this.displayedHp > this.hp) {
             this.displayedHp -= (this.displayedHp - this.hp) * 0.15;
@@ -505,6 +548,10 @@ class Fighter {
                 this.hasHitOpponent = true;
                 this.opponent.takeDamage(h.damage, this, h.type, h.knockback);
 
+                // Attacker builds Cursed Energy on hit!
+                const ceGain = (h.type && h.type.includes('basic')) ? 16 : 12;
+                this.gainEnergy(ceGain);
+
                 // Yuji Divergent Fist Delayed Impact
                 if (h.type === 'yuji_basic') {
                     setTimeout(() => {
@@ -512,6 +559,7 @@ class Fighter {
                             this.sound.playHit('heavy');
                             this.opponent.takeDamage(35, this, 'curse_detonation', 0.4);
                             this.particles.addFloatingText('DELAYED IMPACT!', this.opponent.x, this.opponent.y + 3, '#ff2a5f', 18);
+                            this.gainEnergy(8);
                         }
                     }, 250);
                 }

@@ -242,6 +242,10 @@ class BattleArenaGame {
         this.p2.rotationY = Math.PI;
         this.p2.state = 'idle';
 
+        // Ensure Cursed Energy is initialized / maintained
+        if (this.p1.energy < 25) this.p1.energy = 25;
+        if (this.p2.energy < 25) this.p2.energy = 25;
+
         this.clearProjectiles();
         this.particles.reset();
         this.roundTimer = (this.mode === 'training') ? 999 : 99;
@@ -381,6 +385,9 @@ class BattleArenaGame {
                 if (dist < p.radius + 1.2 && Math.abs(target.y - p.y) < 2.5) {
                     target.takeDamage(p.damage, p.owner, p.type, 0.5);
                     this.particles.createHitSparks(p.x, p.y, p.z, 16, p.color);
+                    if (p.owner && p.owner.gainEnergy) {
+                        p.owner.gainEnergy(14);
+                    }
                     p.life = 0;
                 }
             }
