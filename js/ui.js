@@ -4,14 +4,20 @@
 class UIManager {
     constructor() {
         this.selectedP1Char = 'yuji';
-        this.selectedP2Char = 'zeus';
+        this.selectedP2Char = 'megumi';
         this.pickingForPlayer = 1; // 1 or 2
         this.currentMode = 'arcade';
         this.currentDifficulty = 'medium';
+        this.p1Name = 'Sorcerer';
+        this.friendName = 'Friend';
+        this.selectedAvatar = '👁️';
+        this.roomCode = 'JJK-7749';
 
         this.initDOMElements();
         this.bindEvents();
         this.updatePointsDisplay();
+        this.initProfile();
+        this.checkURLParams();
     }
 
     initDOMElements() {
@@ -27,6 +33,35 @@ class UIManager {
         this.touchControls = document.getElementById('touchControls');
         this.btnTouchU = document.getElementById('btnTouchU');
         this.btnToggleTouch = document.getElementById('btnToggleTouch');
+
+        // Profile & Sign In Modal Elements
+        this.signInModal = document.getElementById('signInModal');
+        this.formSignIn = document.getElementById('formSignIn');
+        this.inputPlayerName = document.getElementById('inputPlayerName');
+        this.selectPlayerTitle = document.getElementById('selectPlayerTitle');
+        this.avatarPicker = document.getElementById('avatarPicker');
+        this.btnGuestSignIn = document.getElementById('btnGuestSignIn');
+        this.btnTopProfile = document.getElementById('btnTopProfile');
+        this.topProfileAvatar = document.getElementById('topProfileAvatar');
+        this.topProfileName = document.getElementById('topProfileName');
+        this.menuProfileCard = document.getElementById('menuProfileCard');
+        this.menuProfileAvatar = document.getElementById('menuProfileAvatar');
+        this.menuProfileName = document.getElementById('menuProfileName');
+        this.menuProfileTitle = document.getElementById('menuProfileTitle');
+        this.btnMenuEditProfile = document.getElementById('btnMenuEditProfile');
+
+        // Play vs Friend Modal Elements
+        this.friendModal = document.getElementById('friendModal');
+        this.btnModeFriend = document.getElementById('btnModeFriend');
+        this.btnCloseFriendModal = document.getElementById('btnCloseFriendModal');
+        this.friendP1DisplayName = document.getElementById('friendP1DisplayName');
+        this.inputFriendName = document.getElementById('inputFriendName');
+        this.btnStartFriendLocalDuel = document.getElementById('btnStartFriendLocalDuel');
+        this.roomCodeDisplay = document.getElementById('roomCodeDisplay');
+        this.btnRegenerateRoom = document.getElementById('btnRegenerateRoom');
+        this.inputShareLink = document.getElementById('inputShareLink');
+        this.btnCopyInviteLink = document.getElementById('btnCopyInviteLink');
+        this.copyFeedback = document.getElementById('copyFeedback');
     }
 
     bindEvents() {
@@ -35,6 +70,11 @@ class UIManager {
             Sound.playClick();
             this.currentMode = 'arcade';
             this.openCharSelect(1);
+        });
+
+        document.getElementById('btnModeFriend')?.addEventListener('click', () => {
+            Sound.playClick();
+            this.openFriendModal();
         });
 
         document.getElementById('btnModeVersus')?.addEventListener('click', () => {
@@ -70,6 +110,61 @@ class UIManager {
             this.moveListModal.classList.add('hidden');
         });
 
+        // Sign In & Profile Management Events
+        this.btnTopProfile?.addEventListener('click', () => {
+            Sound.playClick();
+            this.openSignInModal();
+        });
+
+        this.btnMenuEditProfile?.addEventListener('click', () => {
+            Sound.playClick();
+            this.openSignInModal();
+        });
+
+        this.formSignIn?.addEventListener('submit', (e) => {
+            e.preventDefault();
+            this.handleSignIn();
+        });
+
+        document.getElementById('btnConfirmSignIn')?.addEventListener('click', () => {
+            this.handleSignIn();
+        });
+
+        this.btnGuestSignIn?.addEventListener('click', () => {
+            this.handleGuestSignIn();
+        });
+
+        // Avatar Picker selection
+        if (this.avatarPicker) {
+            const avatarButtons = this.avatarPicker.querySelectorAll('.avatar-opt');
+            avatarButtons.forEach(btn => {
+                btn.addEventListener('click', () => {
+                    Sound.playClick();
+                    this.selectedAvatar = btn.getAttribute('data-avatar') || '👁️';
+                    this.updateAvatarPickerSelection();
+                });
+            });
+        }
+
+        // Play vs Friend Modal Events
+        this.btnCloseFriendModal?.addEventListener('click', () => {
+            Sound.playClick();
+            this.closeFriendModal();
+        });
+
+        this.btnRegenerateRoom?.addEventListener('click', () => {
+            Sound.playClick();
+            this.generateRoomCode();
+        });
+
+        this.btnCopyInviteLink?.addEventListener('click', () => {
+            this.copyInviteLink();
+        });
+
+        this.btnStartFriendLocalDuel?.addEventListener('click', () => {
+            this.startFriendLocalDuel();
+        });
+
         // Audio Mute Toggle
         document.getElementById('btnToggleMute')?.addEventListener('click', () => {
             const muted = Sound.toggleMute();
@@ -102,7 +197,7 @@ class UIManager {
         document.getElementById('btnRestartMatch')?.addEventListener('click', () => {
             Sound.playClick();
             window.GameInstance.togglePause();
-            window.GameInstance.startMatch(this.selectedP1Char, this.selectedP2Char, this.currentMode, this.currentDifficulty);
+            this.launchGame();
         });
 
         document.getElementById('btnQuitToMenu')?.addEventListener('click', () => {
@@ -114,7 +209,7 @@ class UIManager {
         document.getElementById('btnGameOverRematch')?.addEventListener('click', () => {
             Sound.playClick();
             this.gameOverOverlay.classList.add('hidden');
-            window.GameInstance.startMatch(this.selectedP1Char, this.selectedP2Char, this.currentMode, this.currentDifficulty);
+            this.launchGame();
         });
 
         document.getElementById('btnGameOverNext')?.addEventListener('click', () => {
@@ -123,7 +218,8 @@ class UIManager {
             if (this.currentMode === 'arcade') {
                 const nextOpponent = window.GameInstance.arcadeLadder[window.GameInstance.arcadeIndex] || 'sukuna';
                 this.selectedP2Char = nextOpponent;
-                window.GameInstance.startMatch(this.selectedP1Char, this.selectedP2Char, 'arcade', this.currentDifficulty);
+                const profile = StorageManager.getPlayerProfile();
+                window.GameInstance.startMatch(this.selectedP1Char, this.selectedP2Char, 'arcade', this.currentDifficulty, this.p1Name || profile.name);
             } else {
                 this.returnToMainMenu();
             }
@@ -185,11 +281,14 @@ class UIManager {
         this.charSelectScreen.classList.add('hidden');
         this.shopScreen.classList.add('hidden');
         this.hudOverlay.classList.add('hidden');
+        if (this.signInModal) this.signInModal.classList.add('hidden');
+        if (this.friendModal) this.friendModal.classList.add('hidden');
         if (this.touchControls) {
             this.touchControls.classList.add('hidden');
         }
         this.menuScreen.classList.remove('hidden');
         this.updatePointsDisplay();
+        this.updateProfileDisplay();
     }
 
     // ----------------------------------------------------
@@ -198,17 +297,27 @@ class UIManager {
     openCharSelect(forPlayer = 1) {
         this.pickingForPlayer = forPlayer;
         this.menuScreen.classList.add('hidden');
+        if (this.friendModal) this.friendModal.classList.add('hidden');
         this.charSelectScreen.classList.remove('hidden');
+
+        const profile = StorageManager.getPlayerProfile();
+        const p1Name = this.p1Name || profile.name || 'PLAYER 1';
+        const friendName = this.friendName || profile.friendName || 'FRIEND';
 
         const title = document.getElementById('charSelectTitle');
         if (title) {
-            title.textContent = (this.currentMode === 'pvp')
-                ? `SELECT FIGHTER - PLAYER ${forPlayer}`
-                : 'CHOOSE YOUR FIGHTER';
+            if (this.currentMode === 'pvp' || this.currentMode === 'friend') {
+                title.textContent = (forPlayer === 1)
+                    ? `SELECT FIGHTER — ${p1Name.toUpperCase()}`
+                    : `SELECT FIGHTER — ${friendName.toUpperCase()}`;
+            } else {
+                title.textContent = `CHOOSE YOUR FIGHTER — ${p1Name.toUpperCase()}`;
+            }
         }
 
         this.renderCharCards();
-        this.selectCharacterCard(this.selectedP1Char);
+        const defaultChar = (forPlayer === 1) ? this.selectedP1Char : this.selectedP2Char;
+        this.selectCharacterCard(defaultChar || 'yuji');
     }
 
     renderCharCards() {
@@ -321,19 +430,19 @@ class UIManager {
                 Sound.playClick();
                 if (this.pickingForPlayer === 1) {
                     this.selectedP1Char = key;
-                    if (this.currentMode === 'pvp') {
-                        // In PvP, now prompt Player 2
+                    if (this.currentMode === 'pvp' || this.currentMode === 'friend') {
+                        // In PvP / Friend duel, now prompt Player 2 / Friend
                         this.openCharSelect(2);
                     } else if (this.currentMode === 'arcade') {
-                        // Start Arcade Ladder round 1 vs Zeus
+                        // Start Arcade Ladder round 1
                         this.selectedP2Char = window.GameInstance.arcadeLadder[0];
                         this.launchGame();
                     } else if (this.currentMode === 'training') {
-                        this.selectedP2Char = (key === 'sukuna') ? 'gojo' : ((key === 'gojo') ? 'sukuna' : 'sukuna');
+                        this.selectedP2Char = (key === 'sukuna') ? 'gojo' : 'sukuna';
                         this.launchGame();
                     } else {
                         // Versus AI: pick random unlocked or default opponent
-                        this.selectedP2Char = (key === 'sukuna') ? 'gojo' : ((key === 'gojo') ? 'sukuna' : 'sukuna');
+                        this.selectedP2Char = (key === 'sukuna') ? 'gojo' : 'sukuna';
                         this.launchGame();
                     }
                 } else {
@@ -362,7 +471,10 @@ class UIManager {
         if (this.touchControls && this.touchEnabled) {
             this.touchControls.classList.remove('hidden');
         }
-        window.GameInstance.startMatch(this.selectedP1Char, this.selectedP2Char, this.currentMode, this.currentDifficulty);
+        const profile = StorageManager.getPlayerProfile();
+        const p1 = this.p1Name || profile.name || 'Sorcerer';
+        const p2 = (this.currentMode === 'pvp' || this.currentMode === 'friend') ? (this.friendName || profile.friendName || 'Friend') : null;
+        window.GameInstance.startMatch(this.selectedP1Char, this.selectedP2Char, this.currentMode, this.currentDifficulty, p1, p2);
     }
 
     // ----------------------------------------------------
@@ -497,7 +609,7 @@ class UIManager {
         }
     }
 
-    showGameOver(p1Won, points, p1Rounds, p2Rounds, arcadeIdx) {
+    showGameOver(p1Won, points, p1Rounds, p2Rounds, arcadeIdx, p1Name = 'Player 1', p2Name = 'Player 2', isPvP = false) {
         if (this.touchControls) this.touchControls.classList.add('hidden');
         this.gameOverOverlay.classList.remove('hidden');
         const titleEl = document.getElementById('gameOverTitle');
@@ -506,14 +618,22 @@ class UIManager {
         const nextBtn = document.getElementById('btnGameOverNext');
 
         if (titleEl) {
-            titleEl.textContent = p1Won ? 'VICTORY!' : 'DEFEAT!';
-            titleEl.style.color = p1Won ? '#ffd700' : '#ff0033';
+            if (p1Won) {
+                titleEl.textContent = `${p1Name} WINS!`;
+                titleEl.style.color = '#ffd700';
+            } else if (isPvP) {
+                titleEl.textContent = `${p2Name} WINS!`;
+                titleEl.style.color = '#ff0055';
+            } else {
+                titleEl.textContent = 'DEFEAT!';
+                titleEl.style.color = '#ff0033';
+            }
         }
         if (pointsEl) {
             pointsEl.textContent = `+🪙 ${points} Battle Points Earned!`;
         }
         if (scoreEl) {
-            scoreEl.textContent = `Final Rounds: P1 [ ${p1Rounds} ] - [ ${p2Rounds} ] P2`;
+            scoreEl.textContent = `Final Rounds: ${p1Name} [ ${p1Rounds} ] - [ ${p2Rounds} ] ${p2Name}`;
         }
 
         if (nextBtn) {
@@ -521,7 +641,7 @@ class UIManager {
                 if (arcadeIdx >= window.GameInstance.arcadeLadder.length) {
                     nextBtn.textContent = 'LADDER CHAMPION! FINISH';
                 } else {
-                    nextBtn.textContent = `NEXT GOD: ${window.GameInstance.arcadeLadder[arcadeIdx].toUpperCase()}`;
+                    nextBtn.textContent = `NEXT OPPONENT: ${window.GameInstance.arcadeLadder[arcadeIdx].toUpperCase()}`;
                 }
                 nextBtn.classList.remove('hidden');
             } else {
@@ -704,6 +824,194 @@ class UIManager {
                 window.GameInstance.togglePause();
             }
         });
+    }
+
+    // ----------------------------------------------------
+    // SORCERER SIGN-IN & PROFILE MANAGEMENT
+    // ----------------------------------------------------
+    initProfile() {
+        const profile = StorageManager.getPlayerProfile();
+        this.p1Name = profile.name;
+        this.selectedAvatar = profile.avatar || '👁️';
+        this.friendName = profile.friendName || 'Friend';
+
+        this.updateProfileDisplay();
+
+        // If player has never signed in before, show Sign In Modal upon launch!
+        if (!profile.isRegistered) {
+            setTimeout(() => {
+                this.openSignInModal();
+            }, 350);
+        }
+    }
+
+    updateProfileDisplay() {
+        const profile = StorageManager.getPlayerProfile();
+        const name = this.p1Name || profile.name || 'Sorcerer';
+        const title = profile.title || 'Special Grade Sorcerer';
+        const avatar = this.selectedAvatar || profile.avatar || '👁️';
+
+        if (this.topProfileAvatar) this.topProfileAvatar.textContent = avatar;
+        if (this.topProfileName) this.topProfileName.textContent = name;
+        if (this.menuProfileAvatar) this.menuProfileAvatar.textContent = avatar;
+        if (this.menuProfileName) this.menuProfileName.textContent = name;
+        if (this.menuProfileTitle) this.menuProfileTitle.textContent = title;
+        if (this.friendP1DisplayName) this.friendP1DisplayName.textContent = `${avatar} ${name}`;
+    }
+
+    openSignInModal() {
+        if (!this.signInModal) return;
+        const profile = StorageManager.getPlayerProfile();
+        if (this.inputPlayerName) {
+            this.inputPlayerName.value = profile.isRegistered ? profile.name : '';
+            this.inputPlayerName.placeholder = profile.isRegistered ? profile.name : 'Enter Sorcerer Name...';
+        }
+        if (this.selectPlayerTitle && profile.title) {
+            this.selectPlayerTitle.value = profile.title;
+        }
+        this.selectedAvatar = profile.avatar || '👁️';
+        this.updateAvatarPickerSelection();
+        this.signInModal.classList.remove('hidden');
+        if (this.inputPlayerName) {
+            setTimeout(() => this.inputPlayerName.focus(), 150);
+        }
+    }
+
+    closeSignInModal() {
+        if (this.signInModal) this.signInModal.classList.add('hidden');
+    }
+
+    updateAvatarPickerSelection() {
+        if (!this.avatarPicker) return;
+        const buttons = this.avatarPicker.querySelectorAll('.avatar-opt');
+        buttons.forEach(btn => {
+            if (btn.getAttribute('data-avatar') === this.selectedAvatar) {
+                btn.classList.add('active');
+            } else {
+                btn.classList.remove('active');
+            }
+        });
+    }
+
+    handleSignIn() {
+        let name = this.inputPlayerName ? this.inputPlayerName.value.trim() : '';
+        if (!name) name = 'Sorcerer';
+        const title = this.selectPlayerTitle ? this.selectPlayerTitle.value : 'Special Grade Sorcerer';
+        const avatar = this.selectedAvatar || '👁️';
+
+        StorageManager.savePlayerProfile({
+            name: name,
+            title: title,
+            avatar: avatar,
+            isRegistered: true
+        });
+
+        this.p1Name = name;
+        this.updateProfileDisplay();
+        this.closeSignInModal();
+        Sound.playUnlock();
+
+        if (window.GameInstance && window.GameInstance.particles) {
+            window.GameInstance.particles.addFloatingText(`WELCOME, ${name.toUpperCase()}!`, 0, 4.0, '#ffd700', 32, true);
+        }
+    }
+
+    handleGuestSignIn() {
+        StorageManager.savePlayerProfile({
+            name: 'Guest Sorcerer',
+            title: 'Tokyo Jujutsu Tech',
+            avatar: '⚡',
+            isRegistered: true
+        });
+        this.p1Name = 'Guest Sorcerer';
+        this.selectedAvatar = '⚡';
+        this.updateProfileDisplay();
+        this.closeSignInModal();
+        Sound.playClick();
+    }
+
+    // ----------------------------------------------------
+    // PLAY VS FRIEND MODAL & LOGIC
+    // ----------------------------------------------------
+    openFriendModal(challengerName = null) {
+        if (!this.friendModal) return;
+        this.updateProfileDisplay();
+
+        if (challengerName) {
+            this.friendName = challengerName;
+            if (this.inputFriendName) this.inputFriendName.value = challengerName;
+        } else {
+            const profile = StorageManager.getPlayerProfile();
+            if (this.inputFriendName) this.inputFriendName.value = profile.friendName || 'Friend';
+        }
+
+        this.generateRoomCode();
+        this.friendModal.classList.remove('hidden');
+        if (this.copyFeedback) this.copyFeedback.classList.add('hidden');
+    }
+
+    closeFriendModal() {
+        if (this.friendModal) this.friendModal.classList.add('hidden');
+    }
+
+    generateRoomCode() {
+        const rand = Math.floor(1000 + Math.random() * 9000);
+        this.roomCode = `JJK-${rand}`;
+        if (this.roomCodeDisplay) this.roomCodeDisplay.textContent = this.roomCode;
+
+        const profile = StorageManager.getPlayerProfile();
+        const p1 = encodeURIComponent(this.p1Name || profile.name || 'Sorcerer');
+        const shareUrl = `${window.location.origin}${window.location.pathname}?mode=friend&challenger=${p1}&room=${this.roomCode}`;
+        if (this.inputShareLink) this.inputShareLink.value = shareUrl;
+    }
+
+    copyInviteLink() {
+        if (!this.inputShareLink) return;
+        const url = this.inputShareLink.value;
+        if (navigator.clipboard && navigator.clipboard.writeText) {
+            navigator.clipboard.writeText(url).then(() => {
+                if (this.copyFeedback) this.copyFeedback.classList.remove('hidden');
+                Sound.playClick();
+            }).catch(() => {
+                this.inputShareLink.select();
+                document.execCommand('copy');
+                if (this.copyFeedback) this.copyFeedback.classList.remove('hidden');
+            });
+        } else {
+            this.inputShareLink.select();
+            document.execCommand('copy');
+            if (this.copyFeedback) this.copyFeedback.classList.remove('hidden');
+        }
+    }
+
+    startFriendLocalDuel() {
+        Sound.playClick();
+        let friend = this.inputFriendName ? this.inputFriendName.value.trim() : '';
+        if (!friend) friend = 'Friend';
+        this.friendName = friend;
+
+        StorageManager.savePlayerProfile({ friendName: friend });
+
+        this.currentMode = 'friend';
+        this.closeFriendModal();
+        this.openCharSelect(1);
+    }
+
+    checkURLParams() {
+        try {
+            const params = new URLSearchParams(window.location.search);
+            if (params.get('mode') === 'friend' || params.has('challenger')) {
+                const challenger = params.get('challenger') || 'Rival Sorcerer';
+                setTimeout(() => {
+                    this.openFriendModal(challenger);
+                    if (window.GameInstance && window.GameInstance.particles) {
+                        window.GameInstance.particles.addFloatingText(`⚔️ CHALLENGE FROM ${challenger.toUpperCase()}!`, 0, 4.5, '#00e5ff', 30, true);
+                    }
+                }, 500);
+            }
+        } catch (e) {
+            console.warn('URL params check failed', e);
+        }
     }
 
     updateTouchToggleButton() {

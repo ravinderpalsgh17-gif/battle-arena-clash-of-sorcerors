@@ -45,6 +45,16 @@ When sorcerers unleash their Domain Expansions, the open world dynamically trans
 * **Chimera Shadow Garden (Megumi Fushiguro)**: The earth melts into an abyssal shadow liquid pool with reaching shadow claws.
 * **Coffin of the Iron Mountain (Jogo)**: The battlefield transforms into an active volcanic caldera with molten lava cracks and fiery rock spires.
 
+### ⛩️ Sorcerer Sign-In & Custom Identity System
+* **Sorcerer Sign-In on Entry**: Players register their custom Sorcerer Name, Grade & Title (*Special Grade, Grade 1, Tokyo Jujutsu Tech, Curse User*), and choose an Affinity Crest avatar (*Six Eyes, Curse King, Black Flash, Shadow Wolf, Blood Convergence, Cursed Tool*).
+* **Live In-Game Identity**: Your personalized Sorcerer Name and title appear on the Battle HUD, the top profile pill, the main menu profile card, and victory/defeat screens.
+* **Easy Profile Switcher**: Click your profile chip anytime to update your name or switch identities.
+
+### 🤝 Play vs Friend Mode
+* **Local Split Duel**: Challenge a friend side-by-side on the same keyboard with full dual 3D combat controls, custom friend naming, and independent character picking.
+* **Laptop-Friendly Controls**: Friends on laptops without a numeric keypad can use `↑ ↓ ← →` movement with `I` (Jump), `O` (Attack), `P` (Skill 1), `[` (Skill 2), `]` (Ultimate), and `.` or `/` (Block).
+* **Shareable Challenge Invite**: Generate match room codes and shareable challenge invite links (`?mode=friend&challenger=YourName&room=JJK-XXXX`) to invite friends on chat, WhatsApp, or Discord.
+
 ### 🎥 Dynamic 3D Combat Camera System
 Toggle between 3 distinct camera modes at any time with the `V` key or top-bar button:
 1. **Action Orbit Cam (Default)**: Cinematic camera dynamically tracking the midpoint between both fighters in 3D space, intelligently zooming in during close melee combat and pulling back when fighters separate across the open arena.
@@ -56,15 +66,15 @@ Toggle between 3 distinct camera modes at any time with the `V` key or top-bar b
 
 ## 🎮 Controls Guide
 
-| Action | Player 1 (Solo / Versus) | Player 2 (Local PvP) | Mobile / Touch Virtual Controller |
+| Action | Player 1 (Solo / Host) | Player 2 (Friend / Local PvP) | Mobile / Touch Virtual Controller |
 |:---|:---:|:---:|:---:|
 | **3D Movement** | <kbd>W</kbd> <kbd>A</kbd> <kbd>S</kbd> <kbd>D</kbd> | <kbd>↑</kbd> <kbd>↓</kbd> <kbd>←</kbd> <kbd>→</kbd> | <kbd>▲</kbd> <kbd>▼</kbd> <kbd>◀</kbd> <kbd>▶</kbd> (3D D-Pad) |
-| **Jump** | <kbd>Space</kbd> | <kbd>Numpad 0</kbd> | <kbd>⚡ JUMP</kbd> |
-| **Guard / Block** | <kbd>Shift</kbd> | <kbd>Numpad .</kbd> | <kbd>S</kbd> (GUARD) |
-| **Basic Attack** | <kbd>J</kbd> or <kbd>Z</kbd> | <kbd>Numpad 1</kbd> or <kbd>1</kbd> | <kbd>J</kbd> (ATK) |
-| **Skill 1** | <kbd>K</kbd> or <kbd>X</kbd> | <kbd>Numpad 2</kbd> or <kbd>2</kbd> | <kbd>K</kbd> (SKILL 1) |
-| **Skill 2** | <kbd>L</kbd> or <kbd>C</kbd> | <kbd>Numpad 3</kbd> or <kbd>3</kbd> | <kbd>L</kbd> (SKILL 2) |
-| **Ultimate (100 Energy)** | <kbd>U</kbd> | <kbd>Numpad 5</kbd> or <kbd>5</kbd> | <kbd>U</kbd> (ULT) |
+| **Jump** | <kbd>Space</kbd> | <kbd>Numpad 0</kbd> or <kbd>I</kbd> | <kbd>⚡ JUMP</kbd> |
+| **Guard / Block** | <kbd>Shift</kbd> | <kbd>Numpad .</kbd> or <kbd>↓</kbd> or <kbd>/</kbd> | <kbd>S</kbd> (GUARD) |
+| **Basic Attack** | <kbd>J</kbd> or <kbd>Z</kbd> | <kbd>Numpad 1</kbd> or <kbd>1</kbd> or <kbd>O</kbd> | <kbd>J</kbd> (ATK) |
+| **Skill 1** | <kbd>K</kbd> or <kbd>X</kbd> | <kbd>Numpad 2</kbd> or <kbd>2</kbd> or <kbd>P</kbd> | <kbd>K</kbd> (SKILL 1) |
+| **Skill 2** | <kbd>L</kbd> or <kbd>C</kbd> | <kbd>Numpad 3</kbd> or <kbd>3</kbd> or <kbd>[</kbd> | <kbd>L</kbd> (SKILL 2) |
+| **Ultimate (100 Energy)** | <kbd>U</kbd> | <kbd>Numpad 5</kbd> or <kbd>5</kbd> or <kbd>]</kbd> | <kbd>U</kbd> (ULT) |
 | **Toggle 3D Camera** | <kbd>V</kbd> | <kbd>V</kbd> | <kbd>🎥</kbd> (CAM) |
 | **Pause Match** | <kbd>Esc</kbd> or <kbd>P</kbd> | <kbd>Esc</kbd> | <kbd>⏸</kbd> (PAUSE) |
 

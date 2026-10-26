@@ -1169,7 +1169,12 @@ class StorageManager {
             unlocked: ['yuji', 'nobara'],
             battlesWon: 0,
             battlesLost: 0,
-            arcadeCompleted: false
+            arcadeCompleted: false,
+            playerName: '',
+            playerTitle: 'Special Grade Sorcerer',
+            playerAvatar: '👁️',
+            isRegistered: false,
+            friendName: 'Friend'
         };
 
         try {
@@ -1192,6 +1197,28 @@ class StorageManager {
         }
     }
 
+    static getPlayerProfile() {
+        const data = this.load();
+        return {
+            name: data.playerName || 'Sorcerer',
+            title: data.playerTitle || 'Special Grade Sorcerer',
+            avatar: data.playerAvatar || '👁️',
+            isRegistered: !!data.isRegistered,
+            friendName: data.friendName || 'Friend'
+        };
+    }
+
+    static savePlayerProfile(profile) {
+        const data = this.load();
+        if (profile.name !== undefined) data.playerName = profile.name.trim();
+        if (profile.title !== undefined) data.playerTitle = profile.title;
+        if (profile.avatar !== undefined) data.playerAvatar = profile.avatar;
+        if (profile.isRegistered !== undefined) data.isRegistered = !!profile.isRegistered;
+        if (profile.friendName !== undefined) data.friendName = profile.friendName.trim();
+        this.save(data);
+        return this.getPlayerProfile();
+    }
+
     static addPoints(amt) {
         const data = this.load();
         data.points = Math.max(0, (data.points || 0) + amt);
@@ -1212,7 +1239,12 @@ class StorageManager {
             unlocked: ['yuji', 'nobara'],
             battlesWon: 0,
             battlesLost: 0,
-            arcadeCompleted: false
+            arcadeCompleted: false,
+            playerName: '',
+            playerTitle: 'Special Grade Sorcerer',
+            playerAvatar: '👁️',
+            isRegistered: false,
+            friendName: 'Friend'
         };
         this.save(defaultData);
         return defaultData;

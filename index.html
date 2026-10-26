@@ -16,8 +16,15 @@
 
         <!-- 2. Global Top Status Bar -->
         <div class="top-bar">
-            <div class="points-pill">
-                <span class="points-val">🪙 0</span>
+            <div style="display: flex; gap: 10px; align-items: center; flex-wrap: wrap;">
+                <div class="points-pill">
+                    <span class="points-val">🪙 0</span>
+                </div>
+                <div class="profile-pill" id="btnTopProfile" title="Click to view or edit your Sorcerer Profile">
+                    <span id="topProfileAvatar">👁️</span>
+                    <span id="topProfileName">Sorcerer</span>
+                    <span class="profile-edit-hint">✏️</span>
+                </div>
             </div>
             <div style="display: flex; gap: 8px; align-items: center; flex-wrap: wrap;">
                 <button id="btnToggle4K" class="btn btn-gold" style="padding: 6px 14px; font-size: 14px; font-weight: 800;" title="Toggle 4K Ultra High Definition Rendering Scale">✨ 4K ULTRA: ON</button>
@@ -33,7 +40,19 @@
             <h1 class="menu-title">BATTLE ARENA</h1>
             <div class="menu-subtitle">⚡ 3D OPEN WORLD • CLASH OF SORCERORS ⚡</div>
 
+            <!-- Active Sorcerer Profile Banner -->
+            <div class="menu-profile-card" id="menuProfileCard">
+                <div class="menu-profile-avatar" id="menuProfileAvatar">👁️</div>
+                <div class="menu-profile-info">
+                    <div class="menu-profile-greeting">LOGGED IN SORCERER</div>
+                    <div class="menu-profile-name" id="menuProfileName">Sorcerer</div>
+                    <div class="menu-profile-title" id="menuProfileTitle">Special Grade Sorcerer</div>
+                </div>
+                <button id="btnMenuEditProfile" class="btn-micro" title="Switch Name / Change Identity">✏️ EDIT PROFILE</button>
+            </div>
+
             <div class="menu-buttons">
+                <button id="btnModeFriend" class="btn btn-friend">🤝 PLAY VS FRIEND</button>
                 <button id="btnModeArcade" class="btn btn-primary">🏆 ARCADE LADDER</button>
                 <button id="btnModeVersus" class="btn btn-secondary">⚔️ VERSUS AI</button>
                 <button id="btnModePvP" class="btn btn-secondary">👥 LOCAL 2-PLAYER</button>
@@ -183,7 +202,132 @@
             </div>
         </div>
 
-        <!-- 9. Move List / Codex Modal -->
+        <!-- 9. Sorcerer Sign-In & Profile Registration Modal -->
+        <div id="signInModal" class="ui-screen hidden" style="z-index: 250;">
+            <div class="modal-box sign-in-box">
+                <div class="sign-in-badge">⛩️ TOKYO JUJUTSU HIGH ACADEMY ⛩️</div>
+                <h2 class="sign-in-title">SORCERER SIGN IN</h2>
+                <p class="sign-in-subtitle">Register your Cursed Identity before stepping into the Arena</p>
+                
+                <form id="formSignIn" onsubmit="return false;">
+                    <div class="form-group">
+                        <label for="inputPlayerName" class="form-label">YOUR SORCERER NAME</label>
+                        <input type="text" id="inputPlayerName" class="sorcerer-input" placeholder="e.g. Satoru, Yuji, Sukuna..." maxlength="16" required autocomplete="off" />
+                    </div>
+
+                    <div class="form-group">
+                        <label for="selectPlayerTitle" class="form-label">SORCERER GRADE & TITLE</label>
+                        <select id="selectPlayerTitle" class="sorcerer-select">
+                            <option value="Special Grade Sorcerer">Special Grade Sorcerer</option>
+                            <option value="Grade 1 Sorcerer">Grade 1 Sorcerer</option>
+                            <option value="Semi-Grade 1">Semi-Grade 1</option>
+                            <option value="Grade 2 Sorcerer">Grade 2 Sorcerer</option>
+                            <option value="Supreme Grade 1">Supreme Grade 1</option>
+                            <option value="Special Grade Curse User">Special Grade Curse User</option>
+                            <option value="King of Curses Vessel">King of Curses Vessel</option>
+                            <option value="Tokyo Jujutsu Tech Prodigy">Tokyo Jujutsu Tech Prodigy</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-label">AFFINITY CREST / AVATAR</label>
+                        <div class="avatar-picker" id="avatarPicker">
+                            <button type="button" class="avatar-opt active" data-avatar="👁️">👁️ <span>Six Eyes</span></button>
+                            <button type="button" class="avatar-opt" data-avatar="👑">👑 <span>Curse King</span></button>
+                            <button type="button" class="avatar-opt" data-avatar="⚡">⚡ <span>Black Flash</span></button>
+                            <button type="button" class="avatar-opt" data-avatar="🐺">🐺 <span>Shadow Wolf</span></button>
+                            <button type="button" class="avatar-opt" data-avatar="🩸">🩸 <span>Convergence</span></button>
+                            <button type="button" class="avatar-opt" data-avatar="🗡️">🗡️ <span>Cursed Tool</span></button>
+                        </div>
+                    </div>
+
+                    <div class="sign-in-actions" style="margin-top: 20px;">
+                        <button type="submit" id="btnConfirmSignIn" class="btn btn-primary btn-large" style="width: 100%;">⚡ SIGN IN & ENTER ARENA ⚡</button>
+                        <button type="button" id="btnGuestSignIn" class="btn btn-secondary" style="width: 100%; margin-top: 10px;">PLAY AS GUEST</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+
+        <!-- 10. Play vs Friend Modal -->
+        <div id="friendModal" class="ui-screen hidden" style="z-index: 220;">
+            <div class="modal-box friend-modal-box">
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px;">
+                    <div>
+                        <h2 style="font-family: var(--font-heading); color: var(--cyan); margin: 0; font-size: 30px;">🤝 PLAY VS FRIEND</h2>
+                        <div style="color: var(--gold); font-size: 14px; letter-spacing: 2px;">CHALLENGE YOUR RIVAL TO A JUJUTSU SHOWDOWN</div>
+                    </div>
+                    <button id="btnCloseFriendModal" class="btn btn-secondary" style="padding: 6px 14px;">✕ CLOSE</button>
+                </div>
+
+                <div class="friend-cards-grid">
+                    <!-- Option 1: Local 2-Player Match on Same Device -->
+                    <div class="friend-card">
+                        <div class="friend-card-badge" style="background: var(--cyan); color: #000;">LOCAL SPLIT DUEL</div>
+                        <h3>🎮 Duel on Same Device</h3>
+                        <p>Battle side-by-side using shared keyboard or laptop controls.</p>
+
+                        <div class="friend-setup-form">
+                            <div class="fighter-tag-row">
+                                <span class="tag-label">Player 1 (You):</span>
+                                <span class="tag-val p1-tag-name" id="friendP1DisplayName">Sorcerer</span>
+                            </div>
+                            <div class="form-group" style="margin-top: 10px;">
+                                <label for="inputFriendName" class="form-label">FRIEND'S SORCERER NAME</label>
+                                <input type="text" id="inputFriendName" class="sorcerer-input" placeholder="e.g. Rival, Sukuna, Ken..." maxlength="16" value="Friend" autocomplete="off" />
+                            </div>
+
+                            <div class="controls-cheatsheet">
+                                <div class="cheatsheet-col">
+                                    <strong style="color: var(--cyan);">P1 (You):</strong>
+                                    <span>Move: <code>W A S D</code> &bull; Jump: <code>Space</code></span>
+                                    <span>Attack: <code>J</code> &bull; Skills: <code>K</code>, <code>L</code></span>
+                                    <span>Ultimate: <code>U</code> &bull; Block: <code>Shift</code></span>
+                                </div>
+                                <div class="cheatsheet-col">
+                                    <strong style="color: var(--crimson);">P2 (Friend):</strong>
+                                    <span>Move: <code>↑ ↓ ← →</code> &bull; Jump: <code>Num 0 / I</code></span>
+                                    <span>Attack: <code>Num 1 / O</code> &bull; Skills: <code>Num 2/3 / P/[</code></span>
+                                    <span>Ultimate: <code>Num 5 / ]</code> &bull; Block: <code>. / Down</code></span>
+                                </div>
+                            </div>
+
+                            <button id="btnStartFriendLocalDuel" class="btn btn-primary btn-large" style="width: 100%; margin-top: 15px;">
+                                ⚔️ SELECT FIGHTERS & BATTLE FRIEND ⚔️
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Option 2: Shareable Challenge Room Link -->
+                    <div class="friend-card">
+                        <div class="friend-card-badge" style="background: var(--gold); color: #000;">INVITE LINK</div>
+                        <h3>🔗 Challenge via Link</h3>
+                        <p>Send an official Jujutsu Challenge Invite link to your friend on WhatsApp, Discord, or chat.</p>
+
+                        <div class="room-box">
+                            <div class="room-code-label">MATCH ROOM CODE</div>
+                            <div class="room-code-display" id="roomCodeDisplay">JJK-7749</div>
+                            <button id="btnRegenerateRoom" class="btn-micro" style="margin-top: 6px;">🔄 New Code</button>
+                        </div>
+
+                        <div class="form-group" style="margin-top: 15px;">
+                            <label class="form-label">CHALLENGE INVITE LINK</label>
+                            <div style="display: flex; gap: 8px;">
+                                <input type="text" id="inputShareLink" class="sorcerer-input" readonly />
+                                <button id="btnCopyInviteLink" class="btn btn-gold" style="white-space: nowrap; font-size: 15px; padding: 8px 14px;">📋 COPY</button>
+                            </div>
+                            <span id="copyFeedback" class="copy-feedback hidden">✅ Copied to clipboard! Send to your friend!</span>
+                        </div>
+
+                        <div class="invite-preview-box">
+                            <span style="color: #ccc; font-size: 13px;">Friend opens link ➔ Arena launches in Friend Duel mode with your custom challenger name!</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 11. Move List / Codex Modal -->
         <div id="moveListModal" class="ui-screen hidden" style="z-index: 200;">
             <div class="modal-box">
                 <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
@@ -436,16 +580,16 @@
                     </ul>
                 </div>
                 <div class="info-card">
-                    <h4>🎮 Full 3D Controls Guide</h4>
+                    <h4>🎮 Full 3D Controls Guide (Solo & Play vs Friend)</h4>
                     <table class="controls-guide-table">
-                        <tr><th>Action</th><th>Player 1 (Solo)</th><th>Player 2 (PvP)</th><th>Mobile / Touch Buttons</th></tr>
+                        <tr><th>Action</th><th>Player 1 (Solo / Host)</th><th>Player 2 (Friend / PvP)</th><th>Mobile / Touch Buttons</th></tr>
                         <tr><td>3D Movement (Forward/Back/Left/Right)</td><td><kbd>W</kbd> <kbd>A</kbd> <kbd>S</kbd> <kbd>D</kbd></td><td><kbd>&uarr;</kbd> <kbd>&darr;</kbd> <kbd>&larr;</kbd> <kbd>&rarr;</kbd></td><td><kbd>▲</kbd> <kbd>▼</kbd> <kbd>◀</kbd> <kbd>▶</kbd></td></tr>
-                        <tr><td>Jump</td><td><kbd>Space</kbd></td><td><kbd>Numpad 0</kbd></td><td><kbd>⚡ JUMP</kbd></td></tr>
-                        <tr><td>Block / Guard</td><td><kbd>Shift</kbd></td><td><kbd>Numpad .</kbd></td><td><kbd>S</kbd> (GUARD)</td></tr>
-                        <tr><td>Basic Attack</td><td><kbd>J</kbd> or <kbd>Z</kbd></td><td><kbd>Numpad 1</kbd> or <kbd>1</kbd></td><td><kbd>J</kbd> (ATK)</td></tr>
-                        <tr><td>Skill 1</td><td><kbd>K</kbd> or <kbd>X</kbd></td><td><kbd>Numpad 2</kbd> or <kbd>2</kbd></td><td><kbd>K</kbd> (SKILL 1)</td></tr>
-                        <tr><td>Skill 2</td><td><kbd>L</kbd> or <kbd>C</kbd></td><td><kbd>Numpad 3</kbd> or <kbd>3</kbd></td><td><kbd>L</kbd> (SKILL 2)</td></tr>
-                        <tr><td>Ultimate (100 Energy)</td><td><kbd>U</kbd></td><td><kbd>Numpad 5</kbd> or <kbd>5</kbd></td><td><kbd>U</kbd> (ULT)</td></tr>
+                        <tr><td>Jump</td><td><kbd>Space</kbd></td><td><kbd>Numpad 0</kbd> or <kbd>I</kbd></td><td><kbd>⚡ JUMP</kbd></td></tr>
+                        <tr><td>Block / Guard</td><td><kbd>Shift</kbd></td><td><kbd>Numpad .</kbd> or <kbd>&darr;</kbd> or <kbd>/</kbd></td><td><kbd>S</kbd> (GUARD)</td></tr>
+                        <tr><td>Basic Attack</td><td><kbd>J</kbd> or <kbd>Z</kbd></td><td><kbd>Numpad 1</kbd> or <kbd>1</kbd> or <kbd>O</kbd></td><td><kbd>J</kbd> (ATK)</td></tr>
+                        <tr><td>Skill 1</td><td><kbd>K</kbd> or <kbd>X</kbd></td><td><kbd>Numpad 2</kbd> or <kbd>2</kbd> or <kbd>P</kbd></td><td><kbd>K</kbd> (SKILL 1)</td></tr>
+                        <tr><td>Skill 2</td><td><kbd>L</kbd> or <kbd>C</kbd></td><td><kbd>Numpad 3</kbd> or <kbd>3</kbd> or <kbd>[</kbd></td><td><kbd>L</kbd> (SKILL 2)</td></tr>
+                        <tr><td>Ultimate (100 Energy)</td><td><kbd>U</kbd></td><td><kbd>Numpad 5</kbd> or <kbd>5</kbd> or <kbd>]</kbd></td><td><kbd>U</kbd> (ULT)</td></tr>
                         <tr><td>Toggle Camera (Action/3rd/Overview)</td><td><kbd>V</kbd></td><td><kbd>V</kbd></td><td><kbd>🎥</kbd> (CAM)</td></tr>
                         <tr><td>Pause Match</td><td><kbd>Esc</kbd> or <kbd>P</kbd></td><td><kbd>Esc</kbd></td><td><kbd>⏸</kbd> Button</td></tr>
                     </table>

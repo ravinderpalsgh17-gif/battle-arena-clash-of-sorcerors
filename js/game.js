@@ -91,6 +91,10 @@ class BattleArenaGame {
         this.showPreview3D('sukuna');
     }
 
+    isPvPMode() {
+        return this.mode === 'pvp' || this.mode === 'friend';
+    }
+
     initInputListeners() {
         window.addEventListener('keydown', (e) => {
             this.keys[e.code] = true;
@@ -103,6 +107,8 @@ class BattleArenaGame {
 
             if (this.state !== 'fighting') return;
 
+            const isPvP = this.isPvPMode();
+
             // Player 1 Combat Triggers (J, K, L, U + Space)
             if (this.p1 && this.p1.canAct()) {
                 if (e.code === 'Space') this.p1.jump();
@@ -112,7 +118,7 @@ class BattleArenaGame {
                 if (e.code === 'KeyU') this.p1.triggerUltimate();
 
                 // Dual-control support for solo modes
-                if (this.mode !== 'pvp') {
+                if (!isPvP) {
                     if (e.code === 'Numpad0') this.p1.jump();
                     if (e.code === 'Numpad1' || e.code === 'Digit1') this.p1.triggerBasicAttack();
                     if (e.code === 'Numpad2' || e.code === 'Digit2') this.p1.triggerSkill1();
@@ -121,23 +127,24 @@ class BattleArenaGame {
                 }
             }
 
-            // Player 2 Combat Triggers (Local PvP)
-            if (this.mode === 'pvp' && this.p2 && this.p2.canAct()) {
-                if (e.code === 'Numpad0') this.p2.jump();
-                if (e.code === 'Numpad1' || e.code === 'Digit1') this.p2.triggerBasicAttack();
-                if (e.code === 'Numpad2' || e.code === 'Digit2') this.p2.triggerSkill1();
-                if (e.code === 'Numpad3' || e.code === 'Digit3') this.p2.triggerSkill2();
-                if (e.code === 'Numpad5' || e.code === 'Digit5') this.p2.triggerUltimate();
+            // Player 2 Combat Triggers (Local PvP & Play vs Friend)
+            // Supports Numpad / Digits as well as laptop-friendly I, O, P, [, ]
+            if (isPvP && this.p2 && this.p2.canAct()) {
+                if (e.code === 'Numpad0' || e.code === 'KeyI') this.p2.jump();
+                if (e.code === 'Numpad1' || e.code === 'Digit1' || e.code === 'KeyO') this.p2.triggerBasicAttack();
+                if (e.code === 'Numpad2' || e.code === 'Digit2' || e.code === 'KeyP') this.p2.triggerSkill1();
+                if (e.code === 'Numpad3' || e.code === 'Digit3' || e.code === 'BracketLeft') this.p2.triggerSkill2();
+                if (e.code === 'Numpad5' || e.code === 'Digit5' || e.code === 'BracketRight') this.p2.triggerUltimate();
             }
         });
 
         window.addEventListener('keyup', (e) => {
             this.keys[e.code] = false;
 
-            if (this.p1 && (e.code === 'KeyS' || e.code === 'ShiftLeft' || (this.mode !== 'pvp' && (e.code === 'ArrowDown' || e.code === 'NumpadPeriod')))) {
+            if (this.p1 && (e.code === 'KeyS' || e.code === 'ShiftLeft' || (!this.isPvPMode() && (e.code === 'ArrowDown' || e.code === 'NumpadPeriod')))) {
                 this.p1.stopBlock();
             }
-            if (this.p2 && (e.code === 'ArrowDown' || e.code === 'NumpadPeriod')) {
+            if (this.p2 && (e.code === 'ArrowDown' || e.code === 'NumpadPeriod' || e.code === 'Slash' || e.code === 'ShiftRight' || e.code === 'Semicolon')) {
                 this.p2.stopBlock();
             }
         });
@@ -180,9 +187,17 @@ class BattleArenaGame {
     // ----------------------------------------------------
     // MATCH & ROUND MANAGEMENT
     // ----------------------------------------------------
-    startMatch(p1CharKey, p2CharKey, mode = 'arcade', difficulty = 'medium') {
+    startMatch(p1CharKey, p2CharKey, mode = 'arcade', difficulty = 'medium', p1Name = null, p2Name = null) {
         this.mode = mode;
         this.difficulty = difficulty;
+
+        // Custom names for Player 1 & Friend/Player 2
+        const profile = (typeof StorageManager !== 'undefined' && StorageManager.getPlayerProfile) 
+            ? StorageManager.getPlayerProfile() 
+            : { name: 'Sorcerer', friendName: 'Friend' };
+            
+        this.p1CustomName = p1Name || profile.name || 'Sorcerer';
+        this.p2CustomName = p2Name || (this.isPvPMode() ? (profile.friendName || 'Friend') : null);
 
         // Cleanup prior fighters, preview & projectiles
         this.clearPreview3D();
@@ -198,7 +213,7 @@ class BattleArenaGame {
         this.p1.setOpponent(this.p2);
         this.p2.setOpponent(this.p1);
 
-        if (this.mode !== 'pvp') {
+        if (!this.isPvPMode()) {
             this.p2AI = new AIController(this.p2, this.difficulty);
         } else {
             this.p2AI = null;
@@ -278,12 +293,15 @@ class BattleArenaGame {
             else if (this.p2.state === 'dead') roundWinner = 1;
         }
 
+        const p1DisplayName = (this.p1CustomName || 'PLAYER 1').toUpperCase();
+        let p2DisplayName = (this.p2CustomName || (this.isPvPMode() ? 'FRIEND' : 'PLAYER 2')).toUpperCase();
+
         if (roundWinner === 1) {
             this.p1RoundsWon++;
-            this.particles.addFloatingText('PLAYER 1 WINS ROUND!', 0, 4.5, '#00e5ff', 32, true);
+            this.particles.addFloatingText(`${p1DisplayName} WINS ROUND!`, 0, 4.5, '#00e5ff', 32, true);
         } else if (roundWinner === 2) {
             this.p2RoundsWon++;
-            this.particles.addFloatingText('PLAYER 2 WINS ROUND!', 0, 4.5, '#ff2a5f', 32, true);
+            this.particles.addFloatingText(`${p2DisplayName} WINS ROUND!`, 0, 4.5, '#ff2a5f', 32, true);
         } else {
             this.particles.addFloatingText('DRAW ROUND!', 0, 4.5, '#ffffff', 32);
         }
@@ -322,8 +340,11 @@ class BattleArenaGame {
             StorageManager.addPoints(earnedPoints);
         }
 
+        const p1DisplayName = (this.p1CustomName || 'PLAYER 1').toUpperCase();
+        const p2DisplayName = (this.p2CustomName || (this.isPvPMode() ? 'FRIEND' : 'CPU')).toUpperCase();
+
         if (window.UI) {
-            window.UI.showGameOver(p1Won, earnedPoints, this.p1RoundsWon, this.p2RoundsWon, this.arcadeIndex);
+            window.UI.showGameOver(p1Won, earnedPoints, this.p1RoundsWon, this.p2RoundsWon, this.arcadeIndex, p1DisplayName, p2DisplayName, this.isPvPMode());
         }
     }
 
@@ -482,7 +503,7 @@ class BattleArenaGame {
                 if (this.keys['KeyD']) dx += 1;
 
                 // Support Arrow Keys for Player 1 in non-PvP modes
-                if (this.mode !== 'pvp') {
+                if (!this.isPvPMode()) {
                     if (this.keys['ArrowUp']) dz -= 1;
                     if (this.keys['ArrowDown']) dz += 1;
                     if (this.keys['ArrowLeft']) dx -= 1;
@@ -495,13 +516,13 @@ class BattleArenaGame {
                     this.p1.stopMoving();
                 }
 
-                if (this.keys['ShiftLeft'] || (this.mode !== 'pvp' && (this.keys['NumpadPeriod'] || this.keys['ShiftRight']))) {
+                if (this.keys['ShiftLeft'] || (!this.isPvPMode() && (this.keys['NumpadPeriod'] || this.keys['ShiftRight']))) {
                     this.p1.startBlock();
                 }
             }
 
-            // 2. Process Continuous 3D Inputs for Player 2 (Local PvP)
-            if (this.mode === 'pvp' && this.p2 && this.p2.canAct()) {
+            // 2. Process Continuous 3D Inputs for Player 2 (Local PvP & Play vs Friend)
+            if (this.isPvPMode() && this.p2 && this.p2.canAct()) {
                 let dx = 0;
                 let dz = 0;
                 if (this.keys['ArrowUp']) dz -= 1;
@@ -515,7 +536,7 @@ class BattleArenaGame {
                     this.p2.stopMoving();
                 }
 
-                if (this.keys['NumpadPeriod']) {
+                if (this.keys['NumpadPeriod'] || this.keys['Slash'] || this.keys['ShiftRight'] || this.keys['Semicolon']) {
                     this.p2.startBlock();
                 }
             }
@@ -605,10 +626,11 @@ class BattleArenaGame {
         ctx.lineWidth = 2.5;
         ctx.strokeRect(50, barY, barW, barH);
 
-        // P1 Name & Grade Tag
+        // P1 Name & Grade Tag (Shows Custom Sorcerer Name & Character)
+        const p1DisplayName = (this.p1CustomName || 'PLAYER 1').toUpperCase();
         ctx.font = "900 24px 'Cinzel', serif";
         ctx.fillStyle = '#ffffff';
-        ctx.fillText(this.p1.data.name.toUpperCase(), 55, barY - 10);
+        ctx.fillText(`${p1DisplayName} [${this.p1.data.name.toUpperCase()}]`, 55, barY - 10);
 
         ctx.font = "700 16px 'Rajdhani', sans-serif";
         ctx.fillStyle = '#00e5ff';
@@ -635,10 +657,13 @@ class BattleArenaGame {
         ctx.lineWidth = 2.5;
         ctx.strokeRect(p2X, barY, barW, barH);
 
+        // P2 Name & Grade Tag (Shows Friend / CPU Name & Character)
+        const isPvP = this.isPvPMode();
+        const p2DisplayName = (this.p2CustomName || (isPvP ? 'FRIEND' : 'CPU')).toUpperCase();
         ctx.font = "900 24px 'Cinzel', serif";
         ctx.fillStyle = '#ffffff';
         ctx.textAlign = 'right';
-        ctx.fillText(this.p2.data.name.toUpperCase(), this.width - 55, barY - 10);
+        ctx.fillText(`${p2DisplayName} [${this.p2.data.name.toUpperCase()}]`, this.width - 55, barY - 10);
 
         ctx.font = "700 16px 'Rajdhani', sans-serif";
         ctx.fillStyle = '#ff2a5f';
