@@ -610,17 +610,15 @@ class Character3DFactory {
             chestMat = darkSkinMat;
             pantsMat = regMat(new THREE.MeshStandardMaterial({ color: 0x3d4a36, roughness: 0.6 }));
         } else if (charKey === 'sukuna') {
+            // Ryomen Sukuna: True 4-Armed Heian Demon King - Completely BARE muscular torso with cursed seals
+            const sukunaSkinTexture = ProceduralTextureFactory.createSukunaSkinTexture();
             torsoMat = regMat(new THREE.MeshStandardMaterial({
-                map: ProceduralTextureFactory.createSukunaKimonoTexture(),
-                roughness: 0.5,
-                metalness: 0.08
-            }));
-            chestMat = regMat(new THREE.MeshStandardMaterial({
-                map: ProceduralTextureFactory.createSukunaSkinTexture(),
+                map: sukunaSkinTexture,
                 roughness: 0.45,
                 metalness: 0.05
             }));
-            pantsMat = regMat(new THREE.MeshStandardMaterial({ color: 0x1a1a24, roughness: 0.5 }));
+            chestMat = torsoMat;
+            pantsMat = regMat(new THREE.MeshStandardMaterial({ color: 0x14141c, roughness: 0.6 }));
         } else if (charKey === 'toji') {
             torsoMat = regMat(new THREE.MeshStandardMaterial({
                 map: ProceduralTextureFactory.createTojiCompressionShirtTexture(),
@@ -758,7 +756,7 @@ class Character3DFactory {
         pelvis.position.set(0, -0.60, 0);
         torsoGroup.add(pelvis);
 
-        // --- RYOMEN SUKUNA: 4K HEIAN DETAILED CHEST & SASH ---
+        // --- RYOMEN SUKUNA: 4K HEIAN DETAILED CHEST & COMBAT SASH ---
         if (charKey === 'sukuna') {
             // 3D Relief Cursed Tattoo Center Medallion & Rib Slashes
             const tattoo1 = new THREE.Mesh(new THREE.BoxGeometry(0.82, 0.07, 0.06), cursedTattooMat);
@@ -773,36 +771,26 @@ class Character3DFactory {
             tattooCircle.position.set(0, 0.06, torsoDepth / 2 + 0.14);
             torsoGroup.add(tattooCircle);
 
-            // Shimenawa-Style Dual-Cord Woven Rope Belt (Obi)
+            // Shimenawa-Style Dual-Cord Woven Rope Belt (Obi) at Waist
             const obiMat = regMat(new THREE.MeshStandardMaterial({ color: 0x121216, roughness: 0.4 }));
             const obiGoldMat = regMat(new THREE.MeshStandardMaterial({ color: 0xdfb135, roughness: 0.3, metalness: 0.8 }));
 
-            const obi = new THREE.Mesh(new THREE.BoxGeometry(torsoWidth + 0.14, 0.32, torsoDepth + 0.14), obiMat);
-            obi.position.set(0, -0.42, 0);
+            const obi = new THREE.Mesh(new THREE.BoxGeometry(torsoWidth * 0.86, 0.22, torsoDepth * 0.90), obiMat);
+            obi.position.set(0, -0.46, 0);
             torsoGroup.add(obi);
 
             // Gold accent cord
-            const obiCord = new THREE.Mesh(new THREE.BoxGeometry(torsoWidth + 0.16, 0.08, torsoDepth + 0.16), obiGoldMat);
-            obiCord.position.set(0, -0.42, 0);
+            const obiCord = new THREE.Mesh(new THREE.BoxGeometry(torsoWidth * 0.88, 0.06, torsoDepth * 0.92), obiGoldMat);
+            obiCord.position.set(0, -0.46, 0);
             torsoGroup.add(obiCord);
 
             // Hanging Knot Tassels
             for (let side of [-0.15, 0.15]) {
-                const tassel = new THREE.Mesh(new THREE.CylinderGeometry(0.04, 0.06, 0.65, 8), obiMat);
-                tassel.position.set(side, -0.72, torsoDepth / 2 + 0.08);
+                const tassel = new THREE.Mesh(new THREE.BoxGeometry(0.06, 0.55, 0.06), obiMat);
+                tassel.position.set(side, -0.68, torsoDepth / 2 + 0.08);
                 tassel.rotation.z = side * -0.2;
                 torsoGroup.add(tassel);
             }
-
-            // Flowing Kimono Skirt Pleats
-            const skirtMat = regMat(new THREE.MeshStandardMaterial({
-                map: ProceduralTextureFactory.createSukunaKimonoTexture(),
-                roughness: 0.5
-            }));
-            const skirt = new THREE.Mesh(new THREE.BoxGeometry(torsoWidth + 0.1, 0.75, torsoDepth + 0.1), skirtMat);
-            skirt.position.set(0, -0.85, 0);
-            torsoGroup.add(skirt);
-            parts.skirt = skirt;
 
         } else if (charKey === 'yuji') {
             // Bright Red Cowl Hood folded around neck
@@ -873,22 +861,31 @@ class Character3DFactory {
 
         const headMat = (charKey === 'panda' ? torsoMat : (charKey === 'todo' ? darkSkinMat : (charKey === 'jogo' ? regMat(new THREE.MeshStandardMaterial({ color: 0xa4b89b })) : skinMat)));
 
-        // A. Sturdy Muscular Neck
-        const neckRadius = headSize * 0.40;
+        // A. Sturdy Muscular Neck (100% Chiseled Anatomical Architecture)
+        const neckWidth = headSize * 0.72;
+        const neckDepth = headSize * 0.68;
         const neckMesh = new THREE.Mesh(
-            new THREE.CylinderGeometry(neckRadius * 0.90, neckRadius * 1.10, 0.42, 12),
+            new THREE.BoxGeometry(neckWidth, 0.42, neckDepth),
             headMat
         );
-        neckMesh.position.y = -0.21;
+        neckMesh.position.set(0, -0.21, 0.02);
         neckMesh.castShadow = true;
         headGroup.add(neckMesh);
 
         // Sternocleidomastoid Muscle Pillars on Neck
         for (let s of [-1, 1]) {
-            const scm = new THREE.Mesh(new THREE.BoxGeometry(0.05, 0.36, 0.07), headMat);
-            scm.position.set(s * 0.10, -0.21, 0.08);
+            const scm = new THREE.Mesh(new THREE.BoxGeometry(0.06, 0.38, 0.08), headMat);
+            scm.position.set(s * (neckWidth * 0.38), -0.21, neckDepth * 0.44);
             scm.rotation.set(-0.2, 0, s * 0.22);
             headGroup.add(scm);
+        }
+
+        // Adam's Apple Prominence on Front of Throat
+        if (charKey !== 'nobara' && charKey !== 'maki') {
+            const adamsApple = new THREE.Mesh(new THREE.ConeGeometry(0.045, 0.12, 4), headMat);
+            adamsApple.position.set(0, -0.16, neckDepth * 0.54);
+            adamsApple.rotation.x = Math.PI / 2;
+            headGroup.add(adamsApple);
         }
 
         // B. Anatomical Chiseled Anime Cranium (Angled Skull with Temples & Crown - No Spheres!)
@@ -1437,63 +1434,97 @@ class Character3DFactory {
             postDelt.position.set(side * (armThickness * 0.05), -0.08, -armThickness * 0.35);
             shoulderGroup.add(postDelt);
 
-            // B. Upper Arm Core
+            // B. Upper Arm Core (Chiseled Faceted Muscular Arm - Zero Round Tubes)
             const upperArm = new THREE.Mesh(
-                new THREE.CylinderGeometry(armThickness * 0.95, armThickness * 0.82, 0.65, 12),
+                new THREE.BoxGeometry(armThickness * 0.92, 0.65, armThickness * 0.90),
                 thisArmMat
             );
             upperArm.position.y = -0.34;
             upperArm.castShadow = true;
             shoulderGroup.add(upperArm);
 
-            // Bicep Muscle Peak
+            // Bicep Muscle Peak (Bulging Anterior Athletic Mass)
             const bicep = new THREE.Mesh(
-                new THREE.BoxGeometry(armThickness * 0.82, 0.38, armThickness * 0.48),
+                new THREE.BoxGeometry(armThickness * 0.90, 0.44, armThickness * 0.58),
                 thisArmMat
             );
-            bicep.position.set(0, -0.32, armThickness * 0.44);
+            bicep.position.set(0, -0.32, armThickness * 0.46);
             bicep.castShadow = true;
             shoulderGroup.add(bicep);
 
-            // Tricep Horseshoe
+            // Tricep Horseshoe (Massive Lateral & Medial Posterior Heads)
             const tricep = new THREE.Mesh(
-                new THREE.BoxGeometry(armThickness * 0.92, 0.44, armThickness * 0.52),
+                new THREE.BoxGeometry(armThickness * 0.98, 0.52, armThickness * 0.60),
                 thisArmMat
             );
-            tricep.position.set(0, -0.28, -armThickness * 0.42);
+            tricep.position.set(0, -0.28, -armThickness * 0.44);
             tricep.castShadow = true;
             shoulderGroup.add(tricep);
+
+            // Tricep Cleft Groove
+            const tricepCleft = new THREE.Mesh(
+                new THREE.BoxGeometry(armThickness * 0.12, 0.42, 0.08),
+                regMat(new THREE.MeshBasicMaterial({ color: 0x05050a }))
+            );
+            tricepCleft.position.set(0, -0.28, -armThickness * 0.72);
+            shoulderGroup.add(tricepCleft);
+
+            // Sukuna Cursed Tattoo Arm Bands around Bicep
+            if (charKey === 'sukuna') {
+                for (let b of [-0.24, -0.36]) {
+                    const band = new THREE.Mesh(new THREE.BoxGeometry(armThickness * 1.08, 0.05, armThickness * 1.08), cursedTattooMat);
+                    band.position.set(0, b, 0);
+                    shoulderGroup.add(band);
+                }
+            }
 
             // C. Forearm Group (Elbow joint pivot)
             const forearmGroup = new THREE.Group();
             forearmGroup.position.set(0, -0.68, 0);
             shoulderGroup.add(forearmGroup);
 
-            // Elbow Joint Plate
+            // Elbow Joint Plate (Olecranon Point)
             const elbow = new THREE.Mesh(
                 new THREE.BoxGeometry(armThickness * 0.82, 0.16, armThickness * 0.82),
                 thisArmMat
             );
-            elbow.position.set(0, 0, 0);
+            elbow.position.set(0, 0, -armThickness * 0.08);
             forearmGroup.add(elbow);
 
-            // Muscular Forearm Core
+            // Muscular Forearm Core (Tapered Angular Shaft)
             const thisForearmMat = (charKey === 'panda' ? regMat(new THREE.MeshStandardMaterial({ color: 0x111116 })) : skinMat);
             const forearm = new THREE.Mesh(
-                new THREE.CylinderGeometry(armThickness * 0.98, armThickness * 0.68, 0.65, 12),
+                new THREE.BoxGeometry(armThickness * 0.94, 0.65, armThickness * 0.86),
                 thisForearmMat
             );
             forearm.position.y = -0.34;
             forearm.castShadow = true;
             forearmGroup.add(forearm);
 
-            // Brachioradialis Muscle Sweep (Outer forearm flare)
+            // Brachioradialis Muscle Sweep (Flaring Outer Forearm Ridge)
             const brachy = new THREE.Mesh(
-                new THREE.BoxGeometry(armThickness * 0.46, 0.38, armThickness * 0.68),
+                new THREE.BoxGeometry(armThickness * 0.58, 0.44, armThickness * 0.76),
                 thisForearmMat
             );
-            brachy.position.set(side * (armThickness * 0.44), -0.24, 0.04);
+            brachy.position.set(side * (armThickness * 0.46), -0.22, 0.06);
             forearmGroup.add(brachy);
+
+            // Flexor Muscle Belly on Inner Forearm
+            const flexor = new THREE.Mesh(
+                new THREE.BoxGeometry(armThickness * 0.72, 0.40, armThickness * 0.44),
+                thisForearmMat
+            );
+            flexor.position.set(0, -0.32, armThickness * 0.40);
+            forearmGroup.add(flexor);
+
+            // Sukuna Double Cursed Wrist Bands
+            if (charKey === 'sukuna') {
+                for (let wb of [-0.56, -0.63]) {
+                    const wBand = new THREE.Mesh(new THREE.BoxGeometry(armThickness * 0.98, 0.045, armThickness * 0.92), cursedTattooMat);
+                    wBand.position.set(0, wb, 0);
+                    forearmGroup.add(wBand);
+                }
+            }
 
             // D. Fighter Clenched Fist
             const handMesh = new THREE.Group();
@@ -1525,9 +1556,9 @@ class Character3DFactory {
             // Sukuna Obsidian Black Claws on Fingers with Glowing Tips!
             if (charKey === 'sukuna') {
                 for (let f = -0.07; f <= 0.07; f += 0.035) {
-                    const claw = new THREE.Mesh(new THREE.ConeGeometry(0.026, 0.15, 6), clawMat);
-                    claw.position.set(f, -0.18, armThickness * 0.28);
-                    claw.rotation.x = Math.PI;
+                    const claw = new THREE.Mesh(new THREE.ConeGeometry(0.032, 0.22, 6), clawMat);
+                    claw.position.set(f, -0.22, armThickness * 0.30);
+                    claw.rotation.set(Math.PI + 0.25, 0, (f < 0 ? -0.15 : 0.15));
                     handMesh.add(claw);
                 }
             }
@@ -1565,37 +1596,45 @@ class Character3DFactory {
             hipGroup.position.set(side * (torsoWidth / 4), -0.62, 0);
             torsoGroup.add(hipGroup);
 
-            // A. Thigh Core (Tapered Athletic Femur)
+            // A. Muscular Thigh Core (Anatomical Faceted Femur)
             const thigh = new THREE.Mesh(
-                new THREE.CylinderGeometry(legThickness * 1.05, legThickness * 0.82, 0.72, 12),
+                new THREE.BoxGeometry(legThickness * 0.98, 0.72, legThickness * 0.98),
                 pantsMat
             );
             thigh.position.y = -0.36;
             thigh.castShadow = true;
             hipGroup.add(thigh);
 
-            // Vastus Lateralis (Outer quad sweep)
-            const quadSweep = new THREE.Mesh(
-                new THREE.BoxGeometry(legThickness * 0.52, 0.52, legThickness * 0.82),
+            // Rectus Femoris (Front quad central slab)
+            const quadFront = new THREE.Mesh(
+                new THREE.BoxGeometry(legThickness * 0.72, 0.58, legThickness * 0.34),
                 pantsMat
             );
-            quadSweep.position.set(side * (legThickness * 0.54), -0.32, 0.02);
+            quadFront.position.set(0, -0.34, legThickness * 0.36);
+            hipGroup.add(quadFront);
+
+            // Vastus Lateralis (Outer quad sweep - heavy muscular flare)
+            const quadSweep = new THREE.Mesh(
+                new THREE.BoxGeometry(legThickness * 0.58, 0.54, legThickness * 0.84),
+                pantsMat
+            );
+            quadSweep.position.set(side * (legThickness * 0.48), -0.32, 0.04);
             hipGroup.add(quadSweep);
 
             // Vastus Medialis (Teardrop quad above inner knee)
             const quadTeardrop = new THREE.Mesh(
-                new THREE.BoxGeometry(legThickness * 0.44, 0.28, legThickness * 0.62),
+                new THREE.BoxGeometry(legThickness * 0.48, 0.32, legThickness * 0.64),
                 pantsMat
             );
-            quadTeardrop.position.set(-side * (legThickness * 0.36), -0.52, legThickness * 0.26);
+            quadTeardrop.position.set(-side * (legThickness * 0.38), -0.52, legThickness * 0.28);
             hipGroup.add(quadTeardrop);
 
-            // Hamstrings (Back of thigh curve)
+            // Hamstrings (Back of thigh powerful bicep femoris slab)
             const hamstring = new THREE.Mesh(
-                new THREE.BoxGeometry(legThickness * 0.82, 0.46, legThickness * 0.48),
+                new THREE.BoxGeometry(legThickness * 0.86, 0.52, legThickness * 0.46),
                 pantsMat
             );
-            hamstring.position.set(0, -0.36, -legThickness * 0.42);
+            hamstring.position.set(0, -0.36, -legThickness * 0.38);
             hipGroup.add(hamstring);
 
             // B. Knee Joint & Calf Group
@@ -1605,28 +1644,56 @@ class Character3DFactory {
 
             // Patella (Kneecap plate)
             const kneeCap = new THREE.Mesh(
-                new THREE.BoxGeometry(legThickness * 0.72, 0.22, legThickness * 0.48),
+                new THREE.BoxGeometry(legThickness * 0.78, 0.24, legThickness * 0.52),
                 pantsMat
             );
-            kneeCap.position.set(0, 0, legThickness * 0.38);
+            kneeCap.position.set(0, 0.02, legThickness * 0.38);
             calfGroup.add(kneeCap);
 
-            // Calf Core
+            // Calf Muscular Core (Faceted anatomical column)
             const calf = new THREE.Mesh(
-                new THREE.CylinderGeometry(legThickness * 0.92, legThickness * 0.68, 0.72, 12),
+                new THREE.BoxGeometry(legThickness * 0.86, 0.72, legThickness * 0.82),
                 pantsMat
             );
             calf.position.y = -0.36;
             calf.castShadow = true;
             calfGroup.add(calf);
 
-            // Gastrocnemius (Muscular Diamond Calf Bulge)
-            const calfMuscle = new THREE.Mesh(
-                new THREE.BoxGeometry(legThickness * 0.82, 0.38, legThickness * 0.56),
+            // Tibialis Anterior (Sharp front shin ridge)
+            const shinRidge = new THREE.Mesh(
+                new THREE.BoxGeometry(legThickness * 0.36, 0.64, legThickness * 0.28),
                 pantsMat
             );
-            calfMuscle.position.set(0, -0.22, -legThickness * 0.38);
+            shinRidge.position.set(0, -0.36, legThickness * 0.38);
+            calfGroup.add(shinRidge);
+
+            // Gastrocnemius (Muscular Diamond Calf Bulge)
+            const calfMuscle = new THREE.Mesh(
+                new THREE.BoxGeometry(legThickness * 0.94, 0.42, legThickness * 0.56),
+                pantsMat
+            );
+            calfMuscle.position.set(0, -0.24, -legThickness * 0.36);
             calfGroup.add(calfMuscle);
+
+            // Soleus / Achilles Tendon lower taper
+            const calfSoleus = new THREE.Mesh(
+                new THREE.BoxGeometry(legThickness * 0.70, 0.32, legThickness * 0.44),
+                pantsMat
+            );
+            calfSoleus.position.set(0, -0.50, -legThickness * 0.28);
+            calfGroup.add(calfSoleus);
+
+            // Sukuna Double Cursed Shin / Ankle Tattoo Bands
+            if (charKey === 'sukuna') {
+                for (let b = 0; b < 2; b++) {
+                    const shinBand = new THREE.Mesh(
+                        new THREE.BoxGeometry(legThickness * 1.02, 0.055, legThickness * 0.98),
+                        cursedTattooMat
+                    );
+                    shinBand.position.set(0, -0.48 - b * 0.10, 0.02);
+                    calfGroup.add(shinBand);
+                }
+            }
 
             // C. Heavy Sorcerer Combat Boot
             const bootGroup = new THREE.Group();
