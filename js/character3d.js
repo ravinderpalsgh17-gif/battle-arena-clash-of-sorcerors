@@ -1960,22 +1960,22 @@ class CharacterModel3D {
         }
 
         if (isBlocking) {
-            // Guard Stance
+            // Guard Stance: Forward crossed X-Guard protecting chest and face
             this.parts.torso.position.y = 1.8;
-            this.parts.torso.rotation.set(0.15, 0, 0);
+            this.parts.torso.rotation.set(0.12, 0, 0);
 
-            // Upper Arms X-Guard
-            this.parts.leftShoulder.rotation.set(0.9, 0.6, -0.4);
-            this.parts.rightShoulder.rotation.set(0.9, -0.6, 0.4);
-            this.parts.leftForearm.rotation.set(0.8, 0, 0);
-            this.parts.rightForearm.rotation.set(0.8, 0, 0);
+            // Upper Arms X-Guard (raised and crossed in front)
+            this.parts.leftShoulder.rotation.set(-0.75, 0.45, -0.25);
+            this.parts.rightShoulder.rotation.set(-0.75, -0.45, 0.25);
+            this.parts.leftForearm.rotation.set(-1.15, 0.25, 0);
+            this.parts.rightForearm.rotation.set(-1.15, -0.25, 0);
 
             // Sukuna Lower Arms Double X-Barrier!
             if (this.parts.leftLowerShoulder && this.parts.rightLowerShoulder) {
-                this.parts.leftLowerShoulder.rotation.set(0.6, 0.4, -0.3);
-                this.parts.rightLowerShoulder.rotation.set(0.6, -0.4, 0.3);
-                this.parts.leftLowerForearm.rotation.set(0.9, 0, 0);
-                this.parts.rightLowerForearm.rotation.set(0.9, 0, 0);
+                this.parts.leftLowerShoulder.rotation.set(-0.65, 0.35, -0.2);
+                this.parts.rightLowerShoulder.rotation.set(-0.65, -0.35, 0.2);
+                this.parts.leftLowerForearm.rotation.set(-1.05, 0.2, 0);
+                this.parts.rightLowerForearm.rotation.set(-1.05, -0.2, 0);
             }
             return;
         }
@@ -1985,8 +1985,10 @@ class CharacterModel3D {
             this.parts.torso.position.y = 1.9;
             this.parts.torso.rotation.set(-0.2, 0, 0);
 
-            this.parts.leftShoulder.rotation.set(-0.8, 0, -0.5);
-            this.parts.rightShoulder.rotation.set(-0.8, 0, 0.5);
+            this.parts.leftShoulder.rotation.set(-0.7, 0, -0.4);
+            this.parts.rightShoulder.rotation.set(-0.7, 0, 0.4);
+            this.parts.leftForearm.rotation.set(-0.45, 0, 0);
+            this.parts.rightForearm.rotation.set(-0.45, 0, 0);
             this.parts.leftHip.rotation.set(-0.6, 0, 0);
             this.parts.rightHip.rotation.set(-0.3, 0, 0);
             this.parts.leftCalf.rotation.set(0.8, 0, 0);
@@ -1995,43 +1997,52 @@ class CharacterModel3D {
             if (this.parts.leftLowerShoulder && this.parts.rightLowerShoulder) {
                 this.parts.leftLowerShoulder.rotation.set(-0.5, 0.3, -0.3);
                 this.parts.rightLowerShoulder.rotation.set(-0.5, -0.3, 0.3);
+                this.parts.leftLowerForearm.rotation.set(-0.5, 0, 0);
+                this.parts.rightLowerForearm.rotation.set(-0.5, 0, 0);
             }
             return;
         }
 
         if (state === 'attack1') {
-            // Basic Attack: Dismantle / Fist Strike
+            // Basic Attack: Forward Punch Strike / Dismantle
             const progress = (22 - stateTimer) / 22;
             const strike = Math.sin(progress * Math.PI);
 
             this.parts.torso.rotation.y = strike * 0.45;
-            this.parts.rightShoulder.rotation.set(-1.2 * strike, 0, 0);
-            this.parts.rightForearm.rotation.set(-0.3 * strike, 0, 0);
-            this.parts.leftShoulder.rotation.set(0.4 * strike, 0, -0.2);
+            this.parts.rightShoulder.rotation.set(-1.35 * strike - 0.2, 0, 0);
+            this.parts.rightForearm.rotation.set(-0.35 * (1 - strike), 0, 0);
+            this.parts.leftShoulder.rotation.set(-0.2, 0.3, -0.2);
+            this.parts.leftForearm.rotation.set(-0.8, 0, 0);
 
             // Sukuna: Lower Left Arm strikes forward in sync!
             if (this.parts.leftLowerShoulder && this.parts.rightLowerShoulder) {
-                this.parts.leftLowerShoulder.rotation.set(-1.1 * strike, 0.2, 0);
-                this.parts.rightLowerShoulder.rotation.set(0.3 * strike, 0, 0);
+                this.parts.leftLowerShoulder.rotation.set(-1.25 * strike - 0.2, 0.2, 0);
+                this.parts.leftLowerForearm.rotation.set(-0.3 * (1 - strike), 0, 0);
+                this.parts.rightLowerShoulder.rotation.set(-0.2, -0.3, 0.2);
+                this.parts.rightLowerForearm.rotation.set(-0.7, 0, 0);
             }
             return;
         }
 
         if (state === 'attack2') {
-            // Skill 1: Cleave / Flurry
+            // Skill 1: Cleave / Whirlwind Flurry
             const progress = (34 - stateTimer) / 34;
             const spin = Math.sin(progress * Math.PI);
 
             this.parts.torso.rotation.y = spin * 1.2;
             this.parts.rightHip.rotation.set(-1.4 * spin, 0, 0.3 * spin);
             this.parts.rightCalf.rotation.set(0.8 * spin, 0, 0);
-            this.parts.leftShoulder.rotation.set(0.6 * spin, 0, -0.6 * spin);
+            this.parts.leftShoulder.rotation.set(-0.6 * spin, 0, -0.6 * spin);
+            this.parts.leftForearm.rotation.set(-0.5, 0, 0);
             this.parts.rightShoulder.rotation.set(-0.8 * spin, 0, 0.4 * spin);
+            this.parts.rightForearm.rotation.set(-0.5, 0, 0);
 
             // Sukuna: Lower Arms spin in cutting whirlwind!
             if (this.parts.leftLowerShoulder && this.parts.rightLowerShoulder) {
                 this.parts.leftLowerShoulder.rotation.set(-0.9 * spin, 0, -0.5 * spin);
-                this.parts.rightLowerShoulder.rotation.set(0.7 * spin, 0, 0.5 * spin);
+                this.parts.leftLowerForearm.rotation.set(-0.6, 0, 0);
+                this.parts.rightLowerShoulder.rotation.set(-0.7 * spin, 0, 0.5 * spin);
+                this.parts.rightLowerForearm.rotation.set(-0.6, 0, 0);
             }
             return;
         }
@@ -2044,12 +2055,16 @@ class CharacterModel3D {
             this.parts.torso.position.y = 1.9 + slam * 0.4;
             this.parts.torso.rotation.x = slam * 0.4;
             this.parts.rightShoulder.rotation.set(-1.8 * slam, 0, 0);
+            this.parts.rightForearm.rotation.set(-0.5 * slam, 0, 0);
             this.parts.leftShoulder.rotation.set(-1.8 * slam, 0, 0);
+            this.parts.leftForearm.rotation.set(-0.5 * slam, 0, 0);
 
             // Sukuna: Lower arms steady the flame arrow launch point!
             if (this.parts.leftLowerShoulder && this.parts.rightLowerShoulder) {
                 this.parts.leftLowerShoulder.rotation.set(-1.4 * slam, 0.3, 0);
+                this.parts.leftLowerForearm.rotation.set(-0.7 * slam, 0, 0);
                 this.parts.rightLowerShoulder.rotation.set(-1.4 * slam, -0.3, 0);
+                this.parts.rightLowerForearm.rotation.set(-0.7 * slam, 0, 0);
             }
             return;
         }
@@ -2059,18 +2074,18 @@ class CharacterModel3D {
             this.parts.torso.position.y = 2.4 + Math.sin(t * 4) * 0.15;
             this.parts.torso.rotation.set(0, 0, 0);
 
-            // Upper hands clasped in Domain Mudra
+            // Upper hands clasped forward in Domain Mudra
             this.parts.leftShoulder.rotation.set(-0.9, 0.7, -0.3);
             this.parts.rightShoulder.rotation.set(-0.9, -0.7, 0.3);
-            this.parts.leftForearm.rotation.set(0.7, 0, 0);
-            this.parts.rightForearm.rotation.set(0.7, 0, 0);
+            this.parts.leftForearm.rotation.set(-0.85, 0.2, 0);
+            this.parts.rightForearm.rotation.set(-0.85, -0.2, 0);
 
             // SUKUNA TRUE ENMATEN 4-ARM HAND SIGN
             if (this.parts.leftLowerShoulder && this.parts.rightLowerShoulder) {
                 this.parts.leftLowerShoulder.rotation.set(-0.7, 0.5, -0.2);
                 this.parts.rightLowerShoulder.rotation.set(-0.7, -0.5, 0.2);
-                this.parts.leftLowerForearm.rotation.set(0.85, 0, 0);
-                this.parts.rightLowerForearm.rotation.set(0.85, 0, 0);
+                this.parts.leftLowerForearm.rotation.set(-0.95, 0.15, 0);
+                this.parts.rightLowerForearm.rotation.set(-0.95, -0.15, 0);
             }
 
             this.parts.leftHip.rotation.set(0.2, 0, -0.2);
@@ -2083,11 +2098,15 @@ class CharacterModel3D {
             this.parts.torso.position.y = 1.8;
             this.parts.torso.rotation.set(-0.4, 0, (Math.random() - 0.5) * 0.2);
             this.parts.leftShoulder.rotation.set(0.6, 0, -0.5);
+            this.parts.leftForearm.rotation.set(-0.3, 0, 0);
             this.parts.rightShoulder.rotation.set(0.6, 0, 0.5);
+            this.parts.rightForearm.rotation.set(-0.3, 0, 0);
 
             if (this.parts.leftLowerShoulder && this.parts.rightLowerShoulder) {
                 this.parts.leftLowerShoulder.rotation.set(0.4, 0, -0.3);
+                this.parts.leftLowerForearm.rotation.set(-0.3, 0, 0);
                 this.parts.rightLowerShoulder.rotation.set(0.4, 0, 0.3);
+                this.parts.rightLowerForearm.rotation.set(-0.3, 0, 0);
             }
             return;
         }
@@ -2106,37 +2125,37 @@ class CharacterModel3D {
             this.parts.leftCalf.rotation.set(Math.max(0, -swing * 0.9), 0, 0);
             this.parts.rightCalf.rotation.set(Math.max(0, swing * 0.9), 0, 0);
 
-            // Upper Arms
-            this.parts.leftShoulder.rotation.set(-swing * 0.7, 0, 0);
-            this.parts.rightShoulder.rotation.set(swing * 0.7, 0, 0);
-            this.parts.leftForearm.rotation.set(0.3, 0, 0);
-            this.parts.rightForearm.rotation.set(0.3, 0, 0);
+            // Upper Arms: Forward natural athletic pump
+            this.parts.leftShoulder.rotation.set(-swing * 0.7 - 0.2, 0, -0.15);
+            this.parts.rightShoulder.rotation.set(swing * 0.7 - 0.2, 0, 0.15);
+            this.parts.leftForearm.rotation.set(-0.65 - Math.abs(swing) * 0.2, 0, 0);
+            this.parts.rightForearm.rotation.set(-0.65 - Math.abs(swing) * 0.2, 0, 0);
 
             // Sukuna Lower Arms Counter-Swing
             if (this.parts.leftLowerShoulder && this.parts.rightLowerShoulder) {
-                this.parts.leftLowerShoulder.rotation.set(swing * 0.5, 0.2, 0);
-                this.parts.rightLowerShoulder.rotation.set(-swing * 0.5, -0.2, 0);
-                this.parts.leftLowerForearm.rotation.set(0.5, 0, 0);
-                this.parts.rightLowerForearm.rotation.set(0.5, 0, 0);
+                this.parts.leftLowerShoulder.rotation.set(swing * 0.5 - 0.2, 0.2, -0.1);
+                this.parts.rightLowerShoulder.rotation.set(-swing * 0.5 - 0.2, -0.2, 0.1);
+                this.parts.leftLowerForearm.rotation.set(-0.75, 0, 0);
+                this.parts.rightLowerForearm.rotation.set(-0.75, 0, 0);
             }
         } else {
-            // Idle Breathing Stance
+            // Idle Breathing Combat Stance: Arms held naturally forward in ready combat posture
             const breath = Math.sin(t * 2);
             this.parts.torso.position.y = 1.9 + breath * 0.04;
             this.parts.torso.rotation.set(0, 0, 0);
 
-            // Upper Arms
-            this.parts.leftShoulder.rotation.set(0.1 + breath * 0.03, 0, -0.15);
-            this.parts.rightShoulder.rotation.set(0.1 + breath * 0.03, 0, 0.15);
-            this.parts.leftForearm.rotation.set(0.2, 0, 0);
-            this.parts.rightForearm.rotation.set(0.2, 0, 0);
+            // Upper Arms: Forward ready combat guard (elbows naturally bent forward towards opponent)
+            this.parts.leftShoulder.rotation.set(-0.25 + breath * 0.03, 0.15, -0.18);
+            this.parts.rightShoulder.rotation.set(-0.35 + breath * 0.03, -0.15, 0.18);
+            this.parts.leftForearm.rotation.set(-0.65, 0, 0);
+            this.parts.rightForearm.rotation.set(-0.75, 0, 0);
 
-            // Sukuna Lower Arms: Poised Combat Mudra at mid-torso
+            // Sukuna Lower Arms: Poised Combat Mudra forward at mid-torso
             if (this.parts.leftLowerShoulder && this.parts.rightLowerShoulder) {
-                this.parts.leftLowerShoulder.rotation.set(-0.25 + breath * 0.02, 0.35, -0.1);
-                this.parts.rightLowerShoulder.rotation.set(-0.25 + breath * 0.02, -0.35, 0.1);
-                this.parts.leftLowerForearm.rotation.set(0.65, 0, 0);
-                this.parts.rightLowerForearm.rotation.set(0.65, 0, 0);
+                this.parts.leftLowerShoulder.rotation.set(-0.28 + breath * 0.02, 0.32, -0.12);
+                this.parts.rightLowerShoulder.rotation.set(-0.28 + breath * 0.02, -0.32, 0.12);
+                this.parts.leftLowerForearm.rotation.set(-0.85, 0.2, 0);
+                this.parts.rightLowerForearm.rotation.set(-0.85, -0.2, 0);
             }
 
             this.parts.leftHip.rotation.set(0, 0, -0.08);
