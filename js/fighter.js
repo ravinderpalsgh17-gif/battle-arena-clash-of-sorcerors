@@ -17,7 +17,7 @@ class Fighter {
         this.vx = 0;
         this.vy = 0;
         this.vz = 0;
-        this.rotationY = isPlayer2 ? Math.PI : 0;
+        this.rotationY = isPlayer2 ? -Math.PI / 2 : Math.PI / 2;
         this.gravity = 0.024;
         this.isGrounded = true;
 
@@ -74,6 +74,10 @@ class Fighter {
 
     setOpponent(opponent) {
         this.opponent = opponent;
+        if (this.opponent) {
+            this.turnTowards(this.opponent.x, this.opponent.z);
+            this.updateModelTransform();
+        }
     }
 
     updateModelTransform() {
@@ -115,13 +119,24 @@ class Fighter {
         if (this.state === 'walk') {
             this.state = 'idle';
         }
+        if (this.opponent && this.opponent.state !== 'dead') {
+            this.turnTowards(this.opponent.x, this.opponent.z);
+        }
     }
 
-    turnTowards(targetX, targetZ) {
+    turnTowards(targetX, targetZ, smoothRate = 1.0) {
         const dx = targetX - this.x;
         const dz = targetZ - this.z;
-        if (Math.hypot(dx, dz) > 0.2) {
-            this.rotationY = Math.atan2(dx, dz);
+        if (Math.hypot(dx, dz) > 0.15) {
+            const targetAngle = Math.atan2(dx, dz);
+            if (smoothRate >= 1.0) {
+                this.rotationY = targetAngle;
+            } else {
+                let diff = targetAngle - this.rotationY;
+                while (diff < -Math.PI) diff += Math.PI * 2;
+                while (diff > Math.PI) diff -= Math.PI * 2;
+                this.rotationY += diff * smoothRate;
+            }
         }
     }
 
@@ -140,6 +155,9 @@ class Fighter {
             this.state = 'block';
             this.vx = 0;
             this.vz = 0;
+            if (this.opponent && this.opponent.state !== 'dead') {
+                this.turnTowards(this.opponent.x, this.opponent.z);
+            }
         }
     }
 
@@ -419,13 +437,16 @@ class Fighter {
         // Energy gain from taking damage (Adrenaline / Cursed Spark rush)
         this.gainEnergy(Math.min(18, finalDamage * 0.16 + 5));
 
-        // 3D Knockback along attack vector
+        // 3D Knockback along attack vector & reorient towards attacker
         if (attacker) {
             const kx = this.x - attacker.x;
             const kz = this.z - attacker.z;
             const kLen = Math.hypot(kx, kz) || 1;
             this.vx = (kx / kLen) * knockback;
             this.vz = (kz / kLen) * knockback;
+            if (this.state !== 'dead') {
+                this.turnTowards(attacker.x, attacker.z);
+            }
         }
 
         this.sound.playHit('heavy');
@@ -593,6 +614,11 @@ class Fighter {
         // Open World Arena Boundary Clamping (-90 to 90)
         this.x = Math.max(-88, Math.min(88, this.x));
         this.z = Math.max(-88, Math.min(88, this.z));
+
+        // Continuous combat auto-tracking: Face opponent during idle and block
+        if (this.opponent && this.opponent.state !== 'dead' && (this.state === 'idle' || this.state === 'block')) {
+            this.turnTowards(this.opponent.x, this.opponent.z, 0.25);
+        }
 
         // Update 3D Model & Procedural Bones
         this.updateModelTransform();

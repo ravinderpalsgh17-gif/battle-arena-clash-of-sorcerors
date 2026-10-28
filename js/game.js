@@ -278,6 +278,10 @@ class BattleArenaGame {
 
         this.p1.setOpponent(this.p2);
         this.p2.setOpponent(this.p1);
+        this.p1.turnTowards(this.p2.x, this.p2.z);
+        this.p2.turnTowards(this.p1.x, this.p1.z);
+        this.p1.updateModelTransform();
+        this.p2.updateModelTransform();
 
         if (!this.isPvPMode()) {
             this.p2AI = new AIController(this.p2, this.difficulty);
@@ -308,7 +312,6 @@ class BattleArenaGame {
         this.p1.vx = 0;
         this.p1.vy = 0;
         this.p1.vz = 0;
-        this.p1.rotationY = 0;
         this.p1.state = 'idle';
 
         this.p2.hp = this.p2.maxHp;
@@ -320,8 +323,13 @@ class BattleArenaGame {
         this.p2.vx = 0;
         this.p2.vy = 0;
         this.p2.vz = 0;
-        this.p2.rotationY = Math.PI;
         this.p2.state = 'idle';
+
+        // Correctly orient both fighters to face each other across the arena
+        this.p1.turnTowards(this.p2.x, this.p2.z);
+        this.p2.turnTowards(this.p1.x, this.p1.z);
+        this.p1.updateModelTransform();
+        this.p2.updateModelTransform();
 
         // Ensure Cursed Energy is initialized / maintained
         if (this.p1.energy < 25) this.p1.energy = 25;
