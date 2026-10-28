@@ -242,16 +242,16 @@ canvas#hudCanvas {
 }
 
 .menu-profile-avatar {
-    font-size: 32px;
+    font-size: 28px;
     background: rgba(0, 229, 255, 0.15);
-    border: 1.5px solid var(--cyan);
-    border-radius: 50%;
-    width: 50px;
-    height: 50px;
+    border: 2px solid var(--cyan);
+    clip-path: polygon(14% 0%, 100% 0%, 100% 86%, 86% 100%, 0% 100%, 0% 14%);
+    width: 52px;
+    height: 52px;
     display: flex;
     align-items: center;
     justify-content: center;
-    box-shadow: 0 0 15px rgba(0, 229, 255, 0.35);
+    box-shadow: 0 0 20px rgba(0, 229, 255, 0.45);
 }
 
 .menu-profile-info {
@@ -457,31 +457,33 @@ canvas#hudCanvas {
 .char-card-portrait {
     width: 60px;
     height: 60px;
-    border-radius: 50%;
-    border: 2px solid #fff;
-    background: #111;
+    border-radius: 4px;
+    clip-path: polygon(14% 0%, 100% 0%, 100% 86%, 86% 100%, 0% 100%, 0% 14%);
+    border: 2px solid var(--cyan);
+    background: #0d0f18;
     display: flex;
     justify-content: center;
     align-items: center;
     font-size: 26px;
+    box-shadow: 0 0 15px rgba(0, 229, 255, 0.3);
 }
 
-.char-avatar.yuji { background: #ff2a5f; width: 100%; height: 100%; border-radius: 50%; }
-.char-avatar.nobara { background: #ff7733; width: 100%; height: 100%; border-radius: 50%; }
-.char-avatar.megumi { background: #3a7bd5; width: 100%; height: 100%; border-radius: 50%; }
-.char-avatar.panda { background: #43a047; width: 100%; height: 100%; border-radius: 50%; }
-.char-avatar.nanami { background: #e6b800; width: 100%; height: 100%; border-radius: 50%; }
-.char-avatar.todo { background: #ff4081; width: 100%; height: 100%; border-radius: 50%; }
-.char-avatar.choso { background: #b71c1c; width: 100%; height: 100%; border-radius: 50%; }
-.char-avatar.maki { background: #00bfa5; width: 100%; height: 100%; border-radius: 50%; }
-.char-avatar.toji { background: #78909c; width: 100%; height: 100%; border-radius: 50%; }
-.char-avatar.jogo { background: #ff5722; width: 100%; height: 100%; border-radius: 50%; }
-.char-avatar.mahito { background: #8e24aa; width: 100%; height: 100%; border-radius: 50%; }
-.char-avatar.hakari { background: #ab47bc; width: 100%; height: 100%; border-radius: 50%; }
-.char-avatar.geto { background: #673ab7; width: 100%; height: 100%; border-radius: 50%; }
-.char-avatar.yuta { background: #00e5ff; width: 100%; height: 100%; border-radius: 50%; }
-.char-avatar.sukuna { background: #ff0033; width: 100%; height: 100%; border-radius: 50%; }
-.char-avatar.gojo { background: #00b0ff; width: 100%; height: 100%; border-radius: 50%; }
+.char-avatar.yuji { background: linear-gradient(135deg, #ff2a5f, #7a0b25); width: 100%; height: 100%; }
+.char-avatar.nobara { background: linear-gradient(135deg, #ff7733, #7c310c); width: 100%; height: 100%; }
+.char-avatar.megumi { background: linear-gradient(135deg, #3a7bd5, #11284a); width: 100%; height: 100%; }
+.char-avatar.panda { background: linear-gradient(135deg, #43a047, #133d15); width: 100%; height: 100%; }
+.char-avatar.nanami { background: linear-gradient(135deg, #e6b800, #544300); width: 100%; height: 100%; }
+.char-avatar.todo { background: linear-gradient(135deg, #ff4081, #690f31); width: 100%; height: 100%; }
+.char-avatar.choso { background: linear-gradient(135deg, #b71c1c, #420404); width: 100%; height: 100%; }
+.char-avatar.maki { background: linear-gradient(135deg, #00bfa5, #00453c); width: 100%; height: 100%; }
+.char-avatar.toji { background: linear-gradient(135deg, #78909c, #263238); width: 100%; height: 100%; }
+.char-avatar.jogo { background: linear-gradient(135deg, #ff5722, #5e1903); width: 100%; height: 100%; }
+.char-avatar.mahito { background: linear-gradient(135deg, #8e24aa, #340a40); width: 100%; height: 100%; }
+.char-avatar.hakari { background: linear-gradient(135deg, #ab47bc, #42124a); width: 100%; height: 100%; }
+.char-avatar.geto { background: linear-gradient(135deg, #673ab7, #210d45); width: 100%; height: 100%; }
+.char-avatar.yuta { background: linear-gradient(135deg, #00e5ff, #004b54); width: 100%; height: 100%; }
+.char-avatar.sukuna { background: linear-gradient(135deg, #ff0033, #570011); width: 100%; height: 100%; }
+.char-avatar.gojo { background: linear-gradient(135deg, #00b0ff, #003754); width: 100%; height: 100%; }
 
 .char-card-name {
     font-size: 18px;

@@ -891,13 +891,26 @@ class Character3DFactory {
             headGroup.add(scm);
         }
 
-        // B. Anatomical Cranium (Upper Skull)
-        const craniumGeo = new THREE.SphereGeometry(headSize * 0.65, 14, 14);
-        craniumGeo.scale(1.0, 1.14, 1.05);
-        const cranium = new THREE.Mesh(craniumGeo, headMat);
-        cranium.position.set(0, 0.08, 0);
+        // B. Anatomical Chiseled Anime Cranium (Angled Skull with Temples & Crown - No Spheres!)
+        const cranium = new THREE.Mesh(
+            new THREE.BoxGeometry(headSize * 0.94, headSize * 0.82, headSize * 0.92),
+            headMat
+        );
+        cranium.position.set(0, 0.10, 0.02);
         cranium.castShadow = true;
         headGroup.add(cranium);
+
+        // Chiseled Cheekbone Planes (Zygomatic Arches)
+        for (let s of [-1, 1]) {
+            const cheek = new THREE.Mesh(
+                new THREE.BoxGeometry(headSize * 0.22, headSize * 0.28, headSize * 0.32),
+                headMat
+            );
+            cheek.position.set(s * (headSize * 0.44), 0.02, headSize * 0.34);
+            cheek.rotation.y = s * 0.35;
+            cheek.rotation.z = s * -0.15;
+            headGroup.add(cheek);
+        }
 
         // C. Chiseled Jaw & Mandible
         const jaw = new THREE.Mesh(
@@ -940,82 +953,123 @@ class Character3DFactory {
             headGroup.add(ear);
         }
 
-        // --- RYOMEN SUKUNA: TRUE HEIAN 4-EYE DEMONIC HEAD ---
+        // ----------------------------------------------------
+        // SIGNATURE ANIME HAIRSTYLES & FACIAL SCULPTING (100% ZERO ROUND SPHERES)
+        // ----------------------------------------------------
         if (charKey === 'sukuna') {
-            // Slicked-back Spiky Dark Wine Hair
-            const hairMat = regMat(new THREE.MeshStandardMaterial({ color: 0x240b13, roughness: 0.5 }));
-            for (let i = 0; i < 14; i++) {
-                const spike = new THREE.Mesh(new THREE.ConeGeometry(0.13, 0.45, 6), hairMat);
-                const a = (i / 14) * Math.PI * 2;
-                spike.position.set(Math.cos(a) * 0.3, 0.36, Math.sin(a) * 0.3 - 0.05);
-                spike.rotation.set(Math.sin(a) * 0.4 - 0.2, 0, -Math.cos(a) * 0.4);
-                headGroup.add(spike);
+            // RYOMEN SUKUNA: TRUE HEIAN ERA KING OF CURSES
+            // 1. Slicked-back Layered Dark Crimson Hair (Multiple Chiseled Angular Tiers)
+            const hairMat = regMat(new THREE.MeshStandardMaterial({ color: 0x280812, roughness: 0.45 }));
+            const hairBase = new THREE.Mesh(new THREE.BoxGeometry(headSize * 0.96, 0.32, headSize * 0.98), hairMat);
+            hairBase.position.set(0, 0.38, -0.04);
+            hairBase.rotation.x = -0.15;
+            headGroup.add(hairBase);
+
+            // Forward Crest Spikes
+            for (let i = 0; i < 7; i++) {
+                const spk = new THREE.Mesh(new THREE.ConeGeometry(0.10, 0.46, 5), hairMat);
+                const x = (i - 3) * 0.09;
+                spk.position.set(x, 0.48, 0.30 - Math.abs(x) * 0.4);
+                spk.rotation.set(-0.45, 0, x * -0.3);
+                headGroup.add(spk);
             }
 
-            // Demonic Carapace Mask over right eye side with bone horn spur
-            const maskMat = regMat(new THREE.MeshStandardMaterial({ color: 0x2b0a14, roughness: 0.65, metalness: 0.2 }));
-            const maskPlate = new THREE.Mesh(new THREE.BoxGeometry(0.34, 0.42, 0.14), maskMat);
-            maskPlate.position.set(0.19, 0.05, 0.38);
+            // Crown Backward-Swept Spikes
+            for (let i = 0; i < 9; i++) {
+                const spk = new THREE.Mesh(new THREE.ConeGeometry(0.12, 0.52, 5), hairMat);
+                const x = (i - 4) * 0.08;
+                spk.position.set(x, 0.52, 0.02);
+                spk.rotation.set(-0.65, 0, x * -0.25);
+                headGroup.add(spk);
+            }
+
+            // Rear Occipital Mane Locks
+            for (let i = 0; i < 8; i++) {
+                const spk = new THREE.Mesh(new THREE.ConeGeometry(0.11, 0.48, 5), hairMat);
+                const x = (i - 3.5) * 0.09;
+                spk.position.set(x, 0.36, -0.35);
+                spk.rotation.set(-0.95, 0, x * -0.2);
+                headGroup.add(spk);
+            }
+
+            // 2. Demonic Carapace Bone Mask over right eye side with sharp horn spur
+            const maskMat = regMat(new THREE.MeshStandardMaterial({ color: 0x2b0a14, roughness: 0.6, metalness: 0.3 }));
+            const maskPlate = new THREE.Mesh(new THREE.BoxGeometry(0.36, 0.44, 0.16), maskMat);
+            maskPlate.position.set(0.19, 0.05, 0.39);
+            maskPlate.rotation.set(0.05, -0.15, 0.05);
             headGroup.add(maskPlate);
 
-            // Horn Spur on mask
-            const horn = new THREE.Mesh(new THREE.ConeGeometry(0.08, 0.32, 6), maskMat);
-            horn.position.set(0.32, 0.28, 0.35);
-            horn.rotation.z = -0.4;
+            // Jagged Bone Horn Spur on mask
+            const horn = new THREE.Mesh(new THREE.ConeGeometry(0.08, 0.36, 6), maskMat);
+            horn.position.set(0.34, 0.30, 0.36);
+            horn.rotation.set(-0.2, 0, -0.45);
             headGroup.add(horn);
 
-            // 4 GLOWING CRIMSON EYES (2 on left, 2 on right demonic plate)
+            // 3. 4 GLOWING CRIMSON EYES (2 Left, 2 Right embedded in demonic plate)
             const eyeGlowMat = regMat(new THREE.MeshBasicMaterial({ color: 0xff002b }));
             const eyes = [];
 
             // Left Upper & Lower Eyes
-            const eLeftUp = new THREE.Mesh(new THREE.BoxGeometry(0.09, 0.045, 0.03), eyeGlowMat);
-            eLeftUp.position.set(-0.14, 0.08, 0.41);
+            const eLeftUp = new THREE.Mesh(new THREE.BoxGeometry(0.095, 0.045, 0.04), eyeGlowMat);
+            eLeftUp.position.set(-0.14, 0.08, 0.42);
             headGroup.add(eLeftUp);
             eyes.push(eLeftUp);
 
-            const eLeftLow = new THREE.Mesh(new THREE.BoxGeometry(0.075, 0.035, 0.03), eyeGlowMat);
-            eLeftLow.position.set(-0.14, -0.04, 0.40);
+            const eLeftLow = new THREE.Mesh(new THREE.BoxGeometry(0.08, 0.035, 0.04), eyeGlowMat);
+            eLeftLow.position.set(-0.14, -0.04, 0.41);
             headGroup.add(eLeftLow);
             eyes.push(eLeftLow);
 
-            // Right Upper & Lower Eyes (embedded in mask)
-            const eRightUp = new THREE.Mesh(new THREE.BoxGeometry(0.09, 0.045, 0.03), eyeGlowMat);
-            eRightUp.position.set(0.18, 0.09, 0.44);
+            // Right Upper & Lower Eyes (embedded in mask plate)
+            const eRightUp = new THREE.Mesh(new THREE.BoxGeometry(0.095, 0.045, 0.04), eyeGlowMat);
+            eRightUp.position.set(0.18, 0.09, 0.46);
             headGroup.add(eRightUp);
             eyes.push(eRightUp);
 
-            const eRightLow = new THREE.Mesh(new THREE.BoxGeometry(0.075, 0.035, 0.03), eyeGlowMat);
-            eRightLow.position.set(0.18, -0.03, 0.43);
+            const eRightLow = new THREE.Mesh(new THREE.BoxGeometry(0.08, 0.035, 0.04), eyeGlowMat);
+            eRightLow.position.set(0.18, -0.03, 0.45);
             headGroup.add(eRightLow);
             eyes.push(eRightLow);
 
             parts.sukunaEyes = eyes;
 
-            // Fanged Menacing Mouth Slit
-            const mouth = new THREE.Mesh(new THREE.BoxGeometry(0.22, 0.04, 0.03), regMat(new THREE.MeshBasicMaterial({ color: 0x110204 })));
-            mouth.position.set(0.02, -0.22, 0.41);
+            // 4. Fanged Menacing Mouth Slit
+            const mouth = new THREE.Mesh(new THREE.BoxGeometry(0.24, 0.045, 0.04), regMat(new THREE.MeshBasicMaterial({ color: 0x110204 })));
+            mouth.position.set(0.02, -0.22, 0.42);
             headGroup.add(mouth);
 
-            // Forehead Cursed Crest Markings
-            const crest = new THREE.Mesh(new THREE.BoxGeometry(0.22, 0.1, 0.03), cursedTattooMat);
-            crest.position.set(0, 0.22, 0.41);
+            // 5. Forehead Cursed Crest Markings
+            const crest = new THREE.Mesh(new THREE.BoxGeometry(0.24, 0.11, 0.04), cursedTattooMat);
+            crest.position.set(0, 0.22, 0.42);
             headGroup.add(crest);
 
+            // Cheek Cursed Slash Markings
+            for (let side of [-1, 1]) {
+                const mark = new THREE.Mesh(new THREE.BoxGeometry(0.12, 0.04, 0.03), cursedTattooMat);
+                mark.position.set(side * 0.28, -0.08, 0.36);
+                mark.rotation.z = side * 0.25;
+                headGroup.add(mark);
+            }
+
         } else if (charKey === 'gojo') {
-            // Satoru Gojo: Layered Snow-White Spiky Hair with Shimmer
-            const hairMat = regMat(new THREE.MeshStandardMaterial({ color: 0xf6f9ff, roughness: 0.25 }));
-            for (let i = 0; i < 18; i++) {
-                const spike = new THREE.Mesh(new THREE.ConeGeometry(0.14, 0.52, 6), hairMat);
-                const angle = (i / 18) * Math.PI * 2;
-                spike.position.set(Math.cos(angle) * 0.32, 0.36 + Math.sin(i) * 0.08, Math.sin(angle) * 0.32);
+            // SATORU GOJO: THE HONORED ONE
+            // Layered Snow-White Spiky Hair with Celestial Shimmer
+            const hairMat = regMat(new THREE.MeshStandardMaterial({ color: 0xf6f9ff, roughness: 0.22 }));
+            const hairBase = new THREE.Mesh(new THREE.BoxGeometry(headSize * 0.94, 0.28, headSize * 0.96), hairMat);
+            hairBase.position.set(0, 0.34, 0);
+            headGroup.add(hairBase);
+
+            for (let i = 0; i < 20; i++) {
+                const spike = new THREE.Mesh(new THREE.ConeGeometry(0.13, 0.54, 5), hairMat);
+                const angle = (i / 20) * Math.PI * 2;
+                spike.position.set(Math.cos(angle) * 0.32, 0.38 + Math.sin(i) * 0.08, Math.sin(angle) * 0.32);
                 spike.rotation.set(Math.sin(angle) * 0.5, 0, -Math.cos(angle) * 0.5);
                 headGroup.add(spike);
             }
 
             // Black Sorcerer Blindfold (Animates downward to reveal Six Eyes!)
             const blindfold = new THREE.Mesh(
-                new THREE.BoxGeometry(0.70, 0.26, 0.70),
+                new THREE.BoxGeometry(0.72, 0.26, 0.72),
                 regMat(new THREE.MeshStandardMaterial({ color: 0x101116, roughness: 0.35 }))
             );
             blindfold.position.set(0, 0.04, 0);
@@ -1027,144 +1081,321 @@ class Character3DFactory {
                 map: ProceduralTextureFactory.createGojoSixEyesTexture()
             }));
             for (let side of [-0.15, 0.15]) {
-                const eye = new THREE.Mesh(new THREE.SphereGeometry(0.075, 12, 12), sixEyesMat);
-                eye.position.set(side, 0.04, 0.40);
+                const eye = new THREE.Mesh(new THREE.BoxGeometry(0.12, 0.07, 0.05), sixEyesMat);
+                eye.position.set(side, 0.04, 0.41);
                 headGroup.add(eye);
             }
 
-        } else if (charKey === 'toji') {
-            // Toji Black Tousled Hair
-            const hairMat = regMat(new THREE.MeshStandardMaterial({ color: 0x0c0e14, roughness: 0.5 }));
-            for (let i = 0; i < 14; i++) {
-                const spike = new THREE.Mesh(new THREE.ConeGeometry(0.14, 0.48, 5), hairMat);
-                const a = (i / 14) * Math.PI * 2;
-                spike.position.set(Math.cos(a) * 0.31, 0.36, Math.sin(a) * 0.30);
-                spike.rotation.set(Math.sin(a) * 0.4, 0, -Math.cos(a) * 0.4);
-                headGroup.add(spike);
-            }
-            // Signature Lip Scar on right side of mouth
-            const scar = new THREE.Mesh(new THREE.BoxGeometry(0.04, 0.12, 0.04), regMat(new THREE.MeshBasicMaterial({ color: 0x6e3b3b })));
-            scar.position.set(0.12, -0.16, headSize * 0.42);
-            scar.rotation.z = -0.3;
-            headGroup.add(scar);
+        } else if (charKey === 'hakari') {
+            // KINJI HAKARI: HIGH-ROLLER POMPADOUR & FEVER GLOW
+            const hairMat = regMat(new THREE.MeshStandardMaterial({ color: 0x421d3f, roughness: 0.5 }));
+            const blondeTipMat = regMat(new THREE.MeshStandardMaterial({ color: 0xd9b362, roughness: 0.4 }));
 
-        } else if (charKey === 'todo') {
-            // Todo Topknot & Battle Scar across left eye
-            const hairMat = regMat(new THREE.MeshStandardMaterial({ color: 0x0c0e14, roughness: 0.6 }));
-            const topknot = new THREE.Mesh(new THREE.ConeGeometry(0.18, 0.44, 8), hairMat);
-            topknot.position.set(0, 0.65, -0.1);
-            headGroup.add(topknot);
+            // High Volume Forward-Sweeping Pompadour Block
+            const pompBlock = new THREE.Mesh(new THREE.BoxGeometry(headSize * 0.75, 0.44, headSize * 1.05), hairMat);
+            pompBlock.position.set(0, 0.46, 0.16);
+            pompBlock.rotation.x = 0.32;
+            headGroup.add(pompBlock);
 
-            const scar = new THREE.Mesh(new THREE.BoxGeometry(0.05, 0.38, 0.05), regMat(new THREE.MeshBasicMaterial({ color: 0x6e2828 })));
-            scar.position.set(-0.16, 0.06, headSize * 0.41);
-            scar.rotation.z = 0.25;
-            headGroup.add(scar);
+            // Pompadour Crown Crest (Blonde / Bleached Tips)
+            const crest = new THREE.Mesh(new THREE.BoxGeometry(headSize * 0.65, 0.18, headSize * 0.90), blondeTipMat);
+            crest.position.set(0, 0.62, 0.18);
+            crest.rotation.x = 0.35;
+            headGroup.add(crest);
 
-        } else if (charKey === 'megumi') {
-            const hairMat = regMat(new THREE.MeshStandardMaterial({ color: 0x0c0e16, roughness: 0.6 }));
-            for (let i = 0; i < 15; i++) {
-                const spike = new THREE.Mesh(new THREE.ConeGeometry(0.15, 0.56, 5), hairMat);
-                const a = (i / 15) * Math.PI * 2;
-                spike.position.set(Math.cos(a) * 0.32, 0.38, Math.sin(a) * 0.32);
-                spike.rotation.set(Math.sin(a) * 0.6, 0, -Math.cos(a) * 0.6);
-                headGroup.add(spike);
+            // Shaved Side Undercut Fades
+            for (let s of [-1, 1]) {
+                const fade = new THREE.Mesh(new THREE.BoxGeometry(0.08, 0.48, headSize * 0.82), hairMat);
+                fade.position.set(s * (headSize * 0.48), 0.22, 0.02);
+                headGroup.add(fade);
             }
 
-        } else if (charKey === 'panda') {
-            const darkPandaMat = regMat(new THREE.MeshStandardMaterial({ color: 0x111116 }));
+            // Eyebrow Razor Slit
+            const slit = new THREE.Mesh(new THREE.BoxGeometry(0.03, 0.08, 0.04), headMat);
+            slit.position.set(0.24, 0.12, headSize * 0.42);
+            headGroup.add(slit);
+
+        } else if (charKey === 'yuta') {
+            // YUTA OKKOTSU: DISHEVELED PARTED BANGS & HIGH COLLAR
+            const hairMat = regMat(new THREE.MeshStandardMaterial({ color: 0x0c0d14, roughness: 0.5 }));
+            const hairBase = new THREE.Mesh(new THREE.BoxGeometry(headSize * 0.94, 0.30, headSize * 0.96), hairMat);
+            hairBase.position.set(0, 0.35, -0.02);
+            headGroup.add(hairBase);
+
+            // Distinctive Parted Side Bangs Framing Eyes
+            for (let i = 0; i < 6; i++) {
+                const bang = new THREE.Mesh(new THREE.ConeGeometry(0.08, 0.38, 4), hairMat);
+                const x = -0.22 + i * 0.09;
+                bang.position.set(x, 0.24, 0.42);
+                bang.rotation.set(-0.2, 0, (x < 0 ? 0.25 : -0.2));
+                headGroup.add(bang);
+            }
+
+            // Back Messy Spikes
+            for (let i = 0; i < 8; i++) {
+                const spk = new THREE.Mesh(new THREE.ConeGeometry(0.10, 0.42, 4), hairMat);
+                const a = (i / 8) * Math.PI + Math.PI;
+                spk.position.set(Math.cos(a) * 0.28, 0.32, Math.sin(a) * 0.28);
+                spk.rotation.set(-0.5, 0, Math.cos(a) * 0.4);
+                headGroup.add(spk);
+            }
+
+            // High Stand-up White Jujutsu High Collar
+            const collarMat = regMat(new THREE.MeshStandardMaterial({ color: 0xf8f8fc, roughness: 0.5 }));
+            const collar = new THREE.Mesh(new THREE.BoxGeometry(headSize * 0.96, 0.30, headSize * 0.88), collarMat);
+            collar.position.set(0, -0.16, 0.02);
+            headGroup.add(collar);
+
+        } else if (charKey === 'geto') {
+            // SUGURU GETO: SWEEPING SIDE FRINGE & MONK TOPKNOT
+            const hairMat = regMat(new THREE.MeshStandardMaterial({ color: 0x0a0a12, roughness: 0.5 }));
+            const hairBase = new THREE.Mesh(new THREE.BoxGeometry(headSize * 0.95, 0.30, headSize * 0.96), hairMat);
+            hairBase.position.set(0, 0.34, 0);
+            headGroup.add(hairBase);
+
+            // Sweeping Long Left Side Fringe (Reaching down cheek)
+            const fringe = new THREE.Mesh(new THREE.BoxGeometry(0.14, 0.54, 0.12), hairMat);
+            fringe.position.set(-0.28, 0.06, 0.42);
+            fringe.rotation.set(0.15, 0, 0.28);
+            headGroup.add(fringe);
+
+            // Monk Topknot Bun on back of crown
+            const bun = new THREE.Mesh(new THREE.CylinderGeometry(0.12, 0.16, 0.28, 8), hairMat);
+            bun.position.set(0, 0.58, -0.22);
+            bun.rotation.x = -0.4;
+            headGroup.add(bun);
+
+            // Golden Monk Hairpin Needle
+            const pin = new THREE.Mesh(new THREE.CylinderGeometry(0.02, 0.02, 0.44, 6), goldMat);
+            pin.position.set(0, 0.58, -0.22);
+            pin.rotation.z = Math.PI / 2;
+            headGroup.add(pin);
+
+        } else if (charKey === 'mahito') {
+            // MAHITO: PATCHWORK FLOWING TWINTAILS & STITCHES
+            const hairMat = regMat(new THREE.MeshStandardMaterial({ color: 0x829bb0, roughness: 0.5 }));
+            const hairBase = new THREE.Mesh(new THREE.BoxGeometry(headSize * 0.94, 0.28, headSize * 0.96), hairMat);
+            hairBase.position.set(0, 0.34, 0);
+            headGroup.add(hairBase);
+
+            // Flowing Left & Right Braided Locks past shoulders
             for (let side of [-1, 1]) {
-                const ear = new THREE.Mesh(new THREE.SphereGeometry(0.24, 12, 12), darkPandaMat);
-                ear.position.set(side * 0.46, 0.50, 0);
-                headGroup.add(ear);
-
-                const patch = new THREE.Mesh(new THREE.BoxGeometry(0.22, 0.22, 0.06), darkPandaMat);
-                patch.position.set(side * 0.22, 0.06, 0.5);
-                headGroup.add(patch);
+                const braid = new THREE.Mesh(new THREE.CylinderGeometry(0.07, 0.10, 0.85, 8), hairMat);
+                braid.position.set(side * 0.32, -0.08, 0.08);
+                braid.rotation.set(0.1, 0, side * 0.15);
+                headGroup.add(braid);
             }
-            const snout = new THREE.Mesh(new THREE.SphereGeometry(0.15, 10, 10), darkPandaMat);
-            snout.position.set(0, -0.08, 0.54);
-            headGroup.add(snout);
 
-        } else if (charKey === 'jogo') {
-            const volcMat = regMat(new THREE.MeshStandardMaterial({ color: 0x241811, roughness: 0.95 }));
-            const crater = new THREE.Mesh(new THREE.CylinderGeometry(0.22, 0.44, 0.58, 12), volcMat);
-            crater.position.set(0, 0.50, 0);
-            headGroup.add(crater);
+            // Facial Stitches (Patchwork Lines across face)
+            const stitchMat = regMat(new THREE.MeshBasicMaterial({ color: 0x331a22 }));
+            const stitchAcross = new THREE.Mesh(new THREE.BoxGeometry(0.38, 0.035, 0.03), stitchMat);
+            stitchAcross.position.set(0.04, 0.02, 0.42);
+            stitchAcross.rotation.z = -0.2;
+            headGroup.add(stitchAcross);
 
-            const lavaCore = new THREE.Mesh(new THREE.SphereGeometry(0.20, 10, 10), regMat(new THREE.MeshBasicMaterial({ color: 0xff3b00 })));
-            lavaCore.position.set(0, 0.74, 0);
-            headGroup.add(lavaCore);
-            parts.lavaCore = lavaCore;
+            for (let i = -0.12; i <= 0.16; i += 0.07) {
+                const mark = new THREE.Mesh(new THREE.BoxGeometry(0.02, 0.08, 0.03), stitchMat);
+                mark.position.set(i, 0.02 - (i * 0.2), 0.43);
+                headGroup.add(mark);
+            }
 
-            const eye = new THREE.Mesh(new THREE.SphereGeometry(0.19, 12, 12), regMat(new THREE.MeshBasicMaterial({ color: 0xffbb00 })));
-            eye.position.set(0, 0.04, 0.42);
-            headGroup.add(eye);
-            const pupil = new THREE.Mesh(new THREE.BoxGeometry(0.04, 0.18, 0.03), regMat(new THREE.MeshBasicMaterial({ color: 0x000000 })));
-            pupil.position.set(0, 0.04, 0.56);
-            headGroup.add(pupil);
+        } else if (charKey === 'choso') {
+            // CHOSO: DUAL HIGH ANGLED TWINTAILS & NOSE BLOOD STRIPE
+            const hairMat = regMat(new THREE.MeshStandardMaterial({ color: 0x0f1118, roughness: 0.55 }));
+            const hairBase = new THREE.Mesh(new THREE.BoxGeometry(headSize * 0.94, 0.30, headSize * 0.96), hairMat);
+            hairBase.position.set(0, 0.34, 0);
+            headGroup.add(hairBase);
+
+            // Dual High Spiky Angular Twintails (Flared out 45 degrees)
+            for (let side of [-1, 1]) {
+                const tail = new THREE.Mesh(new THREE.ConeGeometry(0.11, 0.65, 6), hairMat);
+                tail.position.set(side * 0.36, 0.58, -0.15);
+                tail.rotation.set(-0.25, 0, side * -0.55);
+                headGroup.add(tail);
+
+                const band = new THREE.Mesh(new THREE.CylinderGeometry(0.09, 0.09, 0.08, 8), regMat(new THREE.MeshStandardMaterial({ color: 0x881122 })));
+                band.position.set(side * 0.32, 0.46, -0.12);
+                band.rotation.z = side * -0.55;
+                headGroup.add(band);
+            }
+
+            // Dark Blood Convergence Cross Stripe on Nose Bridge
+            const bloodBar = new THREE.Mesh(new THREE.BoxGeometry(0.36, 0.065, 0.04), regMat(new THREE.MeshBasicMaterial({ color: 0x6e0614 })));
+            bloodBar.position.set(0, 0.02, headSize * 0.44);
+            headGroup.add(bloodBar);
+
+        } else if (charKey === 'nanami') {
+            // KENTO NANAMI: 7:3 SHARP PARTED BLONDE & SPECTACLES
+            const hairMat = regMat(new THREE.MeshStandardMaterial({ color: 0xdfbe65, roughness: 0.45 }));
+            const hairBase = new THREE.Mesh(new THREE.BoxGeometry(headSize * 0.95, 0.30, headSize * 0.98), hairMat);
+            hairBase.position.set(0, 0.35, 0);
+            headGroup.add(hairBase);
+
+            // 7:3 Side Part Volumized Crown Sweep
+            const partSweep = new THREE.Mesh(new THREE.BoxGeometry(headSize * 0.65, 0.16, headSize * 0.88), hairMat);
+            partSweep.position.set(0.12, 0.48, 0.02);
+            partSweep.rotation.z = -0.12;
+            headGroup.add(partSweep);
+
+            // Shaded Wire Spectacles
+            const glasses = new THREE.Mesh(new THREE.BoxGeometry(0.52, 0.12, 0.06), regMat(new THREE.MeshStandardMaterial({ color: 0x222233, metalness: 0.9 })));
+            glasses.position.set(0, 0.08, headSize * 0.44);
+            headGroup.add(glasses);
 
         } else if (charKey === 'maki') {
-            // Maki High Ponytail & Sorcerer Glasses
-            const hairMat = regMat(new THREE.MeshStandardMaterial({ color: 0x162c1e, roughness: 0.5 }));
-            const hairCap = new THREE.Mesh(new THREE.SphereGeometry(0.50, 14, 12), hairMat);
-            hairCap.position.set(0, 0.12, -0.04);
-            headGroup.add(hairCap);
+            // MAKI ZEN'IN: ANGULAR HIGH PONYTAIL & SORCERER GLASSES
+            const hairMat = regMat(new THREE.MeshStandardMaterial({ color: 0x142b1a, roughness: 0.5 }));
+            const hairBase = new THREE.Mesh(new THREE.BoxGeometry(headSize * 0.92, 0.28, headSize * 0.94), hairMat);
+            hairBase.position.set(0, 0.32, 0);
+            headGroup.add(hairBase);
 
-            const ponytail = new THREE.Mesh(new THREE.ConeGeometry(0.16, 0.65, 8), hairMat);
-            ponytail.position.set(0, 0.52, -0.32);
-            ponytail.rotation.x = -0.5;
+            const ponytail = new THREE.Mesh(new THREE.ConeGeometry(0.16, 0.72, 6), hairMat);
+            ponytail.position.set(0, 0.58, -0.34);
+            ponytail.rotation.x = -0.65;
             headGroup.add(ponytail);
+
+            const ribbon = new THREE.Mesh(new THREE.BoxGeometry(0.18, 0.08, 0.18), regMat(new THREE.MeshStandardMaterial({ color: 0xaa1122 })));
+            ribbon.position.set(0, 0.46, -0.28);
+            headGroup.add(ribbon);
 
             const glasses = new THREE.Mesh(new THREE.BoxGeometry(0.48, 0.12, 0.04), regMat(new THREE.MeshStandardMaterial({ color: 0x992222 })));
             glasses.position.set(0, 0.08, headSize * 0.44);
             headGroup.add(glasses);
 
-        } else if (charKey === 'nanami') {
-            const hairMat = regMat(new THREE.MeshStandardMaterial({ color: 0xe6c86e, roughness: 0.5 }));
-            const hairCap = new THREE.Mesh(new THREE.SphereGeometry(0.50, 14, 12), hairMat);
-            hairCap.position.set(0, 0.14, -0.04);
-            headGroup.add(hairCap);
+        } else if (charKey === 'nobara') {
+            // NOBARA KUGISAKI: ANGULAR ORANGE/GINGER BOB & BANGS
+            const hairMat = regMat(new THREE.MeshStandardMaterial({ color: 0xd9682b, roughness: 0.5 }));
+            const hairBase = new THREE.Mesh(new THREE.BoxGeometry(headSize * 0.94, 0.32, headSize * 0.96), hairMat);
+            hairBase.position.set(0, 0.34, 0);
+            headGroup.add(hairBase);
 
-            // Nanami signature spectacles
-            const glasses = new THREE.Mesh(new THREE.BoxGeometry(0.46, 0.10, 0.05), regMat(new THREE.MeshStandardMaterial({ color: 0x444455, metalness: 0.8 })));
-            glasses.position.set(0, 0.08, headSize * 0.44);
-            headGroup.add(glasses);
+            // Bob Side Panels Framing Jawline
+            for (let s of [-1, 1]) {
+                const bob = new THREE.Mesh(new THREE.BoxGeometry(0.12, 0.48, headSize * 0.65), hairMat);
+                bob.position.set(s * (headSize * 0.46), 0.06, 0.04);
+                headGroup.add(bob);
+            }
 
-        } else {
-            const defHairMat = regMat(new THREE.MeshStandardMaterial({
-                color: (charKey === 'nobara' ? 0xd9682b : (charKey === 'mahito' ? 0x8a9ba8 : 0x11131a)),
-                roughness: 0.6
-            }));
-            const hairCap = new THREE.Mesh(new THREE.SphereGeometry(0.50, 14, 12), defHairMat);
-            hairCap.position.set(0, 0.12, -0.04);
-            headGroup.add(hairCap);
+            // Side Swept Bangs
+            const bang = new THREE.Mesh(new THREE.BoxGeometry(headSize * 0.55, 0.22, 0.10), hairMat);
+            bang.position.set(-0.10, 0.22, headSize * 0.44);
+            bang.rotation.z = -0.25;
+            headGroup.add(bang);
 
-            if (charKey === 'geto') {
-                const topknot = new THREE.Mesh(new THREE.ConeGeometry(0.16, 0.40, 8), defHairMat);
-                topknot.position.set(0, 0.62, -0.1);
-                headGroup.add(topknot);
+        } else if (charKey === 'megumi') {
+            // MEGUMI FUSHIGURO: 18 OUTWARD DIRECTIONAL SEA-URCHIN SPIKES
+            const hairMat = regMat(new THREE.MeshStandardMaterial({ color: 0x0c0e16, roughness: 0.6 }));
+            const hairBase = new THREE.Mesh(new THREE.BoxGeometry(headSize * 0.94, 0.30, headSize * 0.96), hairMat);
+            hairBase.position.set(0, 0.35, 0);
+            headGroup.add(hairBase);
+
+            for (let i = 0; i < 18; i++) {
+                const spike = new THREE.Mesh(new THREE.ConeGeometry(0.14, 0.60, 5), hairMat);
+                const a = (i / 18) * Math.PI * 2;
+                spike.position.set(Math.cos(a) * 0.34, 0.40, Math.sin(a) * 0.34);
+                spike.rotation.set(Math.sin(a) * 0.65, 0, -Math.cos(a) * 0.65);
+                headGroup.add(spike);
             }
-            if (charKey === 'choso') {
-                for (let side of [-0.3, 0.3]) {
-                    const tail = new THREE.Mesh(new THREE.CylinderGeometry(0.06, 0.08, 0.58, 8), defHairMat);
-                    tail.position.set(side, 0.45, -0.15);
-                    headGroup.add(tail);
-                }
-                const bloodBar = new THREE.Mesh(new THREE.BoxGeometry(0.32, 0.05, 0.04), regMat(new THREE.MeshBasicMaterial({ color: 0x770a1a })));
-                bloodBar.position.set(0, 0.02, 0.42);
-                headGroup.add(bloodBar);
+
+        } else if (charKey === 'yuji') {
+            // YUJI ITADORI: DUAL-TONE UNDERCUT (BLACK TEMPLES & PINK CROWN)
+            const blackMat = regMat(new THREE.MeshStandardMaterial({ color: 0x111116, roughness: 0.6 }));
+            const pinkHairMat = regMat(new THREE.MeshStandardMaterial({ color: 0xeb6b8b, roughness: 0.45 }));
+
+            // Dark Temple Undercut Panels
+            for (let s of [-1, 1]) {
+                const fade = new THREE.Mesh(new THREE.BoxGeometry(0.08, 0.42, headSize * 0.88), blackMat);
+                fade.position.set(s * (headSize * 0.46), 0.18, 0);
+                headGroup.add(fade);
             }
-            if (charKey === 'yuji') {
-                // Spiky pink/black top spikes
-                const pinkHairMat = regMat(new THREE.MeshStandardMaterial({ color: 0xeb6b8b, roughness: 0.5 }));
-                for (let i = 0; i < 12; i++) {
-                    const spike = new THREE.Mesh(new THREE.ConeGeometry(0.11, 0.38, 5), pinkHairMat);
-                    const a = (i / 12) * Math.PI * 2;
-                    spike.position.set(Math.cos(a) * 0.28, 0.36, Math.sin(a) * 0.28);
-                    spike.rotation.set(Math.sin(a) * 0.4, 0, -Math.cos(a) * 0.4);
-                    headGroup.add(spike);
-                }
+
+            // Spiky Magenta/Pink Crown Locks
+            for (let i = 0; i < 15; i++) {
+                const spike = new THREE.Mesh(new THREE.ConeGeometry(0.11, 0.42, 5), pinkHairMat);
+                const a = (i / 15) * Math.PI * 2;
+                spike.position.set(Math.cos(a) * 0.28, 0.40, Math.sin(a) * 0.28);
+                spike.rotation.set(Math.sin(a) * 0.45, 0, -Math.cos(a) * 0.45);
+                headGroup.add(spike);
             }
+
+            // Eye Marks (Cursed Scars under eyes)
+            for (let s of [-1, 1]) {
+                const scar = new THREE.Mesh(new THREE.BoxGeometry(0.08, 0.025, 0.03), regMat(new THREE.MeshBasicMaterial({ color: 0x331016 })));
+                scar.position.set(s * 0.16, -0.08, headSize * 0.44);
+                headGroup.add(scar);
+            }
+
+        } else if (charKey === 'toji') {
+            // TOJI FUSHIGURO: TOUSLED TEXTURED BLACK HAIR & LIP SCAR
+            const hairMat = regMat(new THREE.MeshStandardMaterial({ color: 0x0c0e14, roughness: 0.5 }));
+            const hairBase = new THREE.Mesh(new THREE.BoxGeometry(headSize * 0.94, 0.30, headSize * 0.96), hairMat);
+            hairBase.position.set(0, 0.35, 0);
+            headGroup.add(hairBase);
+
+            for (let i = 0; i < 16; i++) {
+                const spike = new THREE.Mesh(new THREE.ConeGeometry(0.13, 0.52, 5), hairMat);
+                const a = (i / 16) * Math.PI * 2;
+                spike.position.set(Math.cos(a) * 0.32, 0.38, Math.sin(a) * 0.32);
+                spike.rotation.set(Math.sin(a) * 0.42, 0, -Math.cos(a) * 0.42);
+                headGroup.add(spike);
+            }
+            // Signature Right Lip Scar
+            const scar = new THREE.Mesh(new THREE.BoxGeometry(0.045, 0.14, 0.04), regMat(new THREE.MeshBasicMaterial({ color: 0x6e3b3b })));
+            scar.position.set(0.13, -0.16, headSize * 0.44);
+            scar.rotation.z = -0.3;
+            headGroup.add(scar);
+
+        } else if (charKey === 'todo') {
+            // AOI TODO: SAMURAI TOPKNOT & DIAGONAL EYE SCAR
+            const hairMat = regMat(new THREE.MeshStandardMaterial({ color: 0x0c0e14, roughness: 0.6 }));
+            const hairBase = new THREE.Mesh(new THREE.BoxGeometry(headSize * 0.96, 0.32, headSize * 0.96), hairMat);
+            hairBase.position.set(0, 0.35, 0);
+            headGroup.add(hairBase);
+
+            const topknot = new THREE.Mesh(new THREE.ConeGeometry(0.18, 0.50, 8), hairMat);
+            topknot.position.set(0, 0.68, -0.12);
+            headGroup.add(topknot);
+
+            const scar = new THREE.Mesh(new THREE.BoxGeometry(0.055, 0.42, 0.05), regMat(new THREE.MeshBasicMaterial({ color: 0x6e2828 })));
+            scar.position.set(-0.16, 0.06, headSize * 0.43);
+            scar.rotation.z = 0.25;
+            headGroup.add(scar);
+
+        } else if (charKey === 'panda') {
+            // PANDA: SCULPTED STYLIZED BEAR HEAD & BRASS KNUCKLES
+            const darkPandaMat = regMat(new THREE.MeshStandardMaterial({ color: 0x111116 }));
+            for (let side of [-1, 1]) {
+                const ear = new THREE.Mesh(new THREE.BoxGeometry(0.32, 0.32, 0.22), darkPandaMat);
+                ear.position.set(side * 0.48, 0.52, 0);
+                ear.rotation.z = side * -0.2;
+                headGroup.add(ear);
+
+                const patch = new THREE.Mesh(new THREE.BoxGeometry(0.24, 0.24, 0.08), darkPandaMat);
+                patch.position.set(side * 0.22, 0.06, 0.52);
+                headGroup.add(patch);
+            }
+            const snout = new THREE.Mesh(new THREE.BoxGeometry(0.32, 0.24, 0.32), darkPandaMat);
+            snout.position.set(0, -0.08, 0.56);
+            headGroup.add(snout);
+
+        } else if (charKey === 'jogo') {
+            // JOGO: JAGGED VOLCANIC CRAG CRATER & CYCLOPS EYE
+            const volcMat = regMat(new THREE.MeshStandardMaterial({ color: 0x241811, roughness: 0.95 }));
+            const crater = new THREE.Mesh(new THREE.CylinderGeometry(0.24, 0.46, 0.62, 10), volcMat);
+            crater.position.set(0, 0.52, 0);
+            headGroup.add(crater);
+
+            const lavaCore = new THREE.Mesh(new THREE.BoxGeometry(0.28, 0.16, 0.28), regMat(new THREE.MeshBasicMaterial({ color: 0xff3b00 })));
+            lavaCore.position.set(0, 0.76, 0);
+            headGroup.add(lavaCore);
+            parts.lavaCore = lavaCore;
+
+            const eye = new THREE.Mesh(new THREE.BoxGeometry(0.28, 0.22, 0.12), regMat(new THREE.MeshBasicMaterial({ color: 0xffbb00 })));
+            eye.position.set(0, 0.04, 0.44);
+            headGroup.add(eye);
+            const pupil = new THREE.Mesh(new THREE.BoxGeometry(0.05, 0.18, 0.04), regMat(new THREE.MeshBasicMaterial({ color: 0x000000 })));
+            pupil.position.set(0, 0.04, 0.52);
+            headGroup.add(pupil);
         }
 
         // ----------------------------------------------------
