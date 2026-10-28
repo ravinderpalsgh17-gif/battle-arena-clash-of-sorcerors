@@ -13,6 +13,14 @@ class UIManager {
         this.selectedAvatar = '👁️';
         this.roomCode = 'JJK-7749';
 
+        // Auto-detect mobile / touch capability
+        const savedTouch = localStorage.getItem('battle_arena_touch_enabled');
+        const isTouchOrMobile = ('ontouchstart' in window) || 
+                                (navigator.maxTouchPoints > 0) || 
+                                (window.matchMedia && window.matchMedia('(pointer: coarse)').matches) || 
+                                (window.innerWidth <= 900);
+        this.touchEnabled = (savedTouch !== null) ? (savedTouch === 'true') : isTouchOrMobile;
+
         this.initDOMElements();
         this.bindEvents();
         this.updatePointsDisplay();
@@ -33,6 +41,11 @@ class UIManager {
         this.touchControls = document.getElementById('touchControls');
         this.btnTouchU = document.getElementById('btnTouchU');
         this.btnToggleTouch = document.getElementById('btnToggleTouch');
+
+        // Mobile orientation & fullscreen buttons
+        this.btnToggleFullscreen = document.getElementById('btnToggleFullscreen');
+        this.mobileOrientationHint = document.getElementById('mobileOrientationHint');
+        this.btnCloseOrientationHint = document.getElementById('btnCloseOrientationHint');
 
         // Profile & Sign In Modal Elements
         this.signInModal = document.getElementById('signInModal');
@@ -165,6 +178,26 @@ class UIManager {
             this.startFriendLocalDuel();
         });
 
+        // Mobile Fullscreen & Orientation Handlers
+        this.btnToggleFullscreen?.addEventListener('click', () => {
+            Sound.playClick();
+            this.toggleFullscreen();
+        });
+
+        this.btnCloseOrientationHint?.addEventListener('click', () => {
+            Sound.playClick();
+            if (this.mobileOrientationHint) {
+                this.mobileOrientationHint.classList.add('hidden');
+            }
+        });
+
+        window.addEventListener('orientationchange', () => {
+            setTimeout(() => this.checkMobileOrientation(), 300);
+        });
+        window.addEventListener('resize', () => {
+            this.checkMobileOrientation();
+        });
+
         // Audio Mute Toggle
         document.getElementById('btnToggleMute')?.addEventListener('click', () => {
             const muted = Sound.toggleMute();
@@ -275,6 +308,10 @@ class UIManager {
             window.GameInstance.clearProjectiles();
             if (window.GameInstance.world3d) window.GameInstance.world3d.clearDomain();
             if (window.GameInstance.showPreview3D) window.GameInstance.showPreview3D('sukuna');
+        }
+        document.body.classList.remove('in-battle');
+        if (this.mobileOrientationHint) {
+            this.mobileOrientationHint.classList.add('hidden');
         }
         this.pauseOverlay.classList.add('hidden');
         this.gameOverOverlay.classList.add('hidden');
@@ -468,9 +505,22 @@ class UIManager {
     launchGame() {
         this.charSelectScreen.classList.add('hidden');
         this.hudOverlay.classList.remove('hidden');
-        if (this.touchControls && this.touchEnabled) {
+
+        // Show touch controls on mobile or touch-enabled devices
+        const isTouchOrMobile = ('ontouchstart' in window) || 
+                                (navigator.maxTouchPoints > 0) || 
+                                (window.matchMedia && window.matchMedia('(pointer: coarse)').matches) || 
+                                (window.innerWidth <= 900);
+        if (this.touchControls && (this.touchEnabled || isTouchOrMobile)) {
             this.touchControls.classList.remove('hidden');
         }
+
+        document.body.classList.add('in-battle');
+        if (window.GameInstance && window.GameInstance.handleResize) {
+            window.GameInstance.handleResize();
+        }
+        this.checkMobileOrientation();
+
         const profile = StorageManager.getPlayerProfile();
         const p1 = this.p1Name || profile.name || 'Sorcerer';
         const p2 = (this.currentMode === 'pvp' || this.currentMode === 'friend') ? (this.friendName || profile.friendName || 'Friend') : null;
@@ -670,38 +720,41 @@ class UIManager {
             }
         });
 
-        // Helper to bind tactile multi-touch pointer events with pointer capture
+        // Helper to bind tactile multi-touch pointer & touch events
         const bindKey = (btnId, onDown, onUp) => {
             const btn = document.getElementById(btnId);
             if (!btn) return;
 
-            let activeId = null;
+            let isPressed = false;
 
-            btn.addEventListener('pointerdown', (e) => {
-                e.preventDefault();
+            const handleDown = (e) => {
+                if (e.cancelable) e.preventDefault();
                 e.stopPropagation();
-                if (activeId !== null) return;
-                activeId = e.pointerId;
-                try { btn.setPointerCapture(e.pointerId); } catch (_) {}
+                if (isPressed) return;
+                isPressed = true;
                 btn.classList.add('touch-active');
                 if (window.GameInstance && window.GameInstance.sound) {
                     window.GameInstance.sound.resume();
                 }
                 if (onDown) onDown();
-            }, { passive: false });
+            };
 
-            const release = (e) => {
-                if (e.pointerId !== activeId) return;
-                e.preventDefault();
+            const handleUp = (e) => {
+                if (e.cancelable) e.preventDefault();
                 e.stopPropagation();
-                activeId = null;
-                try { btn.releasePointerCapture(e.pointerId); } catch (_) {}
+                if (!isPressed) return;
+                isPressed = false;
                 btn.classList.remove('touch-active');
                 if (onUp) onUp();
             };
 
-            btn.addEventListener('pointerup', release, { passive: false });
-            btn.addEventListener('pointercancel', release, { passive: false });
+            btn.addEventListener('pointerdown', handleDown, { passive: false });
+            btn.addEventListener('pointerup', handleUp, { passive: false });
+            btn.addEventListener('pointercancel', handleUp, { passive: false });
+
+            btn.addEventListener('touchstart', handleDown, { passive: false });
+            btn.addEventListener('touchend', handleUp, { passive: false });
+            btn.addEventListener('touchcancel', handleUp, { passive: false });
         };
 
         // 3D Navigation: Forward (KeyW)
@@ -1011,6 +1064,41 @@ class UIManager {
             }
         } catch (e) {
             console.warn('URL params check failed', e);
+        }
+    }
+
+    checkMobileOrientation() {
+        if (!this.mobileOrientationHint) return;
+        const isMobile = ('ontouchstart' in window) || (navigator.maxTouchPoints > 0) || (window.innerWidth <= 900);
+        const isPortrait = window.innerHeight > window.innerWidth;
+        if (isMobile && isPortrait && window.GameInstance && window.GameInstance.state === 'fighting') {
+            this.mobileOrientationHint.classList.remove('hidden');
+            setTimeout(() => {
+                if (this.mobileOrientationHint) this.mobileOrientationHint.classList.add('hidden');
+            }, 5500);
+        } else {
+            this.mobileOrientationHint.classList.add('hidden');
+        }
+    }
+
+    toggleFullscreen() {
+        try {
+            if (!document.fullscreenElement && !document.webkitFullscreenElement) {
+                const elem = document.documentElement;
+                if (elem.requestFullscreen) {
+                    elem.requestFullscreen();
+                } else if (elem.webkitRequestFullscreen) {
+                    elem.webkitRequestFullscreen();
+                }
+            } else {
+                if (document.exitFullscreen) {
+                    document.exitFullscreen();
+                } else if (document.webkitExitFullscreen) {
+                    document.webkitExitFullscreen();
+                }
+            }
+        } catch (e) {
+            console.warn('Fullscreen request failed', e);
         }
     }
 

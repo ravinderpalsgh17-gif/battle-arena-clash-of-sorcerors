@@ -2,7 +2,10 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+    <meta name="mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
     <title>Battle Arena: Clash of Sorcerors</title>
     <link rel="stylesheet" href="css/style.css">
     <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>⚡</text></svg>">
@@ -14,9 +17,15 @@
         <canvas id="gameCanvas" width="1920" height="1080"></canvas>
         <canvas id="hudCanvas" width="1920" height="1080" style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; pointer-events: none; z-index: 4;"></canvas>
 
+        <!-- Mobile Landscape Battle Tip -->
+        <div id="mobileOrientationHint" class="mobile-orientation-hint hidden">
+            <span>🔄 Rotate phone to Landscape for full-screen battle!</span>
+            <button type="button" id="btnCloseOrientationHint" class="btn-micro" style="padding: 2px 8px; margin-left: 8px;">✕</button>
+        </div>
+
         <!-- 2. Global Top Status Bar -->
         <div class="top-bar">
-            <div style="display: flex; gap: 10px; align-items: center; flex-wrap: wrap;">
+            <div style="display: flex; gap: 8px; align-items: center; flex-wrap: wrap;">
                 <div class="points-pill">
                     <span class="points-val">🪙 0</span>
                 </div>
@@ -26,12 +35,13 @@
                     <span class="profile-edit-hint">✏️</span>
                 </div>
             </div>
-            <div style="display: flex; gap: 8px; align-items: center; flex-wrap: wrap;">
-                <button id="btnToggle4K" class="btn btn-gold" style="padding: 6px 14px; font-size: 14px; font-weight: 800;" title="Toggle 4K Ultra High Definition Rendering Scale">✨ 4K ULTRA: ON</button>
-                <button id="btnToggleCam" class="btn btn-secondary" style="padding: 6px 14px; font-size: 14px;" title="Switch 3D Camera View (Action / 3rd Person / Overview)">🎥 Cam: DYNAMIC</button>
-                <button id="btnToggleTouch" class="btn btn-secondary" style="padding: 6px 14px; font-size: 14px;" title="Toggle On-Screen Touch Controls">📱 Touch: ON</button>
-                <button id="btnToggleMute" class="btn btn-secondary" style="padding: 6px 14px; font-size: 14px;">🔊 Sound: ON</button>
-                <button id="btnMoveList" class="btn btn-secondary" style="padding: 6px 14px; font-size: 14px;">📖 Move List</button>
+            <div style="display: flex; gap: 6px; align-items: center; flex-wrap: wrap;">
+                <button id="btnToggle4K" class="btn btn-gold" style="padding: 6px 12px; font-size: 13px; font-weight: 800;" title="Toggle 4K Ultra High Definition Rendering Scale">✨ 4K: ON</button>
+                <button id="btnToggleCam" class="btn btn-secondary" style="padding: 6px 12px; font-size: 13px;" title="Switch 3D Camera View (Action / 3rd Person / Overview)">🎥 Cam</button>
+                <button id="btnToggleTouch" class="btn btn-secondary" style="padding: 6px 12px; font-size: 13px;" title="Toggle On-Screen Touch Controls">📱 Touch</button>
+                <button id="btnToggleMute" class="btn btn-secondary" style="padding: 6px 12px; font-size: 13px;">🔊 Sound</button>
+                <button id="btnToggleFullscreen" class="btn btn-secondary" style="padding: 6px 12px; font-size: 13px;" title="Toggle Fullscreen">⛶ Fullscreen</button>
+                <button id="btnMoveList" class="btn btn-secondary" style="padding: 6px 12px; font-size: 13px;">📖 Codex</button>
             </div>
         </div>
 

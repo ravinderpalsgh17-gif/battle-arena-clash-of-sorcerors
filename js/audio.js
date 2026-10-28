@@ -17,6 +17,16 @@ class SoundEngine {
             if (AudioContext) {
                 this.ctx = new AudioContext();
             }
+            // Auto-unlock Web Audio on first mobile touch or click gesture
+            const unlock = () => {
+                this.resume();
+                ['touchstart', 'touchend', 'pointerdown', 'click'].forEach(evt => {
+                    document.removeEventListener(evt, unlock);
+                });
+            };
+            ['touchstart', 'touchend', 'pointerdown', 'click'].forEach(evt => {
+                document.addEventListener(evt, unlock, { passive: true, once: true });
+            });
         } catch (e) {
             console.warn("AudioContext not supported or blocked", e);
         }

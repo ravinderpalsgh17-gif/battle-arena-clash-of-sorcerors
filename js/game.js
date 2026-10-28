@@ -3,8 +3,9 @@
 
 class BattleArenaGame {
     constructor() {
-        // 4K Ultra High-DPI Engine Scaling
-        this.is4K = true;
+        this.isMobile = this.detectMobile();
+        // On mobile, default to standard fidelity (is4K = false) to ensure smooth 60fps and prevent WebGL OOM context loss
+        this.is4K = !this.isMobile;
         this.width = 1920;
         this.height = 1080;
 
@@ -13,20 +14,29 @@ class BattleArenaGame {
         this.canvas.width = this.width;
         this.canvas.height = this.height;
 
+        this.canvas.addEventListener('webglcontextlost', (e) => {
+            e.preventDefault();
+            console.warn('WebGL context lost, pausing render loop');
+        }, false);
+        this.canvas.addEventListener('webglcontextrestored', () => {
+            console.info('WebGL context restored');
+            this.handleResize();
+        }, false);
+
         this.scene = new THREE.Scene();
         this.camera = new THREE.PerspectiveCamera(50, this.width / this.height, 0.1, 500);
         this.camera.position.set(0, 14, 28);
 
         this.renderer = new THREE.WebGLRenderer({
             canvas: this.canvas,
-            antialias: true,
+            antialias: !this.isMobile, // Disable MSAA on mobile for huge performance gain
             powerPreference: 'high-performance',
-            precision: 'highp'
+            precision: this.isMobile ? 'mediump' : 'highp'
         });
         this.renderer.setSize(this.width, this.height);
         this.updatePixelRatio();
         this.renderer.shadowMap.enabled = true;
-        this.renderer.shadowMap.type = THREE.PCFSoftShadowMap;
+        this.renderer.shadowMap.type = this.isMobile ? THREE.PCFShadowMap : THREE.PCFSoftShadowMap;
         this.renderer.toneMapping = THREE.ACESFilmicToneMapping;
         this.renderer.toneMappingExposure = 1.15;
 
@@ -89,6 +99,54 @@ class BattleArenaGame {
 
         // Feature 4-Armed Heian Sukuna on 3D Main Menu
         this.showPreview3D('sukuna');
+
+        // Dynamic viewport resize & orientation adaptation
+        window.addEventListener('resize', () => this.handleResize());
+        window.addEventListener('orientationchange', () => {
+            setTimeout(() => this.handleResize(), 250);
+        });
+        setTimeout(() => this.handleResize(), 50);
+    }
+
+    detectMobile() {
+        if (typeof window === 'undefined') return false;
+        return /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent) ||
+               (window.matchMedia && window.matchMedia('(pointer: coarse)').matches) ||
+               (window.innerWidth <= 900);
+    }
+
+    handleResize() {
+        const container = document.getElementById('gameContainer');
+        if (!container) return;
+
+        const rect = container.getBoundingClientRect();
+        const displayW = Math.max(320, Math.round(rect.width));
+        const displayH = Math.max(240, Math.round(rect.height));
+
+        this.isMobile = this.detectMobile();
+
+        const aspect = displayW / displayH;
+        if (this.camera) {
+            this.camera.aspect = aspect;
+            this.camera.updateProjectionMatrix();
+        }
+
+        // Keep internal coordinates at 1920 base width, adjust height for aspect ratio
+        this.width = 1920;
+        this.height = Math.round(1920 / aspect);
+
+        this.canvas.width = this.width;
+        this.canvas.height = this.height;
+
+        if (this.hudCanvas) {
+            this.hudCanvas.width = this.width;
+            this.hudCanvas.height = this.height;
+        }
+
+        if (this.renderer) {
+            this.renderer.setSize(this.width, this.height, false);
+            this.updatePixelRatio();
+        }
     }
 
     isPvPMode() {
@@ -162,8 +220,16 @@ class BattleArenaGame {
 
     updatePixelRatio() {
         const dpr = window.devicePixelRatio || 1;
-        const targetPixelRatio = this.is4K ? Math.min(Math.max(dpr, 2.0), 3.0) : Math.min(dpr, 1.5);
-        this.renderer.setPixelRatio(targetPixelRatio);
+        let targetPixelRatio;
+        if (this.isMobile) {
+            // Mobile: keep pixel ratio safe (max 1.25 in standard, max 1.75 in 4K) to avoid WebGL context loss
+            targetPixelRatio = this.is4K ? Math.min(dpr, 1.75) : Math.min(dpr, 1.25);
+        } else {
+            targetPixelRatio = this.is4K ? Math.min(Math.max(dpr, 2.0), 3.0) : Math.min(dpr, 1.5);
+        }
+        if (this.renderer) {
+            this.renderer.setPixelRatio(targetPixelRatio);
+        }
     }
 
     toggle4KMode() {
@@ -598,48 +664,49 @@ class BattleArenaGame {
         }
         if (!this.p1 || !this.p2) return;
 
-        // 1. Health Bars (4K Scaled Ultra Definition)
-        const barW = 680;
-        const barH = 34;
-        const barY = 36;
+        // 1. Health Bars (Responsive Definition)
+        const barW = Math.min(680, Math.floor(this.width * 0.38));
+        const barH = Math.max(26, Math.min(34, Math.floor(this.height * 0.035)));
+        const barY = Math.max(28, Math.min(36, Math.floor(this.height * 0.038)));
+        const padX = Math.max(20, Math.min(50, Math.floor(this.width * 0.026)));
 
         // Player 1 Health Bar (Left to Right)
         const p1Ratio = Math.max(0, this.p1.displayedHp / this.p1.maxHp);
         const p1GhostRatio = Math.max(0, this.p1.ghostHp / this.p1.maxHp);
 
         ctx.fillStyle = 'rgba(10, 12, 20, 0.88)';
-        ctx.fillRect(50, barY, barW, barH);
+        ctx.fillRect(padX, barY, barW, barH);
 
         // Ghost HP (White/Yellow drain)
         ctx.fillStyle = '#ffaa33';
-        ctx.fillRect(50, barY, barW * p1GhostRatio, barH);
+        ctx.fillRect(padX, barY, barW * p1GhostRatio, barH);
 
         // Current HP Gradient
-        const p1Grad = ctx.createLinearGradient(50, 0, 50 + barW, 0);
+        const p1Grad = ctx.createLinearGradient(padX, 0, padX + barW, 0);
         p1Grad.addColorStop(0, '#00e5ff');
         p1Grad.addColorStop(1, '#0088cc');
         ctx.fillStyle = p1Grad;
-        ctx.fillRect(50, barY, barW * p1Ratio, barH);
+        ctx.fillRect(padX, barY, barW * p1Ratio, barH);
 
         // Border Glow
         ctx.strokeStyle = '#00e5ff';
         ctx.lineWidth = 2.5;
-        ctx.strokeRect(50, barY, barW, barH);
+        ctx.strokeRect(padX, barY, barW, barH);
 
         // P1 Name & Grade Tag (Shows Custom Sorcerer Name & Character)
         const p1DisplayName = (this.p1CustomName || 'PLAYER 1').toUpperCase();
         ctx.font = "900 24px 'Cinzel', serif";
         ctx.fillStyle = '#ffffff';
-        ctx.fillText(`${p1DisplayName} [${this.p1.data.name.toUpperCase()}]`, 55, barY - 10);
+        ctx.fillText(`${p1DisplayName} [${this.p1.data.name.toUpperCase()}]`, padX + 5, barY - 10);
 
         ctx.font = "700 16px 'Rajdhani', sans-serif";
         ctx.fillStyle = '#00e5ff';
-        ctx.fillText(`${this.p1.data.grade} • HP: ${Math.round(this.p1.hp)}/${this.p1.maxHp}`, 55, barY + barH + 20);
+        ctx.fillText(`${this.p1.data.grade} • HP: ${Math.round(this.p1.hp)}/${this.p1.maxHp}`, padX + 5, barY + barH + 20);
 
         // Player 2 Health Bar (Right to Left)
         const p2Ratio = Math.max(0, this.p2.displayedHp / this.p2.maxHp);
         const p2GhostRatio = Math.max(0, this.p2.ghostHp / this.p2.maxHp);
-        const p2X = this.width - 50 - barW;
+        const p2X = this.width - padX - barW;
 
         ctx.fillStyle = 'rgba(10, 12, 20, 0.88)';
         ctx.fillRect(p2X, barY, barW, barH);
@@ -663,11 +730,11 @@ class BattleArenaGame {
         ctx.font = "900 24px 'Cinzel', serif";
         ctx.fillStyle = '#ffffff';
         ctx.textAlign = 'right';
-        ctx.fillText(`${p2DisplayName} [${this.p2.data.name.toUpperCase()}]`, this.width - 55, barY - 10);
+        ctx.fillText(`${p2DisplayName} [${this.p2.data.name.toUpperCase()}]`, this.width - padX - 5, barY - 10);
 
         ctx.font = "700 16px 'Rajdhani', sans-serif";
         ctx.fillStyle = '#ff2a5f';
-        ctx.fillText(`${this.p2.data.grade} • HP: ${Math.round(this.p2.hp)}/${this.p2.maxHp}`, this.width - 55, barY + barH + 20);
+        ctx.fillText(`${this.p2.data.grade} • HP: ${Math.round(this.p2.hp)}/${this.p2.maxHp}`, this.width - padX - 5, barY + barH + 20);
         ctx.textAlign = 'left';
 
         // 2. Central Round Timer

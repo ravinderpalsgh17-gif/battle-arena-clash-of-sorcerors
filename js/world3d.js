@@ -44,12 +44,16 @@ class World3D {
         this.hemiLight.position.set(0, 50, 0);
         this.scene.add(this.hemiLight);
 
-        // Main Sun / Moon Directional Light with 4K Soft Shadows
+        // Main Sun / Moon Directional Light with Safe Mobile & 4K Soft Shadows
         this.dirLight = new THREE.DirectionalLight(0xfff5e6, 1.25);
         this.dirLight.position.set(45, 85, 40);
         this.dirLight.castShadow = true;
-        this.dirLight.shadow.mapSize.width = 4096; // 4K Ultra Shadow Resolution
-        this.dirLight.shadow.mapSize.height = 4096;
+        const isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent) ||
+                         (window.matchMedia && window.matchMedia('(pointer: coarse)').matches) ||
+                         (window.innerWidth <= 900);
+        const shadowRes = isMobile ? 1024 : 4096; // 1024 safe on mobile GPUs, 4096 on desktop
+        this.dirLight.shadow.mapSize.width = shadowRes;
+        this.dirLight.shadow.mapSize.height = shadowRes;
         this.dirLight.shadow.camera.near = 1;
         this.dirLight.shadow.camera.far = 280;
 
