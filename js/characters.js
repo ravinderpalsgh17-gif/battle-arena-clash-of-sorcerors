@@ -63,15 +63,15 @@ const CHARACTERS_DATA = {
                 desc: 'Somersault axe-kick and rising knee strike that knocks enemies flying.'
             },
             ultimate: {
-                id: 'black_flash',
-                name: 'Black Flash (Kokusen)',
+                id: 'soul_station_domain',
+                name: 'Domain Expansion: Memory of the Soul',
                 key: 'U / V',
                 cooldown: 14.0,
                 energyCost: 100,
-                damage: 340,
-                range: 180,
-                type: 'spatial_crit',
-                desc: 'Sparks black lightning, bending space to deliver a cataclysmic 2.5x critical strike!'
+                damage: 420,
+                range: 350,
+                type: 'domain_sure_hit',
+                desc: 'Expands the snowbound Sendai station domain. Guaranteed-hit soul dismantles tear directly through the boundary between souls!'
             }
         }
     },
@@ -134,15 +134,15 @@ const CHARACTERS_DATA = {
                 desc: 'Heavy two-handed metal hammer swing that grounds the enemy and cracks armor.'
             },
             ultimate: {
-                id: 'resonance',
-                name: 'Resonance: Black Flash',
+                id: 'straw_doll_domain',
+                name: 'Domain: Straw Doll Iron Maiden',
                 key: 'U / V',
                 cooldown: 13.0,
                 energyCost: 100,
-                damage: 310,
-                range: 300,
-                type: 'soul_shock',
-                desc: 'Drives a nail through the Straw Doll with Black Flash, transmitting unavoidable soul damage!'
+                damage: 390,
+                range: 350,
+                type: 'domain_resonance',
+                desc: 'Deploys an ominous ritual crucible of giant straw doll effigies and piercing iron nails, detonating unavoidable soul resonance!'
             }
         }
     },
@@ -209,14 +209,14 @@ const CHARACTERS_DATA = {
             },
             ultimate: {
                 id: 'chimera_garden',
-                name: 'Chimera Shadow Garden',
+                name: 'Domain: Chimera Shadow Garden',
                 key: 'U / V',
                 cooldown: 14.0,
                 energyCost: 100,
-                damage: 330,
-                range: 350,
+                damage: 410,
+                range: 380,
                 type: 'domain_swarm',
-                desc: 'Floods the arena ground with liquid darkness, unleashing a multi-beast shikigami ambush!'
+                desc: 'Floods the arena ground with liquid shadow abyss, summoning reaching shadow claws, spine ribs, and an endless shikigami ambush!'
             }
         }
     },
@@ -279,15 +279,15 @@ const CHARACTERS_DATA = {
                 desc: 'Leaps high into the air and crashes down, sending rolling seismic shockwaves.'
             },
             ultimate: {
-                id: 'unblockable_beatdown',
-                name: 'Gorilla Resonance Beatdown',
+                id: 'tri_core_domain',
+                name: 'Domain: Tri-Core Beast Sanctuary',
                 key: 'U / V',
                 cooldown: 14.0,
                 energyCost: 100,
-                damage: 340,
-                range: 160,
-                type: 'kinetic_shockwave',
-                desc: 'Unleashes devastating full-power drumming beats that rattle the opponent to their core.'
+                damage: 400,
+                range: 350,
+                type: 'domain_beast',
+                desc: 'Manifests the ancient beast shrine of Panda, Gorilla, and Triceratops cores, unleashing unblockable primal seismic beatdowns!'
             }
         }
     },
@@ -353,15 +353,15 @@ const CHARACTERS_DATA = {
                 desc: 'Loosens tie and surges cursed energy forward in an explosive horizontal cleave.'
             },
             ultimate: {
-                id: 'fourfold_black_flash',
-                name: 'Consecutive Black Flash (x4)',
+                id: 'ratio_domain',
+                name: 'Domain: 7:3 Overtime Ratio Collapse',
                 key: 'U / V',
                 cooldown: 14.0,
                 energyCost: 100,
-                damage: 360,
-                range: 190,
-                type: 'consecutive_crit',
-                desc: 'Channels his historic four consecutive Black Flashes into the 7:3 division!'
+                damage: 420,
+                range: 360,
+                type: 'domain_ratio',
+                desc: 'Envelops the realm in overtime geometric laser coordinates, forcibly imposing the 7:3 critical fracture point across all space!'
             }
         }
     },
@@ -424,15 +424,15 @@ const CHARACTERS_DATA = {
                 desc: 'Swings the three-section special grade staff with superhuman muscle power.'
             },
             ultimate: {
-                id: 'brotherly_black_flash',
-                name: 'Brotherly Sync: Black Flash',
+                id: 'boogie_domain',
+                name: 'Domain: Boogie Woogie Delusion Sanctuary',
                 key: 'U / V',
                 cooldown: 14.0,
                 energyCost: 100,
-                damage: 360,
-                range: 180,
-                type: 'tag_black_flash',
-                desc: 'Performs a clap-feint into an earth-shattering synchronized Black Flash strike!'
+                damage: 410,
+                range: 360,
+                type: 'domain_swap',
+                desc: 'Projects the 530,000 IQ Takada-chan concert territory with dazzling stage spotlights, rhythmic clapping hands, and spatial swap strikes!'
             }
         }
     },

@@ -359,6 +359,76 @@ class SoundEngine {
         chime.stop(now + 1.5);
     }
 
+    // Domain Barrier Shatter / Collapse Sound
+    playDomainShatter() {
+        if (this.isMuted || !this.ctx) return;
+        this.resume();
+        const now = this.ctx.currentTime;
+
+        // Sharp glass/crystalline fracture crack
+        const snap = this.ctx.createOscillator();
+        const snapGain = this.ctx.createGain();
+        snap.type = 'sawtooth';
+        snap.frequency.setValueAtTime(2400, now);
+        snap.frequency.exponentialRampToValueAtTime(120, now + 0.35);
+        snapGain.gain.setValueAtTime(0.85 * this.volume, now);
+        snapGain.gain.exponentialRampToValueAtTime(0.001, now + 0.35);
+        snap.connect(snapGain);
+        snapGain.connect(this.ctx.destination);
+        snap.start(now);
+        snap.stop(now + 0.35);
+
+        // Dispersing barrier noise burst
+        this.playNoise(0.5, 0.7 * this.volume, 1200);
+
+        // Low frequency resonant barrier dissipation boom
+        const boom = this.ctx.createOscillator();
+        const boomGain = this.ctx.createGain();
+        boom.type = 'sine';
+        boom.frequency.setValueAtTime(90, now);
+        boom.frequency.exponentialRampToValueAtTime(28, now + 0.85);
+        boomGain.gain.setValueAtTime(0.9 * this.volume, now);
+        boomGain.gain.exponentialRampToValueAtTime(0.001, now + 0.85);
+        boom.connect(boomGain);
+        boomGain.connect(this.ctx.destination);
+        boom.start(now);
+        boom.stop(now + 0.85);
+    }
+
+    // Domain Clash Pulsing Resonance Sound
+    playDomainClash() {
+        if (this.isMuted || !this.ctx) return;
+        this.resume();
+        const now = this.ctx.currentTime;
+
+        // Dueling dual oscillators creating an intense harmonic beat
+        const osc1 = this.ctx.createOscillator();
+        const osc2 = this.ctx.createOscillator();
+        const gain = this.ctx.createGain();
+
+        osc1.type = 'sawtooth';
+        osc1.frequency.setValueAtTime(58, now);
+        osc1.frequency.linearRampToValueAtTime(76, now + 1.1);
+
+        osc2.type = 'square';
+        osc2.frequency.setValueAtTime(63, now);
+        osc2.frequency.linearRampToValueAtTime(72, now + 1.1);
+
+        gain.gain.setValueAtTime(0.8 * this.volume, now);
+        gain.gain.exponentialRampToValueAtTime(0.001, now + 1.1);
+
+        osc1.connect(gain);
+        osc2.connect(gain);
+        gain.connect(this.ctx.destination);
+
+        osc1.start(now);
+        osc2.start(now);
+        osc1.stop(now + 1.1);
+        osc2.stop(now + 1.1);
+
+        this.playThunder();
+    }
+
     // Shield / Block
     playBlock() {
         if (this.isMuted || !this.ctx) return;

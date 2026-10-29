@@ -322,14 +322,9 @@ class Fighter {
 
         // Live 3D Domain Expansion Activation in Open World
         if (window.GameInstance && window.GameInstance.world3d) {
-            if (this.charKey === 'gojo') {
-                window.GameInstance.world3d.activateDomain('unlimited_void', { x: this.x, y: 0, z: this.z });
-            } else if (this.charKey === 'sukuna') {
-                window.GameInstance.world3d.activateDomain('malevolent_shrine', { x: this.x, y: 0, z: this.z });
-            } else if (this.charKey === 'megumi') {
-                window.GameInstance.world3d.activateDomain('chimera_shadow', { x: this.x, y: 0, z: this.z });
-            } else if (this.charKey === 'jogo') {
-                window.GameInstance.world3d.activateDomain('iron_mountain', { x: this.x, y: 0, z: this.z });
+            const domainType = this.getDomainType();
+            if (domainType) {
+                window.GameInstance.world3d.activateDomain(domainType, this);
             }
         }
 
@@ -352,6 +347,29 @@ class Fighter {
                 type: `${this.charKey}_ultimate`,
                 activeFrames: [15, 45]
             };
+        }
+    }
+
+    getDomainType() {
+        switch (this.charKey) {
+            case 'gojo': return 'unlimited_void';
+            case 'sukuna': return 'malevolent_shrine';
+            case 'megumi': return 'chimera_shadow';
+            case 'jogo': return 'iron_mountain';
+            case 'yuta': return 'authentic_mutual_love';
+            case 'mahito': return 'self_embodiment';
+            case 'hakari': return 'idle_death_gamble';
+            case 'geto': return 'womb_profusion';
+            case 'yuji': return 'memory_of_soul';
+            case 'nobara': return 'straw_doll_domain';
+            case 'nanami': return 'ratio_domain';
+            case 'todo': return 'boogie_domain';
+            case 'panda': return 'tri_core_domain';
+            case 'choso': return 'flowing_red_domain';
+            case 'toji':
+            case 'maki':
+            default:
+                return null;
         }
     }
 
@@ -453,6 +471,20 @@ class Fighter {
         this.particles.createHitSparks(this.x, this.y + 1.5, this.z, 14, '#ffcc00');
         this.particles.addFloatingText(`-${Math.round(finalDamage)}`, this.x, this.y + 3, '#ff2a5f', 20);
 
+        // Domain Concentration & Barrier Stress Tracking
+        if (window.GameInstance && window.GameInstance.world3d && window.GameInstance.world3d.domainState.active) {
+            const ds = window.GameInstance.world3d.domainState;
+            if (ds.isClashing) {
+                if (this === ds.clashCasterA) ds.clashDamageA += finalDamage;
+                if (this === ds.clashCasterB) ds.clashDamageB += finalDamage;
+            } else if (this === ds.caster) {
+                ds.casterDamageTaken = (ds.casterDamageTaken || 0) + finalDamage;
+                if (ds.casterDamageTaken >= 65) {
+                    window.GameInstance.world3d.collapseDomain('damage');
+                }
+            }
+        }
+
         // Death Check & Panda Core Revive
         if (this.hp <= 0) {
             if (this.charKey === 'panda' && !this.hasPandaRevived) {
@@ -468,6 +500,13 @@ class Fighter {
             this.hp = 0;
             this.state = 'dead';
             this.sound.playKO();
+
+            // Collapse domain if caster dies
+            if (window.GameInstance && window.GameInstance.world3d && window.GameInstance.world3d.domainState.active) {
+                if (this === window.GameInstance.world3d.domainState.caster) {
+                    window.GameInstance.world3d.collapseDomain('caster_dead');
+                }
+            }
         }
     }
 

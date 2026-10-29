@@ -81,6 +81,43 @@ class ParticleEngine {
         }
     }
 
+    createDomainShatter(x, y, z = 0, color = '#00e5ff', count = 55) {
+        for (let i = 0; i < count; i++) {
+            const theta = Math.random() * Math.PI * 2;
+            const phi = Math.random() * Math.PI;
+            const speed = 0.15 + Math.random() * 0.35;
+            this.particles.push({
+                x, y, z,
+                vx: Math.sin(phi) * Math.cos(theta) * speed,
+                vy: Math.cos(phi) * speed + 0.12,
+                vz: Math.sin(phi) * Math.sin(theta) * speed,
+                color: (i % 2 === 0 ? color : '#ffffff'),
+                size: 5 + Math.random() * 7,
+                alpha: 1.0,
+                life: 38 + Math.random() * 25
+            });
+        }
+    }
+
+    createDomainClashSparks(x, y, z = 0, count = 16) {
+        for (let i = 0; i < count; i++) {
+            const angle = Math.random() * Math.PI * 2;
+            const speed = 0.12 + Math.random() * 0.28;
+            this.particles.push({
+                x: x + (Math.random() - 0.5) * 1.5,
+                y: y + (Math.random() - 0.5) * 6,
+                z: z + (Math.random() - 0.5) * 1.5,
+                vx: Math.cos(angle) * speed,
+                vy: (Math.random() - 0.5) * 0.2,
+                vz: Math.sin(angle) * speed,
+                color: (Math.random() > 0.5 ? '#ff0055' : '#00e5ff'),
+                size: 4 + Math.random() * 6,
+                alpha: 1.0,
+                life: 18 + Math.random() * 15
+            });
+        }
+    }
+
     update() {
         if (this.screenShake > 0) this.screenShake--;
         if (this.flashAlpha > 0) this.flashAlpha -= 0.05;
