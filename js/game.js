@@ -4,8 +4,8 @@
 class BattleArenaGame {
     constructor() {
         this.isMobile = this.detectMobile();
-        // On mobile, default to standard fidelity (is4K = false) to ensure smooth 60fps and prevent WebGL OOM context loss
-        this.is4K = !this.isMobile;
+        // 4K Ultra resolution pipeline is permanently enabled across all devices
+        this.is4K = true;
         this.width = 1920;
         this.height = 1080;
 
@@ -222,10 +222,9 @@ class BattleArenaGame {
         const dpr = window.devicePixelRatio || 1;
         let targetPixelRatio;
         if (this.isMobile) {
-            // Mobile: keep pixel ratio safe (max 1.25 in standard, max 1.75 in 4K) to avoid WebGL context loss
-            targetPixelRatio = this.is4K ? Math.min(dpr, 1.75) : Math.min(dpr, 1.25);
+            targetPixelRatio = Math.min(Math.max(dpr, 1.5), 2.0);
         } else {
-            targetPixelRatio = this.is4K ? Math.min(Math.max(dpr, 2.0), 3.0) : Math.min(dpr, 1.5);
+            targetPixelRatio = Math.min(Math.max(dpr, 2.0), 3.0);
         }
         if (this.renderer) {
             this.renderer.setPixelRatio(targetPixelRatio);
@@ -233,21 +232,8 @@ class BattleArenaGame {
     }
 
     toggle4KMode() {
-        this.is4K = !this.is4K;
+        this.is4K = true; // Permanently enabled
         this.updatePixelRatio();
-        const btn = document.getElementById('btnToggle4K');
-        if (btn) {
-            btn.textContent = this.is4K ? '✨ 4K ULTRA: ON' : '✨ 4K ULTRA: OFF';
-            btn.className = this.is4K ? 'btn btn-gold' : 'btn btn-secondary';
-        }
-        this.particles.addFloatingText(
-            this.is4K ? '4K ULTRA FIDELITY: ACTIVATED' : 'STANDARD FIDELITY: ON',
-            (this.p1 ? this.p1.x : 0),
-            4.2,
-            this.is4K ? '#ffd700' : '#00e5ff',
-            24,
-            true
-        );
     }
 
     // ----------------------------------------------------

@@ -8,7 +8,7 @@ An adrenaline-pumping **4K Ultra 3D Open World fighting arena game** featuring 1
 
 ### ✨ True 4K Ultra High-DPI Engine Pipeline
 * **High-DPI Scaler**: Dynamically scales up to native 4K UHD (3840x2160) and Retina displays with supersampled pixel ratios.
-* **4K Ultra Toggle**: Instant toggle button (`✨ 4K ULTRA: ON`) on the top navigation bar to switch between standard and 4K Ultra fidelity.
+* **Always-On 4K Ultra Pipeline**: Permanently enabled 4K Ultra supersampled high-DPI rendering across all displays.
 * **Procedural 4K Textures**: 2048x2048 weathered stone paving tiles, inlaid gold Jujutsu seals, authentic Heian cursed tattoo maps, and woven silk kimono cloth patterns.
 * **4096x4096 Soft Shadows & HDR Tone Mapping**: Real-time PCF soft contact shadows, ACESFilmic high dynamic range tone mapping, and cool rim lighting highlighting fighter silhouettes.
 * **Razor-Sharp 4K HUD**: High-DPI vector health bars, glowing cursed energy gauges, combo counter, and floating damage typography.
