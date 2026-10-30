@@ -96,6 +96,9 @@ class UIManager {
         document.getElementById('btnModeArcade')?.addEventListener('click', () => {
             Sound.playClick();
             this.currentMode = 'arcade';
+            if (window.GameInstance) {
+                window.GameInstance.arcadeIndex = 0;
+            }
             this.openCharSelect(1);
         });
 
@@ -161,7 +164,58 @@ class UIManager {
 
         document.getElementById('btnCloseMoveList')?.addEventListener('click', () => {
             Sound.playClick();
-            this.moveListModal.classList.add('hidden');
+            this.moveListModal?.classList.add('hidden');
+        });
+
+        document.getElementById('btnCloseMoveListBottom')?.addEventListener('click', () => {
+            Sound.playClick();
+            this.moveListModal?.classList.add('hidden');
+        });
+
+        // Close Modals on clicking outside modal card (dark backdrop)
+        this.moveListModal?.addEventListener('click', (e) => {
+            if (e.target === this.moveListModal) {
+                this.moveListModal.classList.add('hidden');
+            }
+        });
+
+        this.arenaSelectModal?.addEventListener('click', (e) => {
+            if (e.target === this.arenaSelectModal) {
+                this.arenaSelectModal.classList.add('hidden');
+            }
+        });
+
+        // Global Keyboard Shortcuts (Escape to close modals, Enter/Space to start fight)
+        window.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape') {
+                if (this.moveListModal && !this.moveListModal.classList.contains('hidden')) {
+                    this.moveListModal.classList.add('hidden');
+                    return;
+                }
+                if (this.arenaSelectModal && !this.arenaSelectModal.classList.contains('hidden')) {
+                    this.arenaSelectModal.classList.add('hidden');
+                    return;
+                }
+                if (this.friendModal && !this.friendModal.classList.contains('hidden')) {
+                    this.closeFriendModal();
+                    return;
+                }
+                if (this.signInModal && !this.signInModal.classList.contains('hidden')) {
+                    this.closeSignInModal();
+                    return;
+                }
+            }
+            if ((e.key === 'Enter' || e.key === ' ') && this.charSelectScreen && !this.charSelectScreen.classList.contains('hidden')) {
+                // Ensure no blocking modal is open
+                if (!this.arenaSelectModal?.classList.contains('hidden') || 
+                    !this.moveListModal?.classList.contains('hidden') || 
+                    !this.signInModal?.classList.contains('hidden')) return;
+                const activeChar = (this.pickingForPlayer === 1) ? this.selectedP1Char : this.selectedP2Char;
+                if (activeChar && StorageManager.isUnlocked(activeChar)) {
+                    e.preventDefault();
+                    this.confirmAndLaunchFighter(activeChar);
+                }
+            }
         });
 
         // Sign In & Profile Management Events
@@ -354,6 +408,8 @@ class UIManager {
         this.hudOverlay.classList.add('hidden');
         if (this.signInModal) this.signInModal.classList.add('hidden');
         if (this.friendModal) this.friendModal.classList.add('hidden');
+        if (this.moveListModal) this.moveListModal.classList.add('hidden');
+        if (this.arenaSelectModal) this.arenaSelectModal.classList.add('hidden');
         if (this.touchControls) {
             this.touchControls.classList.add('hidden');
         }
@@ -369,6 +425,8 @@ class UIManager {
         this.pickingForPlayer = forPlayer;
         this.menuScreen.classList.add('hidden');
         if (this.friendModal) this.friendModal.classList.add('hidden');
+        if (this.moveListModal) this.moveListModal.classList.add('hidden');
+        if (this.arenaSelectModal) this.arenaSelectModal.classList.add('hidden');
         this.charSelectScreen.classList.remove('hidden');
 
         const profile = StorageManager.getPlayerProfile();
@@ -381,8 +439,52 @@ class UIManager {
                 title.textContent = (forPlayer === 1)
                     ? `SELECT FIGHTER — ${p1Name.toUpperCase()}`
                     : `SELECT FIGHTER — ${friendName.toUpperCase()}`;
+            } else if (this.currentMode === 'arcade') {
+                title.textContent = `ARCADE GAUNTLET — CHOOSE YOUR SORCERER`;
+            } else if (this.currentMode === 'training') {
+                title.textContent = `TRAINING DOJO — SELECT SORCERER`;
             } else {
                 title.textContent = `CHOOSE YOUR FIGHTER — ${p1Name.toUpperCase()}`;
+            }
+        }
+
+        // Mode Tracker & Arcade Gauntlet Banner
+        const modeBadge = document.getElementById('charSelectModeBanner');
+        if (modeBadge) {
+            if (this.currentMode === 'arcade') {
+                modeBadge.classList.remove('hidden');
+                modeBadge.innerHTML = `
+                    <div class="ladder-banner-content">
+                        <span class="ladder-badge">🏆 ARCADE GAUNTLET (7 ROUNDS)</span>
+                        <span class="ladder-route">Round 1: <strong>Megumi</strong> ➔ Nanami ➔ Todo ➔ Mahito ➔ Toji ➔ Yuta ➔ Sukuna</span>
+                    </div>
+                `;
+            } else if (this.currentMode === 'versus') {
+                modeBadge.classList.remove('hidden');
+                modeBadge.innerHTML = `
+                    <div class="ladder-banner-content">
+                        <span class="ladder-badge" style="background: rgba(0, 229, 255, 0.2); border-color: #00e5ff; color: #00e5ff;">⚔️ VERSUS AI MODE</span>
+                        <span style="font-size: 12px; color: #bbb;">Select your champion to duel dynamic machine-learned AI!</span>
+                    </div>
+                `;
+            } else if (this.currentMode === 'pvp' || this.currentMode === 'friend') {
+                modeBadge.classList.remove('hidden');
+                modeBadge.innerHTML = `
+                    <div class="ladder-banner-content">
+                        <span class="ladder-badge" style="background: rgba(255, 0, 85, 0.2); border-color: #ff0055; color: #ff0055;">👥 ${(forPlayer === 1) ? 'STEP 1: PLAYER 1' : 'STEP 2: PLAYER 2'}</span>
+                        <span style="font-size: 12px; color: #bbb;">${(forPlayer === 1) ? `${p1Name.toUpperCase()} — Pick your fighter!` : `${friendName.toUpperCase()} — Pick your challenger!`}</span>
+                    </div>
+                `;
+            } else if (this.currentMode === 'training') {
+                modeBadge.classList.remove('hidden');
+                modeBadge.innerHTML = `
+                    <div class="ladder-banner-content">
+                        <span class="ladder-badge" style="background: rgba(0, 255, 136, 0.2); border-color: #00ff88; color: #00ff88;">🥋 TRAINING DOJO</span>
+                        <span style="font-size: 12px; color: #bbb;">No timer limit & rapid CE recovery for martial arts practice</span>
+                    </div>
+                `;
+            } else {
+                modeBadge.classList.add('hidden');
             }
         }
 
@@ -402,9 +504,12 @@ class UIManager {
         chars.forEach(key => {
             const char = CHARACTERS_DATA[key];
             const unlocked = StorageManager.isUnlocked(key);
+            const isCurrentlySelected = (this.pickingForPlayer === 1) 
+                ? (key === this.selectedP1Char) 
+                : (key === this.selectedP2Char);
 
             const card = document.createElement('div');
-            card.className = `char-card ${unlocked ? 'unlocked' : 'locked'} ${key === this.selectedP1Char ? 'active' : ''}`;
+            card.className = `char-card ${unlocked ? 'unlocked' : 'locked'} ${isCurrentlySelected ? 'active' : ''}`;
             card.id = `card-${key}`;
 
             card.innerHTML = `
@@ -418,18 +523,59 @@ class UIManager {
                         ${unlocked ? '<span class="status-unlocked">UNLOCKED</span>' : `<span class="status-locked">🔒 ${char.cost} PTS</span>`}
                     </div>
                 </div>
+                ${unlocked ? `
+                    <div class="char-card-actions">
+                        <button type="button" class="char-quick-fight-btn" data-key="${key}" title="Start battle immediately with ${char.name}">⚡ FIGHT</button>
+                    </div>
+                ` : ''}
             `;
 
-            card.addEventListener('click', () => {
+            // Clicking card selects it; clicking already selected active unlocked card immediately starts battle!
+            card.addEventListener('click', (e) => {
+                if (e.target.classList.contains('char-quick-fight-btn')) return;
                 Sound.playClick();
-                this.selectCharacterCard(key);
+                const activeKey = (this.pickingForPlayer === 1) ? this.selectedP1Char : this.selectedP2Char;
+                if (unlocked && activeKey === key) {
+                    this.confirmAndLaunchFighter(key);
+                } else {
+                    if (this.pickingForPlayer === 1) this.selectedP1Char = key;
+                    else this.selectedP2Char = key;
+                    this.selectCharacterCard(key);
+                }
             });
+
+            // Double click anywhere on unlocked card starts match immediately
+            card.addEventListener('dblclick', () => {
+                if (unlocked) {
+                    if (this.pickingForPlayer === 1) this.selectedP1Char = key;
+                    else this.selectedP2Char = key;
+                    this.confirmAndLaunchFighter(key);
+                }
+            });
+
+            // Quick fight button direct trigger
+            const quickFightBtn = card.querySelector('.char-quick-fight-btn');
+            if (quickFightBtn) {
+                quickFightBtn.addEventListener('click', (e) => {
+                    e.stopPropagation();
+                    Sound.playClick();
+                    if (this.pickingForPlayer === 1) this.selectedP1Char = key;
+                    else this.selectedP2Char = key;
+                    this.confirmAndLaunchFighter(key);
+                });
+            }
 
             grid.appendChild(card);
         });
     }
 
     selectCharacterCard(key) {
+        if (this.pickingForPlayer === 1) {
+            this.selectedP1Char = key;
+        } else {
+            this.selectedP2Char = key;
+        }
+
         document.querySelectorAll('.char-card').forEach(c => c.classList.remove('active'));
         const activeCard = document.getElementById(`card-${key}`);
         if (activeCard) activeCard.classList.add('active');
@@ -446,16 +592,51 @@ class UIManager {
         const previewContainer = document.getElementById('charSelectPreview');
         if (!previewContainer) return;
 
-        let actionBtnHtml = '';
+        // Mode-specific action label
+        let modeActionLabel = 'START BATTLE';
+        let modeActionIcon = '⚡';
+        if (this.currentMode === 'arcade') {
+            modeActionLabel = `START ARCADE GAUNTLET (VS MEGUMI)`;
+            modeActionIcon = '🏆';
+        } else if (this.currentMode === 'versus') {
+            modeActionLabel = `START BATTLE VS AI`;
+            modeActionIcon = '⚔️';
+        } else if (this.currentMode === 'training') {
+            modeActionLabel = `ENTER TRAINING DOJO`;
+            modeActionIcon = '🥋';
+        } else if (this.currentMode === 'pvp' || this.currentMode === 'friend') {
+            if (this.pickingForPlayer === 1) {
+                modeActionLabel = `NEXT: CHOOSE PLAYER 2`;
+                modeActionIcon = '➔';
+            } else {
+                modeActionLabel = `START 2-PLAYER DUEL`;
+                modeActionIcon = '⚔️';
+            }
+        }
+
+        let actionBtnTopHtml = '';
+        let actionBtnBottomHtml = '';
+
         if (unlocked) {
-            actionBtnHtml = `<button id="btnConfirmSelect" class="btn btn-primary btn-large">FIGHT WITH ${char.name.toUpperCase()}</button>`;
-        } else {
-            const canAfford = (data.points >= char.cost);
-            actionBtnHtml = `
-                <button id="btnUnlockChar" class="btn ${canAfford ? 'btn-gold' : 'btn-disabled'} btn-large">
-                    ${canAfford ? `UNLOCK FOR 🪙 ${char.cost} PTS` : `NEED 🪙 ${char.cost - data.points} MORE PTS`}
+            actionBtnTopHtml = `
+                <button type="button" id="btnConfirmSelectTop" class="btn btn-primary btn-large btn-fight-pulse" style="width: 100%; margin-bottom: 4px;">
+                    ${modeActionIcon} ${modeActionLabel} WITH ${char.name.toUpperCase()} ${modeActionIcon}
                 </button>
             `;
+            actionBtnBottomHtml = `
+                <button type="button" id="btnConfirmSelect" class="btn btn-primary btn-large btn-fight-pulse" style="width: 100%;">
+                    ${modeActionIcon} ${modeActionLabel} WITH ${char.name.toUpperCase()} ${modeActionIcon}
+                </button>
+            `;
+        } else {
+            const canAfford = (data.points >= char.cost);
+            const unlockHtml = `
+                <button type="button" id="btnUnlockChar" class="btn ${canAfford ? 'btn-gold' : 'btn-disabled'} btn-large" style="width: 100%;">
+                    ${canAfford ? `🔓 UNLOCK ${char.name.toUpperCase()} (🪙 ${char.cost} PTS)` : `🔒 LOCKED (${char.cost} PTS — NEED 🪙 ${char.cost - data.points} MORE)`}
+                </button>
+            `;
+            actionBtnTopHtml = unlockHtml;
+            actionBtnBottomHtml = unlockHtml;
         }
 
         previewContainer.innerHTML = `
@@ -465,6 +646,11 @@ class UIManager {
                 <p class="preview-tagline">${char.tagline}</p>
             </div>
 
+            <!-- Primary Unmissable Fight/Unlock Action At The Very Top -->
+            <div class="preview-top-actions">
+                ${actionBtnTopHtml}
+            </div>
+
             <div class="preview-stats">
                 <div class="stat-bar"><span>HP</span><div class="stat-track"><div style="width: ${(char.stats.hp / 1100) * 100}%; background: #00ff88;"></div></div></div>
                 <div class="stat-bar"><span>SPEED</span><div class="stat-track"><div style="width: ${(char.stats.speed / 7) * 100}%; background: #00e5ff;"></div></div></div>
@@ -472,7 +658,10 @@ class UIManager {
             </div>
 
             <div class="preview-moves">
-                <h3>ATTACKS & ABILITIES</h3>
+                <div class="preview-moves-header">
+                    <h3>📖 ATTACKS & ABILITIES (CODEX)</h3>
+                    <span style="font-size: 11px; color: #888;">Controls: J / K / L / U</span>
+                </div>
                 <div class="move-item">
                     <span class="move-key">[J / Z]</span> <strong>${char.attacks.basic.name}:</strong> ${char.attacks.basic.desc}
                 </div>
@@ -490,50 +679,64 @@ class UIManager {
                 </div>
             </div>
 
+            <!-- Sticky Bottom Action Button for effortless start on all screen sizes -->
             <div class="preview-actions">
-                ${actionBtnHtml}
+                ${actionBtnBottomHtml}
             </div>
         `;
 
-        // Action Button Handlers
-        const btnConfirm = document.getElementById('btnConfirmSelect');
-        if (btnConfirm) {
-            btnConfirm.addEventListener('click', () => {
-                Sound.playClick();
-                if (this.pickingForPlayer === 1) {
-                    this.selectedP1Char = key;
-                    if (this.currentMode === 'pvp' || this.currentMode === 'friend') {
-                        // In PvP / Friend duel, now prompt Player 2 / Friend
-                        this.openCharSelect(2);
-                    } else if (this.currentMode === 'arcade') {
-                        // Start Arcade Ladder round 1
-                        this.selectedP2Char = window.GameInstance.arcadeLadder[0];
-                        this.launchGame();
-                    } else if (this.currentMode === 'training') {
-                        this.selectedP2Char = (key === 'sukuna') ? 'gojo' : 'sukuna';
-                        this.launchGame();
-                    } else {
-                        // Versus AI: pick random unlocked or default opponent
-                        this.selectedP2Char = (key === 'sukuna') ? 'gojo' : 'sukuna';
-                        this.launchGame();
-                    }
-                } else {
-                    this.selectedP2Char = key;
-                    this.launchGame();
-                }
-            });
-        }
+        // Wire Top and Bottom Action Buttons to confirmAndLaunchFighter
+        const handleConfirm = () => {
+            this.confirmAndLaunchFighter(key);
+        };
 
-        const btnUnlock = document.getElementById('btnUnlockChar');
-        if (btnUnlock && !unlocked && data.points >= char.cost) {
-            btnUnlock.addEventListener('click', () => {
+        document.getElementById('btnConfirmSelectTop')?.addEventListener('click', handleConfirm);
+        document.getElementById('btnConfirmSelect')?.addEventListener('click', handleConfirm);
+
+        // Wire Unlock Handlers
+        const handleUnlock = () => {
+            if (!unlocked && data.points >= char.cost) {
                 Sound.playUnlock();
                 StorageManager.addPoints(-char.cost);
                 StorageManager.unlockCharacter(key);
                 this.updatePointsDisplay();
                 this.renderCharCards();
                 this.selectCharacterCard(key);
-            });
+            }
+        };
+
+        const unlockButtons = previewContainer.querySelectorAll('#btnUnlockChar');
+        unlockButtons.forEach(btn => btn.addEventListener('click', handleUnlock));
+    }
+
+    // Unified fighter confirmation & game launcher
+    confirmAndLaunchFighter(key) {
+        Sound.playClick();
+        if (this.pickingForPlayer === 1) {
+            this.selectedP1Char = key;
+            if (this.currentMode === 'pvp' || this.currentMode === 'friend') {
+                // In PvP / Friend duel, now prompt Player 2 / Friend
+                this.openCharSelect(2);
+            } else if (this.currentMode === 'arcade') {
+                // Start Arcade Ladder round 1
+                if (window.GameInstance) {
+                    window.GameInstance.arcadeIndex = 0;
+                    this.selectedP2Char = window.GameInstance.arcadeLadder[0];
+                } else {
+                    this.selectedP2Char = 'megumi';
+                }
+                this.launchGame();
+            } else if (this.currentMode === 'training') {
+                this.selectedP2Char = (key === 'sukuna') ? 'gojo' : 'sukuna';
+                this.launchGame();
+            } else {
+                // Versus AI: pick random unlocked or default opponent
+                this.selectedP2Char = (key === 'sukuna') ? 'gojo' : 'sukuna';
+                this.launchGame();
+            }
+        } else {
+            this.selectedP2Char = key;
+            this.launchGame();
         }
     }
 
@@ -861,7 +1064,9 @@ class UIManager {
     // MOVE LIST & GOD CODEX
     // ----------------------------------------------------
     openMoveList() {
-        this.moveListModal.classList.remove('hidden');
+        this.moveListModal?.classList.remove('hidden');
+        const box = this.moveListModal?.querySelector('.modal-box');
+        if (box) box.scrollTop = 0;
         const container = document.getElementById('moveListContent');
         if (!container) return;
 

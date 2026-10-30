@@ -83,6 +83,14 @@ Toggle between 3 distinct camera modes at any time with the `V` key or top-bar b
 | **Toggle 3D Camera** | <kbd>V</kbd> | <kbd>V</kbd> | <kbd>🎥</kbd> (CAM) |
 | **Pause Match** | <kbd>Esc</kbd> or <kbd>P</kbd> | <kbd>Esc</kbd> | <kbd>⏸</kbd> (PAUSE) |
 
+### 🏆 Game Modes & Arcade Gauntlet
+* **Arcade Ladder**: 7-round canonical gauntlet against Megumi Fushiguro, Kento Nanami, Aoi Todo, Mahito, Toji Fushiguro, Yuta Okkotsu, and Heian Ryomen Sukuna. Features an active gauntlet route tracker, instant start from character select, and progressive win coin multipliers.
+* **Versus AI**: Single match against machine-learning tactical AI with customizable difficulty.
+* **Local 2-Player (PvP)**: Split-screen combat on a shared keyboard.
+* **Training Dojo**: Infinite timer, immediate CE recovery, and live combat dummies.
+* **Play vs Friend**: Custom invite room generator with challenger names for direct local duels.
+* **Streamlined Character Select**: Dual unmissable glowing "⚡ START BATTLE" buttons (pinned at the top and sticky at the bottom of the character card), direct one-click "⚡ FIGHT" badges on cards, double-click to start, and <kbd>Enter</kbd>/<kbd>Space</kbd> key confirmation to guarantee seamless match launching on any display.
+
 ---
 
 ## 🚀 How to Run

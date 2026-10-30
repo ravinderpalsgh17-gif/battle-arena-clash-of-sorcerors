@@ -260,6 +260,16 @@ class BattleArenaGame {
         this.mode = mode;
         this.difficulty = difficulty;
 
+        // Reset Arcade Ladder round counter on round 1 / initial gauntlet start
+        if (this.mode === 'arcade') {
+            if (!this.arcadeLadder || !this.arcadeLadder.length) {
+                this.arcadeLadder = ['megumi', 'nanami', 'todo', 'mahito', 'toji', 'yuta', 'sukuna'];
+            }
+            if (p2CharKey === this.arcadeLadder[0]) {
+                this.arcadeIndex = 0;
+            }
+        }
+
         // Custom names for Player 1 & Friend/Player 2
         const profile = (typeof StorageManager !== 'undefined' && StorageManager.getPlayerProfile) 
             ? StorageManager.getPlayerProfile() 

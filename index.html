@@ -73,7 +73,12 @@
 
         <!-- 4. Character Selection Screen -->
         <div id="charSelectScreen" class="ui-screen hidden">
-            <h2 id="charSelectTitle" class="menu-subtitle" style="margin-top: 15px; margin-bottom: 5px;">CHOOSE YOUR FIGHTER</h2>
+            <h2 id="charSelectTitle" class="menu-subtitle" style="margin-top: 10px; margin-bottom: 4px;">CHOOSE YOUR FIGHTER</h2>
+
+            <!-- Mode & Arcade Gauntlet Tracker -->
+            <div id="charSelectModeBanner" class="char-select-mode-banner hidden">
+                <!-- Injected dynamically by ui.js -->
+            </div>
 
             <!-- Active Battlefield Indicator -->
             <div class="active-arena-banner" id="activeArenaBanner">
@@ -365,6 +370,9 @@
                 </div>
                 <div id="moveListContent">
                     <!-- Injected by ui.js -->
+                </div>
+                <div style="text-align: center; margin-top: 25px; padding-top: 15px; border-top: 1px solid rgba(255,255,255,0.1);">
+                    <button id="btnCloseMoveListBottom" class="btn btn-primary" style="padding: 10px 24px; font-weight: 700;">✕ CLOSE CODEX & RETURN TO GAME</button>
                 </div>
             </div>
         </div>
