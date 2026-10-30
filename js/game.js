@@ -57,6 +57,9 @@ class BattleArenaGame {
         // 3. Subsystems
         this.particles = new ParticleEngine();
         this.sound = Sound;
+        this.currentBattlefieldKey = (typeof StorageManager !== 'undefined' && StorageManager.getSelectedBattlefield) 
+            ? StorageManager.getSelectedBattlefield() 
+            : 'jjk_high';
         this.world3d = new World3D(this.scene);
 
         // Game Configuration
@@ -236,6 +239,20 @@ class BattleArenaGame {
         this.updatePixelRatio();
     }
 
+    setBattlefield(fieldKey) {
+        if (!fieldKey) return;
+        this.currentBattlefieldKey = fieldKey;
+        if (typeof StorageManager !== 'undefined' && StorageManager.selectBattlefield) {
+            StorageManager.selectBattlefield(fieldKey);
+        }
+        if (this.world3d) {
+            this.world3d.loadBattlefield(fieldKey);
+        }
+        if (window.UI && window.UI.updateActiveArenaDisplay) {
+            window.UI.updateActiveArenaDisplay();
+        }
+    }
+
     // ----------------------------------------------------
     // MATCH & ROUND MANAGEMENT
     // ----------------------------------------------------
@@ -251,12 +268,20 @@ class BattleArenaGame {
         this.p1CustomName = p1Name || profile.name || 'Sorcerer';
         this.p2CustomName = p2Name || (this.isPvPMode() ? (profile.friendName || 'Friend') : null);
 
+        // Load active battlefield into 3D world
+        this.currentBattlefieldKey = (typeof StorageManager !== 'undefined' && StorageManager.getSelectedBattlefield)
+            ? StorageManager.getSelectedBattlefield()
+            : (this.currentBattlefieldKey || 'jjk_high');
+        if (this.world3d) {
+            this.world3d.loadBattlefield(this.currentBattlefieldKey);
+            this.world3d.clearDomain();
+        }
+
         // Cleanup prior fighters, preview & projectiles
         this.clearPreview3D();
         if (this.p1) this.p1.cleanup();
         if (this.p2) this.p2.cleanup();
         this.clearProjectiles();
-        if (this.world3d) this.world3d.clearDomain();
 
         // Create 3D Fighters in Open World
         this.p1 = new Fighter(p1CharKey, -12, 0, false, this.scene, this.particles, this.sound);
@@ -382,13 +407,19 @@ class BattleArenaGame {
         this.state = 'match_over';
         this.sound.stopBGM();
 
+        const field = (typeof BATTLEFIELDS_DATA !== 'undefined' && BATTLEFIELDS_DATA[this.currentBattlefieldKey])
+            ? BATTLEFIELDS_DATA[this.currentBattlefieldKey]
+            : { name: 'Jujutsu High Courtyard', winMoney: 350 };
+
         let earnedPoints = 0;
+        let baseReward = 0;
         if (p1Won) {
             this.sound.playVictory();
-            const basePoints = (this.difficulty === 'deity') ? 600 : ((this.difficulty === 'hard') ? 450 : 300);
+            const diffMultiplier = (this.difficulty === 'deity') ? 2.0 : ((this.difficulty === 'hard') ? 1.5 : 1.0);
+            baseReward = Math.round((field.winMoney || 350) * diffMultiplier);
             const comboBonus = Math.min(200, this.p1.comboCount * 20);
             const timeBonus = Math.floor(this.roundTimer * 2);
-            earnedPoints = basePoints + comboBonus + timeBonus;
+            earnedPoints = baseReward + comboBonus + timeBonus;
 
             StorageManager.addPoints(earnedPoints);
             if (this.mode === 'arcade') {
@@ -396,7 +427,8 @@ class BattleArenaGame {
             }
         } else {
             this.sound.playKO();
-            earnedPoints = 50;
+            baseReward = Math.max(50, Math.round((field.winMoney || 350) * 0.15));
+            earnedPoints = baseReward;
             StorageManager.addPoints(earnedPoints);
         }
 
@@ -404,7 +436,7 @@ class BattleArenaGame {
         const p2DisplayName = (this.p2CustomName || (this.isPvPMode() ? 'FRIEND' : 'CPU')).toUpperCase();
 
         if (window.UI) {
-            window.UI.showGameOver(p1Won, earnedPoints, this.p1RoundsWon, this.p2RoundsWon, this.arcadeIndex, p1DisplayName, p2DisplayName, this.isPvPMode());
+            window.UI.showGameOver(p1Won, earnedPoints, this.p1RoundsWon, this.p2RoundsWon, this.arcadeIndex, p1DisplayName, p2DisplayName, this.isPvPMode(), field.name, baseReward);
         }
     }
 

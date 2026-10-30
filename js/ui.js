@@ -75,6 +75,20 @@ class UIManager {
         this.inputShareLink = document.getElementById('inputShareLink');
         this.btnCopyInviteLink = document.getElementById('btnCopyInviteLink');
         this.copyFeedback = document.getElementById('copyFeedback');
+
+        // Battlefield & Arena Elements
+        this.shopTabFighters = document.getElementById('btnShopTabFighters');
+        this.shopTabBattlefields = document.getElementById('btnShopTabBattlefields');
+        this.shopGrid = document.getElementById('shopGrid');
+        this.shopBattlefieldGrid = document.getElementById('shopBattlefieldGrid');
+        this.btnBattlefields = document.getElementById('btnBattlefields');
+        this.activeArenaBanner = document.getElementById('activeArenaBanner');
+        this.activeArenaName = document.getElementById('activeArenaName');
+        this.activeArenaReward = document.getElementById('activeArenaReward');
+        this.btnCharSelectChangeArena = document.getElementById('btnCharSelectChangeArena');
+        this.arenaSelectModal = document.getElementById('arenaSelectModal');
+        this.btnCloseArenaModal = document.getElementById('btnCloseArenaModal');
+        this.arenaModalGrid = document.getElementById('arenaModalGrid');
     }
 
     bindEvents() {
@@ -110,7 +124,34 @@ class UIManager {
 
         document.getElementById('btnShop')?.addEventListener('click', () => {
             Sound.playClick();
-            this.openShop();
+            this.openShop('fighters');
+        });
+
+        document.getElementById('btnBattlefields')?.addEventListener('click', () => {
+            Sound.playClick();
+            this.openBattlefieldsShop();
+        });
+
+        // Shop Tabs
+        this.shopTabFighters?.addEventListener('click', () => {
+            Sound.playClick();
+            this.switchShopTab('fighters');
+        });
+
+        this.shopTabBattlefields?.addEventListener('click', () => {
+            Sound.playClick();
+            this.switchShopTab('battlefields');
+        });
+
+        // Quick Arena Modal Trigger
+        this.btnCharSelectChangeArena?.addEventListener('click', () => {
+            Sound.playClick();
+            this.openArenaSelectModal();
+        });
+
+        this.btnCloseArenaModal?.addEventListener('click', () => {
+            Sound.playClick();
+            this.arenaSelectModal?.classList.add('hidden');
         });
 
         document.getElementById('btnMoveList')?.addEventListener('click', () => {
@@ -277,6 +318,7 @@ class UIManager {
                 this.updatePointsDisplay();
                 this.renderCharCards();
                 this.renderShopCards();
+                this.renderBattlefieldShopCards();
             }
         });
 
@@ -344,6 +386,7 @@ class UIManager {
             }
         }
 
+        this.updateActiveArenaDisplay();
         this.renderCharCards();
         const defaultChar = (forPlayer === 1) ? this.selectedP1Char : this.selectedP2Char;
         this.selectCharacterCard(defaultChar || 'yuji');
@@ -520,13 +563,33 @@ class UIManager {
     }
 
     // ----------------------------------------------------
-    // GOD SHOP & UNLOCKS
+    // GOD SHOP & UNLOCKS (FIGHTERS & 10 BATTLEFIELDS)
     // ----------------------------------------------------
-    openShop() {
+    openShop(tab = 'fighters') {
         this.menuScreen.classList.add('hidden');
         this.shopScreen.classList.remove('hidden');
         this.updatePointsDisplay();
-        this.renderShopCards();
+        this.switchShopTab(tab);
+    }
+
+    openBattlefieldsShop() {
+        this.openShop('battlefields');
+    }
+
+    switchShopTab(tab) {
+        if (tab === 'battlefields') {
+            this.shopTabFighters?.classList.remove('active');
+            this.shopTabBattlefields?.classList.add('active');
+            this.shopGrid?.classList.add('hidden');
+            this.shopBattlefieldGrid?.classList.remove('hidden');
+            this.renderBattlefieldShopCards();
+        } else {
+            this.shopTabBattlefields?.classList.remove('active');
+            this.shopTabFighters?.classList.add('active');
+            this.shopBattlefieldGrid?.classList.add('hidden');
+            this.shopGrid?.classList.remove('hidden');
+            this.renderShopCards();
+        }
     }
 
     renderShopCards() {
@@ -577,6 +640,221 @@ class UIManager {
 
             grid.appendChild(card);
         });
+    }
+
+    renderBattlefieldShopCards() {
+        const grid = document.getElementById('shopBattlefieldGrid');
+        if (!grid || typeof BATTLEFIELDS_DATA === 'undefined') return;
+        grid.innerHTML = '';
+
+        const data = StorageManager.load();
+        const unlockedFields = (StorageManager.getUnlockedBattlefields) ? StorageManager.getUnlockedBattlefields() : ['jjk_high'];
+        const currentActive = (StorageManager.getSelectedBattlefield) ? StorageManager.getSelectedBattlefield() : 'jjk_high';
+
+        Object.keys(BATTLEFIELDS_DATA).forEach(key => {
+            const field = BATTLEFIELDS_DATA[key];
+            const isUnlocked = unlockedFields.includes(key);
+            const isEquipped = (currentActive === key);
+            const canAfford = (data.points >= field.cost);
+
+            const card = document.createElement('div');
+            card.className = `battlefield-card ${isEquipped ? 'equipped' : ''} ${isUnlocked ? 'owned' : ''}`;
+
+            let badgeText = '';
+            let badgeBg = field.accentColor;
+            if (isEquipped) {
+                badgeText = 'EQUIPPED';
+                badgeBg = '#ffd700';
+            } else if (isUnlocked) {
+                badgeText = 'OWNED';
+                badgeBg = '#00e5ff';
+            } else {
+                badgeText = `🪙 ${field.cost} COINS`;
+            }
+
+            let actionHtml = '';
+            if (isEquipped) {
+                actionHtml = `<button class="btn btn-disabled" disabled style="width: 100%;">✓ EQUIPPED ARENA</button>`;
+            } else if (isUnlocked) {
+                actionHtml = `<button class="btn btn-gold btn-equip-field" data-key="${key}" style="width: 100%;">SELECT BATTLEFIELD</button>`;
+            } else {
+                actionHtml = `<button class="btn ${canAfford ? 'btn-gold' : 'btn-disabled'} btn-buy-field" data-key="${key}" ${canAfford ? '' : 'disabled'} style="width: 100%;">
+                    ${canAfford ? `UNLOCK FOR 🪙 ${field.cost}` : `NEED 🪙 ${field.cost} COINS`}
+                </button>`;
+            }
+
+            card.innerHTML = `
+                <div class="shop-badge" style="background: ${badgeBg}">
+                    ${badgeText}
+                </div>
+                <div class="battlefield-kanji">${field.kanji || ''}</div>
+                <h3 style="color: ${field.accentColor}">${field.name}</h3>
+                <div class="shop-title"><strong>${field.tagline}</strong></div>
+                <div class="battlefield-reward-pill">
+                    <span>WIN MONEY REWARD</span>
+                    <strong>${field.winBonusText}</strong>
+                </div>
+                <p class="shop-tagline" style="font-size: 13px; line-height: 1.4;">${field.desc}</p>
+                <div class="shop-action" style="margin-top: 15px;">
+                    ${actionHtml}
+                </div>
+            `;
+
+            const equipBtn = card.querySelector('.btn-equip-field');
+            if (equipBtn) {
+                equipBtn.addEventListener('click', () => {
+                    Sound.playClick();
+                    if (window.GameInstance && window.GameInstance.setBattlefield) {
+                        window.GameInstance.setBattlefield(key);
+                    } else if (typeof StorageManager !== 'undefined') {
+                        StorageManager.selectBattlefield(key);
+                    }
+                    this.updateActiveArenaDisplay();
+                    this.renderBattlefieldShopCards();
+                });
+            }
+
+            const buyBtn = card.querySelector('.btn-buy-field');
+            if (buyBtn && canAfford) {
+                buyBtn.addEventListener('click', () => {
+                    Sound.playUnlock();
+                    StorageManager.addPoints(-field.cost);
+                    StorageManager.unlockBattlefield(key);
+                    if (window.GameInstance && window.GameInstance.setBattlefield) {
+                        window.GameInstance.setBattlefield(key);
+                    } else if (typeof StorageManager !== 'undefined') {
+                        StorageManager.selectBattlefield(key);
+                    }
+                    this.updatePointsDisplay();
+                    this.updateActiveArenaDisplay();
+                    this.renderBattlefieldShopCards();
+                });
+            }
+
+            grid.appendChild(card);
+        });
+    }
+
+    openArenaSelectModal() {
+        if (!this.arenaSelectModal) return;
+        this.arenaSelectModal.classList.remove('hidden');
+        this.renderArenaModalGrid();
+    }
+
+    renderArenaModalGrid() {
+        const grid = document.getElementById('arenaModalGrid');
+        if (!grid || typeof BATTLEFIELDS_DATA === 'undefined') return;
+        grid.innerHTML = '';
+
+        const data = StorageManager.load();
+        const unlockedFields = (StorageManager.getUnlockedBattlefields) ? StorageManager.getUnlockedBattlefields() : ['jjk_high'];
+        const currentActive = (StorageManager.getSelectedBattlefield) ? StorageManager.getSelectedBattlefield() : 'jjk_high';
+
+        Object.keys(BATTLEFIELDS_DATA).forEach(key => {
+            const field = BATTLEFIELDS_DATA[key];
+            const isUnlocked = unlockedFields.includes(key);
+            const isSelected = (currentActive === key);
+            const canAfford = (data.points >= field.cost);
+
+            const item = document.createElement('div');
+            item.className = `arena-select-card ${isSelected ? 'selected' : ''} ${!isUnlocked ? 'locked' : ''}`;
+
+            let badgeHtml = '';
+            if (isSelected) {
+                badgeHtml = `<span class="arena-select-badge" style="background: #ffd700; color: #000;">SELECTED</span>`;
+            } else if (isUnlocked) {
+                badgeHtml = `<span class="arena-select-badge" style="background: #00e5ff; color: #000;">UNLOCKED</span>`;
+            } else {
+                badgeHtml = `<span class="arena-select-badge" style="background: #ff0055; color: #fff;">🪙 ${field.cost}</span>`;
+            }
+
+            item.innerHTML = `
+                ${badgeHtml}
+                <div style="font-size: 11px; color: #8899aa; letter-spacing: 1px;">${field.kanji || ''}</div>
+                <h4 style="color: ${field.accentColor}; font-size: 17px; margin: 4px 0;">${field.name}</h4>
+                <div style="font-size: 12px; color: #ccc; margin-bottom: 6px;">${field.tagline}</div>
+                <div class="battlefield-reward-pill" style="margin: 6px 0; padding: 4px 8px; font-size: 12px;">
+                    <span>WIN MONEY</span>
+                    <strong>${field.winBonusText}</strong>
+                </div>
+                <div style="margin-top: 10px;">
+                    ${isSelected 
+                        ? '<button class="btn btn-disabled btn-micro" disabled style="width: 100%;">✓ EQUIPPED</button>'
+                        : (isUnlocked 
+                            ? `<button class="btn btn-secondary btn-micro btn-modal-select" data-key="${key}" style="width: 100%;">SELECT ARENA</button>`
+                            : `<button class="btn ${canAfford ? 'btn-gold' : 'btn-disabled'} btn-micro btn-modal-unlock" data-key="${key}" ${canAfford ? '' : 'disabled'} style="width: 100%;">
+                                ${canAfford ? `UNLOCK 🪙 ${field.cost}` : `NEED 🪙 ${field.cost}`}
+                               </button>`
+                          )
+                    }
+                </div>
+            `;
+
+            const selectBtn = item.querySelector('.btn-modal-select');
+            if (selectBtn) {
+                selectBtn.addEventListener('click', (e) => {
+                    e.stopPropagation();
+                    Sound.playClick();
+                    if (window.GameInstance && window.GameInstance.setBattlefield) {
+                        window.GameInstance.setBattlefield(key);
+                    } else if (typeof StorageManager !== 'undefined') {
+                        StorageManager.selectBattlefield(key);
+                    }
+                    this.updateActiveArenaDisplay();
+                    this.arenaSelectModal?.classList.add('hidden');
+                });
+            }
+
+            const unlockBtn = item.querySelector('.btn-modal-unlock');
+            if (unlockBtn && canAfford) {
+                unlockBtn.addEventListener('click', (e) => {
+                    e.stopPropagation();
+                    Sound.playUnlock();
+                    StorageManager.addPoints(-field.cost);
+                    StorageManager.unlockBattlefield(key);
+                    if (window.GameInstance && window.GameInstance.setBattlefield) {
+                        window.GameInstance.setBattlefield(key);
+                    } else if (typeof StorageManager !== 'undefined') {
+                        StorageManager.selectBattlefield(key);
+                    }
+                    this.updatePointsDisplay();
+                    this.updateActiveArenaDisplay();
+                    this.renderArenaModalGrid();
+                });
+            }
+
+            item.addEventListener('click', () => {
+                if (isUnlocked) {
+                    Sound.playClick();
+                    if (window.GameInstance && window.GameInstance.setBattlefield) {
+                        window.GameInstance.setBattlefield(key);
+                    } else if (typeof StorageManager !== 'undefined') {
+                        StorageManager.selectBattlefield(key);
+                    }
+                    this.updateActiveArenaDisplay();
+                    this.arenaSelectModal?.classList.add('hidden');
+                }
+            });
+
+            grid.appendChild(item);
+        });
+    }
+
+    updateActiveArenaDisplay() {
+        const activeKey = (typeof StorageManager !== 'undefined' && StorageManager.getSelectedBattlefield) 
+            ? StorageManager.getSelectedBattlefield() 
+            : 'jjk_high';
+        const field = (typeof BATTLEFIELDS_DATA !== 'undefined' && BATTLEFIELDS_DATA[activeKey]) 
+            ? BATTLEFIELDS_DATA[activeKey] 
+            : null;
+
+        if (this.activeArenaName && field) {
+            this.activeArenaName.textContent = field.name;
+            this.activeArenaName.style.color = field.accentColor;
+        }
+        if (this.activeArenaReward && field) {
+            this.activeArenaReward.textContent = `(${field.winBonusText})`;
+        }
     }
 
     // ----------------------------------------------------
@@ -651,13 +929,18 @@ class UIManager {
         }
     }
 
-    showGameOver(p1Won, points, p1Rounds, p2Rounds, arcadeIdx, p1Name = 'Player 1', p2Name = 'Player 2', isPvP = false) {
+    showGameOver(p1Won, points, p1Rounds, p2Rounds, arcadeIdx, p1Name = 'Player 1', p2Name = 'Player 2', isPvP = false, arenaName = 'Jujutsu High Courtyard', arenaBaseReward = 350) {
         if (this.touchControls) this.touchControls.classList.add('hidden');
         this.gameOverOverlay.classList.remove('hidden');
         const titleEl = document.getElementById('gameOverTitle');
         const pointsEl = document.getElementById('gameOverPoints');
         const scoreEl = document.getElementById('gameOverScore');
         const nextBtn = document.getElementById('btnGameOverNext');
+        const battlefieldEl = document.getElementById('gameOverBattlefield');
+
+        if (battlefieldEl) {
+            battlefieldEl.textContent = `🗺️ Battlefield: ${arenaName} (+🪙 ${arenaBaseReward} Base Reward)`;
+        }
 
         if (titleEl) {
             if (p1Won) {

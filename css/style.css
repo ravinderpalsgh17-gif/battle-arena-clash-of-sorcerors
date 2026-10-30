@@ -1905,6 +1905,214 @@ body.in-battle {
     }
 }
 
+/* ==================================================== */
+/* 10 BATTLEFIELDS & ARENA SHOP STYLING                 */
+/* ==================================================== */
+
+.shop-tabs {
+    display: flex;
+    gap: 15px;
+    justify-content: center;
+    margin-top: 15px;
+    margin-bottom: 5px;
+    z-index: 10;
+}
+
+.shop-tab-btn {
+    background: rgba(18, 20, 34, 0.85);
+    border: 2px solid #333a55;
+    color: #aab;
+    padding: 10px 24px;
+    font-family: var(--font-heading);
+    font-size: 16px;
+    font-weight: 800;
+    letter-spacing: 1.5px;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: all 0.25s ease;
+}
+
+.shop-tab-btn:hover {
+    border-color: var(--cyan);
+    color: #fff;
+    transform: translateY(-2px);
+}
+
+.shop-tab-btn.active {
+    background: linear-gradient(135deg, rgba(255, 215, 0, 0.2), rgba(255, 0, 85, 0.2));
+    border-color: var(--gold);
+    color: var(--gold);
+    box-shadow: 0 0 15px rgba(255, 215, 0, 0.35);
+}
+
+.battlefield-card {
+    background: linear-gradient(180deg, rgba(20, 24, 38, 0.95), rgba(12, 14, 24, 0.95));
+    border: 2px solid #2a3148;
+    border-radius: 10px;
+    padding: 20px;
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    transition: all 0.25s ease;
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.5);
+}
+
+.battlefield-card:hover {
+    transform: translateY(-5px);
+    border-color: var(--cyan);
+    box-shadow: 0 8px 24px rgba(0, 229, 255, 0.25);
+}
+
+.battlefield-card.equipped {
+    border-color: var(--gold);
+    box-shadow: 0 0 20px rgba(255, 215, 0, 0.4);
+}
+
+.battlefield-kanji {
+    font-size: 12px;
+    color: #778899;
+    letter-spacing: 2px;
+    margin-bottom: 4px;
+    font-weight: 600;
+}
+
+.battlefield-reward-pill {
+    background: rgba(255, 215, 0, 0.12);
+    border: 1px solid rgba(255, 215, 0, 0.4);
+    border-radius: 6px;
+    padding: 8px 12px;
+    margin: 12px 0;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    font-size: 14px;
+    color: var(--gold);
+    font-weight: 800;
+}
+
+.battlefield-reward-pill strong {
+    color: #fff;
+    font-size: 15px;
+}
+
+/* Active Arena Banner in Character Select */
+.active-arena-banner {
+    display: inline-flex;
+    align-items: center;
+    background: rgba(10, 14, 26, 0.85);
+    border: 1px solid rgba(0, 229, 255, 0.4);
+    border-radius: 20px;
+    padding: 6px 16px;
+    margin: 6px auto 14px auto;
+    font-size: 13px;
+    color: #dde;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.4);
+}
+
+.active-arena-banner .arena-icon {
+    font-size: 15px;
+    margin-right: 6px;
+}
+
+.active-arena-banner .arena-label {
+    color: #8899aa;
+    font-weight: 700;
+    margin-right: 6px;
+    letter-spacing: 1px;
+}
+
+.active-arena-banner .arena-name {
+    color: #00e5ff;
+    font-size: 14px;
+}
+
+.active-arena-banner .arena-reward {
+    color: var(--gold);
+    margin-left: 6px;
+    font-size: 12px;
+    font-weight: 700;
+}
+
+/* Quick Arena Select Modal */
+.arena-modal-box {
+    max-width: 960px;
+    width: 90%;
+    max-height: 85vh;
+    overflow-y: auto;
+    background: #0f121d;
+    border: 2px solid var(--cyan);
+    border-radius: 12px;
+    padding: 24px;
+    box-shadow: 0 0 35px rgba(0, 229, 255, 0.35);
+}
+
+.arena-modal-subtitle {
+    color: #8899aa;
+    font-size: 13px;
+    letter-spacing: 1.5px;
+    margin-bottom: 20px;
+    text-align: center;
+    font-weight: 600;
+}
+
+.arena-modal-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+    gap: 16px;
+}
+
+.arena-select-card {
+    background: #141824;
+    border: 2px solid #262c3f;
+    border-radius: 8px;
+    padding: 16px;
+    position: relative;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+}
+
+.arena-select-card:hover {
+    border-color: var(--cyan);
+    transform: translateY(-3px);
+}
+
+.arena-select-card.selected {
+    border-color: var(--gold);
+    background: rgba(255, 215, 0, 0.08);
+    box-shadow: 0 0 15px rgba(255, 215, 0, 0.3);
+}
+
+.arena-select-card.locked {
+    opacity: 0.65;
+}
+
+.arena-select-badge {
+    position: absolute;
+    top: 10px;
+    right: 12px;
+    font-size: 11px;
+    font-weight: 800;
+    padding: 3px 8px;
+    border-radius: 10px;
+}
+
+@media (max-width: 900px) {
+    .arena-modal-box {
+        width: 95%;
+        max-height: 90vh;
+        padding: 16px;
+    }
+
+    .arena-modal-grid {
+        grid-template-columns: 1fr;
+    }
+}
+
+
 /* Small Portrait Screens (iPhone SE, Small Androids) */
 @media (max-width: 480px) {
     .menu-title {
@@ -1970,5 +2178,212 @@ body.in-battle {
 
     .touch-name {
         font-size: 7px;
+    }
+}
+
+/* ==================================================== */
+/* 10 BATTLEFIELDS & ARENA SHOP STYLING                 */
+/* ==================================================== */
+
+.shop-tabs {
+    display: flex;
+    gap: 15px;
+    justify-content: center;
+    margin-top: 15px;
+    margin-bottom: 5px;
+    z-index: 10;
+}
+
+.shop-tab-btn {
+    background: rgba(18, 20, 34, 0.85);
+    border: 2px solid #333a55;
+    color: #aab;
+    padding: 10px 24px;
+    font-family: var(--font-heading);
+    font-size: 16px;
+    font-weight: 800;
+    letter-spacing: 1.5px;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: all 0.25s ease;
+}
+
+.shop-tab-btn:hover {
+    border-color: var(--cyan);
+    color: #fff;
+    transform: translateY(-2px);
+}
+
+.shop-tab-btn.active {
+    background: linear-gradient(135deg, rgba(255, 215, 0, 0.2), rgba(255, 0, 85, 0.2));
+    border-color: var(--gold);
+    color: var(--gold);
+    box-shadow: 0 0 15px rgba(255, 215, 0, 0.35);
+}
+
+.battlefield-card {
+    background: linear-gradient(180deg, rgba(20, 24, 38, 0.95), rgba(12, 14, 24, 0.95));
+    border: 2px solid #2a3148;
+    border-radius: 10px;
+    padding: 20px;
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    transition: all 0.25s ease;
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.5);
+}
+
+.battlefield-card:hover {
+    transform: translateY(-5px);
+    border-color: var(--cyan);
+    box-shadow: 0 8px 24px rgba(0, 229, 255, 0.25);
+}
+
+.battlefield-card.equipped {
+    border-color: var(--gold);
+    box-shadow: 0 0 20px rgba(255, 215, 0, 0.4);
+}
+
+.battlefield-kanji {
+    font-size: 12px;
+    color: #778899;
+    letter-spacing: 2px;
+    margin-bottom: 4px;
+    font-weight: 600;
+}
+
+.battlefield-reward-pill {
+    background: rgba(255, 215, 0, 0.12);
+    border: 1px solid rgba(255, 215, 0, 0.4);
+    border-radius: 6px;
+    padding: 8px 12px;
+    margin: 12px 0;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    font-size: 14px;
+    color: var(--gold);
+    font-weight: 800;
+}
+
+.battlefield-reward-pill strong {
+    color: #fff;
+    font-size: 15px;
+}
+
+/* Active Arena Banner in Character Select */
+.active-arena-banner {
+    display: inline-flex;
+    align-items: center;
+    background: rgba(10, 14, 26, 0.85);
+    border: 1px solid rgba(0, 229, 255, 0.4);
+    border-radius: 20px;
+    padding: 6px 16px;
+    margin: 6px auto 14px auto;
+    font-size: 13px;
+    color: #dde;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.4);
+}
+
+.active-arena-banner .arena-icon {
+    font-size: 15px;
+    margin-right: 6px;
+}
+
+.active-arena-banner .arena-label {
+    color: #8899aa;
+    font-weight: 700;
+    margin-right: 6px;
+    letter-spacing: 1px;
+}
+
+.active-arena-banner .arena-name {
+    color: #00e5ff;
+    font-size: 14px;
+}
+
+.active-arena-banner .arena-reward {
+    color: var(--gold);
+    margin-left: 6px;
+    font-size: 12px;
+    font-weight: 700;
+}
+
+/* Quick Arena Select Modal */
+.arena-modal-box {
+    max-width: 960px;
+    width: 90%;
+    max-height: 85vh;
+    overflow-y: auto;
+    background: #0f121d;
+    border: 2px solid var(--cyan);
+    border-radius: 12px;
+    padding: 24px;
+    box-shadow: 0 0 35px rgba(0, 229, 255, 0.35);
+}
+
+.arena-modal-subtitle {
+    color: #8899aa;
+    font-size: 13px;
+    letter-spacing: 1.5px;
+    margin-bottom: 20px;
+    text-align: center;
+    font-weight: 600;
+}
+
+.arena-modal-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+    gap: 16px;
+}
+
+.arena-select-card {
+    background: #141824;
+    border: 2px solid #262c3f;
+    border-radius: 8px;
+    padding: 16px;
+    position: relative;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+}
+
+.arena-select-card:hover {
+    border-color: var(--cyan);
+    transform: translateY(-3px);
+}
+
+.arena-select-card.selected {
+    border-color: var(--gold);
+    background: rgba(255, 215, 0, 0.08);
+    box-shadow: 0 0 15px rgba(255, 215, 0, 0.3);
+}
+
+.arena-select-card.locked {
+    opacity: 0.65;
+}
+
+.arena-select-badge {
+    position: absolute;
+    top: 10px;
+    right: 12px;
+    font-size: 11px;
+    font-weight: 800;
+    padding: 3px 8px;
+    border-radius: 10px;
+}
+
+@media (max-width: 900px) {
+    .arena-modal-box {
+        width: 95%;
+        max-height: 90vh;
+        padding: 16px;
+    }
+
+    .arena-modal-grid {
+        grid-template-columns: 1fr;
     }
 }

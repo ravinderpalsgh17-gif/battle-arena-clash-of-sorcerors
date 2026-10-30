@@ -67,12 +67,22 @@
                 <button id="btnModePvP" class="btn btn-secondary">👥 LOCAL 2-PLAYER</button>
                 <button id="btnModeTraining" class="btn btn-secondary">🥋 TRAINING DOJO</button>
                 <button id="btnShop" class="btn btn-gold">🥋 SORCERER ROSTER & SHOP</button>
+                <button id="btnBattlefields" class="btn btn-secondary" style="border-color: #00e5ff; color: #00e5ff;">🗺️ BATTLEFIELD ARENAS (10)</button>
             </div>
         </div>
 
         <!-- 4. Character Selection Screen -->
         <div id="charSelectScreen" class="ui-screen hidden">
             <h2 id="charSelectTitle" class="menu-subtitle" style="margin-top: 15px; margin-bottom: 5px;">CHOOSE YOUR FIGHTER</h2>
+
+            <!-- Active Battlefield Indicator -->
+            <div class="active-arena-banner" id="activeArenaBanner">
+                <span class="arena-icon">🗺️</span>
+                <span class="arena-label">ARENA:</span>
+                <strong id="activeArenaName" class="arena-name">Jujutsu High Courtyard</strong>
+                <span id="activeArenaReward" class="arena-reward">(+350 Coins/Win)</span>
+                <button id="btnCharSelectChangeArena" class="btn btn-secondary btn-micro" style="margin-left: 8px;">CHANGE</button>
+            </div>
 
             <div class="char-select-container">
                 <!-- Left: 16 Character Grid -->
@@ -94,10 +104,19 @@
         <!-- 5. Sorcerer Shop Screen -->
         <div id="shopScreen" class="ui-screen hidden">
             <h2 class="menu-title" style="font-size: 38px;">JUJUTSU HIGH SHOP</h2>
-            <div class="menu-subtitle" style="margin-bottom: 10px;">UNLOCK 16 JUJUTSU KAISEN SORCERERS & CURSES</div>
+            <div class="menu-subtitle" style="margin-bottom: 10px;">UNLOCK 16 JUJUTSU KAISEN SORCERERS & 10 3D BATTLEFIELDS</div>
+
+            <div class="shop-tabs">
+                <button id="btnShopTabFighters" class="shop-tab-btn active">🥋 SORCERERS (16)</button>
+                <button id="btnShopTabBattlefields" class="shop-tab-btn">🗺️ BATTLEFIELDS (10)</button>
+            </div>
 
             <div id="shopGrid" class="shop-grid">
                 <!-- Injected dynamically by ui.js -->
+            </div>
+
+            <div id="shopBattlefieldGrid" class="shop-grid hidden">
+                <!-- Battlefields Injected dynamically by ui.js -->
             </div>
 
             <div style="margin-top: 20px; display: flex; gap: 15px; justify-content: center; align-items: center;">
@@ -201,7 +220,8 @@
         <!-- 8. Match Over / Victory Overlay -->
         <div id="gameOverOverlay" class="ui-screen hidden">
             <h2 id="gameOverTitle" class="menu-title" style="font-size: 52px; margin-bottom: 10px;">VICTORY!</h2>
-            <div id="gameOverScore" style="font-size: 20px; color: #aaa; margin-bottom: 10px;">Final Rounds: P1 [ 2 ] - [ 0 ] P2</div>
+            <div id="gameOverScore" style="font-size: 20px; color: #aaa; margin-bottom: 6px;">Final Rounds: P1 [ 2 ] - [ 0 ] P2</div>
+            <div id="gameOverBattlefield" style="font-size: 16px; color: #00e5ff; margin-bottom: 10px;">🗺️ Battlefield: Jujutsu High Courtyard</div>
             <div id="gameOverPoints" style="font-size: 28px; color: var(--gold); margin-bottom: 30px;">+🪙 450 Battle Points Earned!</div>
 
             <div class="menu-buttons">
@@ -611,12 +631,27 @@
         </div>
     </section>
 
+    <!-- 11. Quick Battlefield Selection Modal -->
+    <div id="arenaSelectModal" class="ui-screen hidden" style="z-index: 240;">
+        <div class="modal-box arena-modal-box">
+            <div class="modal-header">
+                <h2 class="modal-title">🗺️ SELECT BATTLEFIELD ARENA</h2>
+                <button id="btnCloseArenaModal" class="modal-close">&times;</button>
+            </div>
+            <div class="arena-modal-subtitle">10 CANONICAL 3D ENVIRONMENTS • HIGHER TIERS YIELD GREATER WIN REWARDS</div>
+            <div id="arenaModalGrid" class="arena-modal-grid">
+                <!-- Injected dynamically by ui.js -->
+            </div>
+        </div>
+    </div>
+
     <!-- Script Includes in Dependency Order -->
     <script src="js/lib/three.min.js"></script>
     <script>if (typeof THREE === 'undefined') { document.write('<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"><\\/script>'); }</script>
     <script src="js/audio.js"></script>
     <script src="js/particles.js"></script>
     <script src="js/characters.js"></script>
+    <script src="js/battlefields.js"></script>
     <script src="js/character3d.js"></script>
     <script src="js/world3d.js"></script>
     <script src="js/fighter.js"></script>

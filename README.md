@@ -30,13 +30,18 @@ Every character in the 16-sorcerer roster is fully modeled and animated in 3D wi
 * **Maki Zen'in**: Dark green high ponytail, glasses, and Dragon-Bone naginata spear!
 * **Choso**: Dual twintails, dark blood stripe on nose bridge, and floating crimson blood convergence droplets!
 
-### 🌍 Expansive 3D Open World Battleground
-Fight across a continuous 3D open-world environment featuring distinct landmarks and zones:
-1. **Central Sorcerer Grand Ring**: Paved stone arena circle with golden boundary and four-pointed Jujutsu arcane emblem.
-2. **Jujutsu High Courtyard**: Massive scarlet Torii gates, glowing stone lanterns (*toro*), blooming Cherry Blossom (*sakura*) trees with drifting petals, and traditional dojo pagoda pavilions.
-3. **Shinjuku Urban District**: Multi-story modern skyscrapers with illuminated window grids, asphalt streets with painted road lines, crosswalks, traffic barriers, and street lampposts with dynamic point lights.
-4. **Shibuya Cursed Crater Ruins**: Blasted circular crater with glowing purple cursed fissure lines and shattered concrete slabs.
-5. **Distant Tokyo Skyline**: Silhouetted skyscrapers along the perimeter horizon under an expansive starry sky dome with real-time shadow casting (`PCFSoftShadowMap`).
+### 🗺️ 10 Canonical 3D Battlefield Arenas with Dynamic Win Money
+Fight across 10 distinct canonical 3D environments, featuring 1 Basic (Free) starting arena and 9 Purchasable battlefields with scaling Win Money rewards:
+1. **Jujutsu High Courtyard** (`Basic / Free` • **+350 Coins Base Reward**): Scarlet Torii gates, glowing stone lanterns, blooming cherry blossoms, and traditional dojo pagoda pavilion.
+2. **Shibuya Cursed Crater** (`1,200 Coins` • **+500 Coins Base Reward**): Scorched earth torn open by Malevolent Cleave, laced with violet cursed fissures, crushed concrete, and hovering embers.
+3. **Shinjuku Skyscraper Zenith** (`2,500 Coins` • **+750 Coins Base Reward**): High-altitude urban highway overpass framed by illuminated neon skyscrapers, billboards, and streetlamps.
+4. **Sendai Cursed Colony** (`4,500 Coins` • **+1,100 Coins Base Reward**): Industrial stadium ruins with stadium floodlights, rusted girders, broken overpasses, and dusk twilight.
+5. **Dagon's Horizon Beach** (`7,000 Coins` • **+1,500 Coins Base Reward**): Endless sunny golden sand surrounded by an animated turquoise ocean water ring, palm trees, and tiki torches.
+6. **Tomb of the Star (Sanctum)** (`10,000 Coins` • **+2,000 Coins Base Reward**): Subterranean ancient root chamber beneath Tokyo High with colossal gnarled roots, sacred talismans, and emerald spirit lamps.
+7. **Tokyo Metro B5F Platform** (`14,000 Coins` • **+2,600 Coins Base Reward**): Subterranean railway platform with iron train tracks, subway pillars, ceramic tiled walls, fluorescent lights, and hazard gates.
+8. **Culling Game Barrier Colony** (`19,000 Coins` • **+3,400 Coins Base Reward**): Arcane ritual boundary with 8 giant golden hexagonal obelisks, Kogane surveillance crystals, and golden barrier lattice.
+9. **Ancient Heian Necropolis** (`25,000 Coins` • **+4,300 Coins Base Reward**): Desolate volcanic basalt arena framed by demonic skull shrines, blood ponds, and a weeping Blood Moon.
+10. **Celestial Singularity Void** (`35,000 Coins` • **+6,000 Coins Base Reward**): Cosmic void threshold with floating obsidian meteorite islands, rotating starlight orbital rings, and celestial pulsar beams.
 
 ### 🌌 Live 3D Domain Expansions
 When sorcerers unleash their Domain Expansions, the open world dynamically transforms in real-time:

@@ -1167,6 +1167,8 @@ class StorageManager {
         const defaultData = {
             points: 0,
             unlocked: ['yuji', 'nobara'],
+            unlockedBattlefields: ['jjk_high'],
+            selectedBattlefield: 'jjk_high',
             battlesWon: 0,
             battlesLost: 0,
             arcadeCompleted: false,
@@ -1181,7 +1183,17 @@ class StorageManager {
             const raw = localStorage.getItem(this.STORAGE_KEY);
             if (raw) {
                 const parsed = JSON.parse(raw);
-                return { ...defaultData, ...parsed };
+                const loaded = { ...defaultData, ...parsed };
+                if (!loaded.unlockedBattlefields || !Array.isArray(loaded.unlockedBattlefields)) {
+                    loaded.unlockedBattlefields = ['jjk_high'];
+                }
+                if (!loaded.unlockedBattlefields.includes('jjk_high')) {
+                    loaded.unlockedBattlefields.unshift('jjk_high');
+                }
+                if (!loaded.selectedBattlefield) {
+                    loaded.selectedBattlefield = 'jjk_high';
+                }
+                return loaded;
             }
         } catch (e) {
             console.warn('Could not read localStorage', e);
@@ -1237,6 +1249,8 @@ class StorageManager {
         const defaultData = {
             points: 0,
             unlocked: ['yuji', 'nobara'],
+            unlockedBattlefields: ['jjk_high'],
+            selectedBattlefield: 'jjk_high',
             battlesWon: 0,
             battlesLost: 0,
             arcadeCompleted: false,
@@ -1263,5 +1277,38 @@ class StorageManager {
         if (charId === 'yuji' || charId === 'nobara') return true;
         const data = this.load();
         return data.unlocked && data.unlocked.includes(charId);
+    }
+
+    static getUnlockedBattlefields() {
+        const data = this.load();
+        return data.unlockedBattlefields || ['jjk_high'];
+    }
+
+    static getSelectedBattlefield() {
+        const data = this.load();
+        return data.selectedBattlefield || 'jjk_high';
+    }
+
+    static selectBattlefield(fieldId) {
+        const data = this.load();
+        data.selectedBattlefield = fieldId;
+        this.save(data);
+        return data.selectedBattlefield;
+    }
+
+    static unlockBattlefield(fieldId) {
+        const data = this.load();
+        if (!data.unlockedBattlefields) data.unlockedBattlefields = ['jjk_high'];
+        if (!data.unlockedBattlefields.includes(fieldId)) {
+            data.unlockedBattlefields.push(fieldId);
+            this.save(data);
+        }
+        return data.unlockedBattlefields;
+    }
+
+    static isBattlefieldUnlocked(fieldId) {
+        if (fieldId === 'jjk_high') return true;
+        const data = this.load();
+        return data.unlockedBattlefields && data.unlockedBattlefields.includes(fieldId);
     }
 }
