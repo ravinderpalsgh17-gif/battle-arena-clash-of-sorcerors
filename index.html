@@ -27,7 +27,7 @@
         <div class="top-bar">
             <div style="display: flex; gap: 8px; align-items: center; flex-wrap: wrap;">
                 <div class="points-pill">
-                    <span class="points-val">🪙 0</span>
+                    <span class="points-val">🪙 100,000</span>
                 </div>
                 <div class="profile-pill" id="btnTopProfile" title="Click to view or edit your Sorcerer Profile">
                     <span id="topProfileAvatar">👁️</span>
@@ -133,12 +133,12 @@
         <!-- 6. HUD Controls Hint Bar -->
         <div id="hudOverlay" class="hidden">
             <div class="hud-controls-hint">
-                <span><strong>P1:</strong> [WASD / Arrows] Move & Jump</span>
-                <span>[Shift / Down] Block</span>
-                <span>[J / 1] Strike</span>
-                <span>[K / 2] Skill 1</span>
-                <span>[L / 3] Skill 2</span>
-                <span>[U / 5] Ultimate</span>
+                <span><strong>P1:</strong> [WASD] Move</span>
+                <span>[Shift] Guard</span>
+                <span>[J] Blue</span>
+                <span>[K] Red</span>
+                <span>[L / H] Purple</span>
+                <span>[U / Y] Domain (Void)</span>
                 <span>[V] Cam</span>
                 <span>[Esc/P] Pause</span>
             </div>
@@ -594,7 +594,7 @@
                         <div class="fighter-detail-badge" style="background: #00b0ff;">🪙 18000 PTS</div>
                         <h3 style="color: #00b0ff;">👁️ Satoru Gojo</h3>
                         <div class="fighter-detail-subtitle">The Honored One &bull; Limitless & Six Eyes</div>
-                        <p class="fighter-detail-lore">Bends space with Lapse Blue, Reversal Red, and obliterates everything with Hollow Technique: Purple.</p>
+                        <p class="fighter-detail-lore">Bends space with Lapse Blue, Reversal Red, fires Hollow Technique: Purple (Skill 2 / Key H), and expands Domain: Unlimited Void (Ultimate / Key Y).</p>
                     </div>
                     <div class="fighter-passive-box">
                         <strong>Passive: Infinity Barrier</strong> &bull; Completely blocks one incoming attack every 6 seconds and slows enemy projectiles.
@@ -608,7 +608,7 @@
                     <h4>🪙 Fair Point Economy System</h4>
                     <p>There are no infinite coin cheats or exploits. Players earn Battle Points through combat skill:</p>
                     <ul>
-                        <li><strong>Starting Balance</strong>: 0 Points (Yuji and Nobara are free starter sorcerers).</li>
+                        <li><strong>Starting Balance</strong>: 🪙 100,000 Points (Special Grade Sorcerer gift granted to all players!).</li>
                         <li><strong>Match Victory</strong>: 300 to 600 Points (scales with Easy, Medium, Hard, Deity).</li>
                         <li><strong>Combo Streaks</strong>: Up to +200 bonus Points for chaining hits.</li>
                         <li><strong>Time Bonus</strong>: Earn bonus points for fast victories.</li>
@@ -623,10 +623,10 @@
                         <tr><td>3D Movement (Forward/Back/Left/Right)</td><td><kbd>W</kbd> <kbd>A</kbd> <kbd>S</kbd> <kbd>D</kbd></td><td><kbd>&uarr;</kbd> <kbd>&darr;</kbd> <kbd>&larr;</kbd> <kbd>&rarr;</kbd></td><td><kbd>▲</kbd> <kbd>▼</kbd> <kbd>◀</kbd> <kbd>▶</kbd></td></tr>
                         <tr><td>Jump</td><td><kbd>Space</kbd></td><td><kbd>Numpad 0</kbd> or <kbd>I</kbd></td><td><kbd>⚡ JUMP</kbd></td></tr>
                         <tr><td>Block / Guard</td><td><kbd>Shift</kbd></td><td><kbd>Numpad .</kbd> or <kbd>&darr;</kbd> or <kbd>/</kbd></td><td><kbd>S</kbd> (GUARD)</td></tr>
-                        <tr><td>Basic Attack</td><td><kbd>J</kbd> or <kbd>Z</kbd></td><td><kbd>Numpad 1</kbd> or <kbd>1</kbd> or <kbd>O</kbd></td><td><kbd>J</kbd> (ATK)</td></tr>
-                        <tr><td>Skill 1</td><td><kbd>K</kbd> or <kbd>X</kbd></td><td><kbd>Numpad 2</kbd> or <kbd>2</kbd> or <kbd>P</kbd></td><td><kbd>K</kbd> (SKILL 1)</td></tr>
-                        <tr><td>Skill 2</td><td><kbd>L</kbd> or <kbd>C</kbd></td><td><kbd>Numpad 3</kbd> or <kbd>3</kbd> or <kbd>[</kbd></td><td><kbd>L</kbd> (SKILL 2)</td></tr>
-                        <tr><td>Ultimate (100 Energy)</td><td><kbd>U</kbd></td><td><kbd>Numpad 5</kbd> or <kbd>5</kbd> or <kbd>]</kbd></td><td><kbd>U</kbd> (ULT)</td></tr>
+                        <tr><td>Basic Attack (Lapse Blue)</td><td><kbd>J</kbd> or <kbd>Z</kbd></td><td><kbd>Numpad 1</kbd> or <kbd>1</kbd> or <kbd>O</kbd></td><td><kbd>J</kbd> (ATK)</td></tr>
+                        <tr><td>Skill 1 (Reversal Red)</td><td><kbd>K</kbd> or <kbd>X</kbd></td><td><kbd>Numpad 2</kbd> or <kbd>2</kbd> or <kbd>P</kbd></td><td><kbd>K</kbd> (SKILL 1)</td></tr>
+                        <tr><td>Skill 2 / Hollow Purple</td><td><kbd>L</kbd>, <kbd>C</kbd> or <kbd>H</kbd></td><td><kbd>Numpad 3</kbd> or <kbd>3</kbd> or <kbd>[</kbd></td><td><kbd>L</kbd> (PURPLE / SKILL 2)</td></tr>
+                        <tr><td>Ultimate / Unlimited Void (Domain)</td><td><kbd>U</kbd>, <kbd>V</kbd> or <kbd>Y</kbd></td><td><kbd>Numpad 5</kbd> or <kbd>5</kbd> or <kbd>]</kbd></td><td><kbd>U</kbd> (DOMAIN / ULT)</td></tr>
                         <tr><td>Toggle Camera (Action/3rd/Overview)</td><td><kbd>V</kbd></td><td><kbd>V</kbd></td><td><kbd>🎥</kbd> (CAM)</td></tr>
                         <tr><td>Pause Match</td><td><kbd>Esc</kbd> or <kbd>P</kbd></td><td><kbd>Esc</kbd></td><td><kbd>⏸</kbd> Button</td></tr>
                     </table>

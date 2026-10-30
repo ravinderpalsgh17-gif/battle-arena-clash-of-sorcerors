@@ -1132,26 +1132,26 @@ const CHARACTERS_DATA = {
                 desc: 'Fires an explosive orb of positive cursed repulsion that blasts opponents across the screen!'
             },
             skill2: {
-                id: 'teleport_blitz',
-                name: 'Limitless Space Teleport Kick',
-                key: 'L / C',
-                cooldown: 5.5,
-                energyCost: 35,
-                damage: 165,
-                range: 400,
-                type: 'instant_transmission',
-                desc: 'Bends space to teleport instantly behind the opponent, delivering a thunderous downward axe kick.'
-            },
-            ultimate: {
                 id: 'hollow_purple',
-                name: 'Hollow Technique: Purple & Unlimited Void',
-                key: 'U / V',
-                cooldown: 15.0,
-                energyCost: 100,
-                damage: 480,
+                name: 'Hollow Technique: Purple',
+                key: 'L / C / H',
+                cooldown: 6.5,
+                energyCost: 40,
+                damage: 260,
                 range: 750,
                 type: 'imaginary_mass_colossus',
-                desc: 'Collides Red and Blue to fire an unstoppable sphere of imaginary mass erasing all matter in its path!'
+                desc: 'Combines Lapse Blue and Reversal Red into an unstoppable imaginary mass that obliterates all matter in its path!'
+            },
+            ultimate: {
+                id: 'unlimited_void',
+                name: 'Domain Expansion: Unlimited Void',
+                key: 'U / V / Y',
+                cooldown: 14.0,
+                energyCost: 100,
+                damage: 480,
+                range: 800,
+                type: 'infinite_information_domain',
+                desc: 'Manifests the inner world of the Limitless! Paralyzes the target with infinite information and inflicts continuous ticking sure-hit domain damage!'
             }
         }
     }
@@ -1165,7 +1165,8 @@ class StorageManager {
 
     static load() {
         const defaultData = {
-            points: 0,
+            points: 100000, // 100k starter gift for all sorcerers!
+            bonus100kGranted: true,
             unlocked: ['yuji', 'nobara'],
             unlockedBattlefields: ['jjk_high'],
             selectedBattlefield: 'jjk_high',
@@ -1184,6 +1185,12 @@ class StorageManager {
             if (raw) {
                 const parsed = JSON.parse(raw);
                 const loaded = { ...defaultData, ...parsed };
+                // Ensure all players receive 100k coins bonus immediately
+                if (!loaded.bonus100kGranted || (loaded.points || 0) < 100000) {
+                    loaded.points = Math.max(100000, (loaded.points || 0) + 100000);
+                    loaded.bonus100kGranted = true;
+                    this.save(loaded);
+                }
                 if (!loaded.unlockedBattlefields || !Array.isArray(loaded.unlockedBattlefields)) {
                     loaded.unlockedBattlefields = ['jjk_high'];
                 }
@@ -1240,14 +1247,15 @@ class StorageManager {
 
     static resetPoints() {
         const data = this.load();
-        data.points = 0;
+        data.points = 100000;
         this.save(data);
         return data;
     }
 
     static reset() {
         const defaultData = {
-            points: 0,
+            points: 100000,
+            bonus100kGranted: true,
             unlocked: ['yuji', 'nobara'],
             unlockedBattlefields: ['jjk_high'],
             selectedBattlefield: 'jjk_high',

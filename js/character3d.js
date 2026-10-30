@@ -1904,9 +1904,9 @@ class CharacterModel3D {
             });
         }
 
-        // Gojo Six Eyes Reveal: Blindfold slips down during Ultimate/Domain!
+        // Gojo Six Eyes Reveal: Blindfold slips down during Ultimate (Unlimited Void) & Skill 2 (Hollow Purple)!
         if (this.parts.blindfold) {
-            if (state === 'ultimate' || state === 'attack1') {
+            if (state === 'ultimate' || state === 'attack3' || state === 'attack1') {
                 this.parts.blindfold.position.y = -0.25; // Slipped down to reveal Six Eyes!
             } else {
                 this.parts.blindfold.position.y = 0.04;

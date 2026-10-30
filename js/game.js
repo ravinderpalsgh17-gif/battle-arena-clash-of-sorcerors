@@ -170,21 +170,21 @@ class BattleArenaGame {
 
             const isPvP = this.isPvPMode();
 
-            // Player 1 Combat Triggers (J, K, L, U + Space)
+            // Player 1 Combat Triggers (J, K, L, U + Dedicated H for Purple & Y for Domain)
             if (this.p1 && this.p1.canAct()) {
                 if (e.code === 'Space') this.p1.jump();
                 if (e.code === 'KeyJ' || e.code === 'KeyZ') this.p1.triggerBasicAttack();
                 if (e.code === 'KeyK' || e.code === 'KeyX') this.p1.triggerSkill1();
-                if (e.code === 'KeyL' || e.code === 'KeyC') this.p1.triggerSkill2();
-                if (e.code === 'KeyU') this.p1.triggerUltimate();
+                if (e.code === 'KeyL' || e.code === 'KeyC' || e.code === 'KeyH') this.p1.triggerSkill2(); // Hollow Purple for Gojo
+                if (e.code === 'KeyU' || e.code === 'KeyY') this.p1.triggerUltimate(); // Unlimited Void (Domain) for Gojo
 
                 // Dual-control support for solo modes
                 if (!isPvP) {
                     if (e.code === 'Numpad0') this.p1.jump();
                     if (e.code === 'Numpad1' || e.code === 'Digit1') this.p1.triggerBasicAttack();
                     if (e.code === 'Numpad2' || e.code === 'Digit2') this.p1.triggerSkill1();
-                    if (e.code === 'Numpad3' || e.code === 'Digit3') this.p1.triggerSkill2();
-                    if (e.code === 'Numpad5' || e.code === 'Digit5') this.p1.triggerUltimate();
+                    if (e.code === 'Numpad3' || e.code === 'Digit3' || e.code === 'Numpad4') this.p1.triggerSkill2(); // Purple
+                    if (e.code === 'Numpad5' || e.code === 'Digit5' || e.code === 'Numpad6') this.p1.triggerUltimate(); // Domain
                 }
             }
 

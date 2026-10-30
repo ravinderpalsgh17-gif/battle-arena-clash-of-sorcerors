@@ -271,7 +271,18 @@ class Fighter {
 
         if (this.opponent) this.turnTowards(this.opponent.x, this.opponent.z);
 
-        if (this.charKey === 'sukuna') {
+        if (this.charKey === 'gojo') {
+            // Satoru Gojo: Hollow Technique: Purple (Kyoshiki: Murasaki)
+            if (this.sound.playHollowPurple) {
+                this.sound.playHollowPurple();
+            } else {
+                this.sound.playLaser();
+            }
+            this.particles.shake(18, 26);
+            this.particles.createCursedBurst(this.x, this.y + 1.8, this.z, '#9d4edd', 40);
+            this.particles.addFloatingText('HOLLOW PURPLE!', this.x, this.y + 3.5, '#9d4edd', 28, true);
+            this.spawn3DProjectile('purple', atk.damage, 0.85, 0.95, '#9d4edd');
+        } else if (this.charKey === 'sukuna') {
             // Divine Flame (Fuga) Arrow
             this.sound.playFireball();
             this.spawn3DProjectile('fuga', atk.damage, 0.9, 0.5, '#ff4400');
@@ -330,8 +341,22 @@ class Fighter {
 
         // Projectile or Massive Cataclysmic Strike
         if (this.charKey === 'gojo') {
-            // Hollow Technique: Purple
-            this.spawn3DProjectile('purple', atk.damage, 0.75, 0.9, '#9d4edd');
+            // Satoru Gojo: Domain Expansion: Unlimited Void (Ryōiki Tenkai: Muryōkūsho)
+            // Floods opponent's consciousness with infinite stimuli, applying 2.5s stun and sure-hit barrier pressure
+            this.sound.playLaser();
+            this.particles.createCursedBurst(this.x, this.y + 1.8, this.z, '#00b0ff', 45);
+            this.particles.addFloatingText('UNLIMITED VOID!', this.x, this.y + 3.8, '#00b0ff', 30, true);
+            this.currentHitbox = {
+                range: 12.0,
+                angle: Math.PI * 2, // 360-degree sure-hit domain radius
+                damage: atk.damage,
+                knockback: 1.5,
+                type: 'gojo_unlimited_void',
+                activeFrames: [15, 60]
+            };
+            if (this.opponent && this.opponent.applyStatusEffect) {
+                this.opponent.applyStatusEffect('stun', 150); // 2.5s brain overload stun
+            }
         } else if (this.charKey === 'hakari') {
             // Idle Death Gamble Jackpot: 20 Seconds Infinite Cursed Energy & Immortality!
             this.isJackpotActive = true;

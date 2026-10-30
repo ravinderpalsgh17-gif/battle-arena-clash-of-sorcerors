@@ -16,7 +16,7 @@ An adrenaline-pumping **4K Ultra 3D Open World fighting arena game** featuring 1
 ### 🥋 Full 3D Characters with Procedural Anime Rigs
 Every character in the 16-sorcerer roster is fully modeled and animated in 3D with distinct anime aesthetics, signature accessories, and hierarchical skeletal rigging:
 * **Ryomen Sukuna (Heian Form)**: True 4-armed Heian Era King of Curses with **4 fully articulated muscular arms**, 4 glowing crimson eyes with animated pulse, right-side demonic carapace mask with horn spur, authentic black cursed tattoos mapped across chest and arms, obsidian black claws with glowing red tips, open silk kimono with gold embroidery, textured rope obi, and the Enmaten domain mudra!
-* **Satoru Gojo**: 3D spiky white hair with anisotropic shimmer, blindfold that slides down during ultimate/attacks revealing the legendary **Six Eyes** (celestial starlight iris with radiant cyan glow), shimmering translucent **Infinity Barrier sphere**, and rotating 3D **Lapse Blue** & **Reversal Red** energy orbs!
+* **Satoru Gojo**: 3D spiky white hair with anisotropic shimmer, blindfold that slides down during attacks/domain revealing the legendary **Six Eyes** (celestial starlight iris with radiant cyan glow), shimmering translucent **Infinity Barrier sphere**, rotating 3D **Lapse Blue** & **Reversal Red** orbs, dedicated **Hollow Technique: Purple** beam (Skill 2 / Key <kbd>H</kbd>), and separate **Domain Expansion: Unlimited Void** (Ultimate / Key <kbd>Y</kbd>)!
 * **Toji Fushiguro**: Chiseled vascular physique in black compression shirt, articulated 12-segment 3D **Cursed Spirit inventory worm** coiled around torso with toothy mouth and demonic eye, and the **Inverted Spear of Heaven** with iron chain links!
 * **Megumi Fushiguro**: Spiky sea-urchin hair, shadow puppet hand stances, and summoned 3D **Divine Dog (Totality)** shadow wolf companion!
 * **Panda**: Giant 3D panda bear model with sculpted ears, snout, black eye patches, and heavy studded brass knuckles!
@@ -78,8 +78,8 @@ Toggle between 3 distinct camera modes at any time with the `V` key or top-bar b
 | **Guard / Block** | <kbd>Shift</kbd> | <kbd>Numpad .</kbd> or <kbd>↓</kbd> or <kbd>/</kbd> | <kbd>S</kbd> (GUARD) |
 | **Basic Attack** | <kbd>J</kbd> or <kbd>Z</kbd> | <kbd>Numpad 1</kbd> or <kbd>1</kbd> or <kbd>O</kbd> | <kbd>J</kbd> (ATK) |
 | **Skill 1** | <kbd>K</kbd> or <kbd>X</kbd> | <kbd>Numpad 2</kbd> or <kbd>2</kbd> or <kbd>P</kbd> | <kbd>K</kbd> (SKILL 1) |
-| **Skill 2** | <kbd>L</kbd> or <kbd>C</kbd> | <kbd>Numpad 3</kbd> or <kbd>3</kbd> or <kbd>[</kbd> | <kbd>L</kbd> (SKILL 2) |
-| **Ultimate (100 Energy)** | <kbd>U</kbd> | <kbd>Numpad 5</kbd> or <kbd>5</kbd> or <kbd>]</kbd> | <kbd>U</kbd> (ULT) |
+| **Skill 2 / Hollow Purple** | <kbd>L</kbd>, <kbd>C</kbd> or <kbd>H</kbd> | <kbd>Numpad 3</kbd> or <kbd>3</kbd> or <kbd>[</kbd> | <kbd>L</kbd> (PURPLE / SKILL 2) |
+| **Ultimate / Domain Expansion** | <kbd>U</kbd>, <kbd>V</kbd> or <kbd>Y</kbd> | <kbd>Numpad 5</kbd> or <kbd>5</kbd> or <kbd>]</kbd> | <kbd>U</kbd> (DOMAIN / ULT) |
 | **Toggle 3D Camera** | <kbd>V</kbd> | <kbd>V</kbd> | <kbd>🎥</kbd> (CAM) |
 | **Pause Match** | <kbd>Esc</kbd> or <kbd>P</kbd> | <kbd>Esc</kbd> | <kbd>⏸</kbd> (PAUSE) |
 

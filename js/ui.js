@@ -365,9 +365,9 @@ class UIManager {
             this.menuScreen.classList.remove('hidden');
         });
 
-        // Reset Points to 0
+        // Reset Points to Default (100k)
         document.getElementById('btnResetPoints')?.addEventListener('click', () => {
-            if (confirm('Reset your coins/points balance to 0?')) {
+            if (confirm('Reset your coins/points balance to default 100,000?')) {
                 StorageManager.resetPoints();
                 this.updatePointsDisplay();
                 this.renderCharCards();
@@ -382,8 +382,9 @@ class UIManager {
 
     updatePointsDisplay() {
         const data = StorageManager.load();
+        const pts = (data.points || 0).toLocaleString();
         this.pointsElements.forEach(el => {
-            el.textContent = `🪙 ${data.points || 0}`;
+            el.textContent = `🪙 ${pts}`;
         });
     }
 
@@ -1588,11 +1589,23 @@ class UIManager {
     }
 
     updateTouchHUD(p1) {
-        if (!this.btnTouchU || !p1) return;
-        if (p1.energy >= 100 && p1.cooldowns.ultimate <= 0) {
-            this.btnTouchU.classList.add('ultimate-ready');
-        } else {
-            this.btnTouchU.classList.remove('ultimate-ready');
+        if (!p1) return;
+        if (this.btnTouchU) {
+            if (p1.energy >= 100 && p1.cooldowns.ultimate <= 0) {
+                this.btnTouchU.classList.add('ultimate-ready');
+            } else {
+                this.btnTouchU.classList.remove('ultimate-ready');
+            }
+            const uName = this.btnTouchU.querySelector('.touch-name');
+            if (uName) {
+                uName.textContent = (p1.charKey === 'gojo') ? 'VOID' : 'ULT';
+            }
+        }
+        if (this.btnTouchL) {
+            const lName = this.btnTouchL.querySelector('.touch-name');
+            if (lName) {
+                lName.textContent = (p1.charKey === 'gojo') ? 'PURPLE' : 'SKILL 2';
+            }
         }
     }
 }
