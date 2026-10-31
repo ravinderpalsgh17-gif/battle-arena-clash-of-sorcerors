@@ -1165,8 +1165,8 @@ class StorageManager {
 
     static load() {
         const defaultData = {
-            points: 100000, // 100k starter gift for all sorcerers!
-            bonus100kGranted: true,
+            points: 0,
+            coinsResetToZeroV1: true,
             unlocked: ['yuji', 'nobara'],
             unlockedBattlefields: ['jjk_high'],
             selectedBattlefield: 'jjk_high',
@@ -1185,10 +1185,10 @@ class StorageManager {
             if (raw) {
                 const parsed = JSON.parse(raw);
                 const loaded = { ...defaultData, ...parsed };
-                // Ensure all players receive 100k coins bonus immediately
-                if (!loaded.bonus100kGranted || (loaded.points || 0) < 100000) {
-                    loaded.points = Math.max(100000, (loaded.points || 0) + 100000);
-                    loaded.bonus100kGranted = true;
+                // Reset all players coins to zero as requested
+                if (!loaded.coinsResetToZeroV1) {
+                    loaded.points = 0;
+                    loaded.coinsResetToZeroV1 = true;
                     this.save(loaded);
                 }
                 if (!loaded.unlockedBattlefields || !Array.isArray(loaded.unlockedBattlefields)) {
@@ -1247,15 +1247,15 @@ class StorageManager {
 
     static resetPoints() {
         const data = this.load();
-        data.points = 100000;
+        data.points = 0;
         this.save(data);
         return data;
     }
 
     static reset() {
         const defaultData = {
-            points: 100000,
-            bonus100kGranted: true,
+            points: 0,
+            coinsResetToZeroV1: true,
             unlocked: ['yuji', 'nobara'],
             unlockedBattlefields: ['jjk_high'],
             selectedBattlefield: 'jjk_high',

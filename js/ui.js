@@ -172,6 +172,17 @@ class UIManager {
             this.moveListModal?.classList.add('hidden');
         });
 
+        // Start Arcade directly from inside Move List / Codex modal
+        document.getElementById('btnCodexStartArcade')?.addEventListener('click', () => {
+            Sound.playClick();
+            this.moveListModal?.classList.add('hidden');
+            this.currentMode = 'arcade';
+            if (window.GameInstance) {
+                window.GameInstance.arcadeIndex = 0;
+            }
+            this.confirmAndLaunchFighter(this.selectedP1Char || 'yuji');
+        });
+
         // Close Modals on clicking outside modal card (dark backdrop)
         this.moveListModal?.addEventListener('click', (e) => {
             if (e.target === this.moveListModal) {
@@ -365,9 +376,9 @@ class UIManager {
             this.menuScreen.classList.remove('hidden');
         });
 
-        // Reset Points to Default (100k)
+        // Reset Points to 0
         document.getElementById('btnResetPoints')?.addEventListener('click', () => {
-            if (confirm('Reset your coins/points balance to default 100,000?')) {
+            if (confirm('Reset your coins/points balance to 0?')) {
                 StorageManager.resetPoints();
                 this.updatePointsDisplay();
                 this.renderCharCards();
@@ -415,6 +426,7 @@ class UIManager {
             this.touchControls.classList.add('hidden');
         }
         this.menuScreen.classList.remove('hidden');
+        this.pickingForPlayer = 1;
         this.updatePointsDisplay();
         this.updateProfileDisplay();
     }
@@ -423,6 +435,9 @@ class UIManager {
     // CHARACTER SELECTION SCREEN
     // ----------------------------------------------------
     openCharSelect(forPlayer = 1) {
+        window.scrollTo(0, 0);
+        document.documentElement.scrollTop = 0;
+        document.body.scrollTop = 0;
         this.pickingForPlayer = forPlayer;
         this.menuScreen.classList.add('hidden');
         if (this.friendModal) this.friendModal.classList.add('hidden');
@@ -660,7 +675,7 @@ class UIManager {
 
             <div class="preview-moves">
                 <div class="preview-moves-header">
-                    <h3>📖 ATTACKS & ABILITIES (CODEX)</h3>
+                    <h3>⚡ MOVES & COMBAT TECHNIQUES</h3>
                     <span style="font-size: 11px; color: #888;">Controls: J / K / L / U</span>
                 </div>
                 <div class="move-item">
@@ -742,8 +757,23 @@ class UIManager {
     }
 
     launchGame() {
-        this.charSelectScreen.classList.add('hidden');
-        this.hudOverlay.classList.remove('hidden');
+        // Force window to top so viewport is never pinned or stuck to below-arena lore codex
+        window.scrollTo(0, 0);
+        document.documentElement.scrollTop = 0;
+        document.body.scrollTop = 0;
+
+        // Force-hide all screens, menus, modals, and codex overlays
+        this.charSelectScreen?.classList.add('hidden');
+        this.menuScreen?.classList.add('hidden');
+        this.moveListModal?.classList.add('hidden');
+        this.arenaSelectModal?.classList.add('hidden');
+        this.signInModal?.classList.add('hidden');
+        this.friendModal?.classList.add('hidden');
+        this.shopScreen?.classList.add('hidden');
+        this.pauseOverlay?.classList.add('hidden');
+        this.gameOverOverlay?.classList.add('hidden');
+
+        this.hudOverlay?.classList.remove('hidden');
 
         // Show touch controls on mobile or touch-enabled devices
         const isTouchOrMobile = ('ontouchstart' in window) || 

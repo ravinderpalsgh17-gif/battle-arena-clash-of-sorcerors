@@ -294,8 +294,10 @@ class BattleArenaGame {
         this.clearProjectiles();
 
         // Create 3D Fighters in Open World
-        this.p1 = new Fighter(p1CharKey, -12, 0, false, this.scene, this.particles, this.sound);
-        this.p2 = new Fighter(p2CharKey, 12, 0, true, this.scene, this.particles, this.sound);
+        const validP1 = p1CharKey || 'yuji';
+        const validP2 = p2CharKey || (this.mode === 'arcade' ? (this.arcadeLadder[0] || 'megumi') : 'sukuna');
+        this.p1 = new Fighter(validP1, -12, 0, false, this.scene, this.particles, this.sound);
+        this.p2 = new Fighter(validP2, 12, 0, true, this.scene, this.particles, this.sound);
 
         this.p1.setOpponent(this.p2);
         this.p2.setOpponent(this.p1);
