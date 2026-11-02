@@ -758,3 +758,157 @@ const Sound = new Proxy(soundEngineInstance, {
         return target[prop];
     }
 });
+
+
+// ====================================================
+// CANONICAL VOICE SYNTHESIS ENGINE (3D CHARACTER SPEECH)
+// ====================================================
+class VoiceEngine {
+    constructor() {
+        this.synth = (typeof window !== 'undefined' && 'speechSynthesis' in window) ? window.speechSynthesis : null;
+        this.voices = [];
+        this.isSpeaking = false;
+        this.currentUtterance = null;
+        this.initVoices();
+
+        // Authentic Character Voice Tunings (Pitch, Rate, Timbre)
+        this.profiles = {
+            sukuna: { pitch: 0.52, rate: 0.88, title: 'King of Curses / 両面宿儺' },
+            gojo: { pitch: 1.05, rate: 1.02, title: 'The Strongest / 五条悟' },
+            yuji: { pitch: 1.10, rate: 1.05, title: 'Tiger of West High / 虎杖悠仁' },
+            megumi: { pitch: 0.88, rate: 0.94, title: 'Ten Shadows Heir / 伏黒恵' },
+            nanami: { pitch: 0.78, rate: 0.90, title: 'Grade 1 Sorcerer / 七海建人' },
+            todo: { pitch: 0.94, rate: 1.08, title: 'Kyoto Grade 1 / 東堂葵' },
+            mahito: { pitch: 1.26, rate: 1.06, title: 'Curse of Humanity / 真人' },
+            toji: { pitch: 0.62, rate: 0.92, title: 'Sorcerer Killer / 伏黒甚爾' },
+            yuta: { pitch: 1.00, rate: 0.96, title: 'Special Grade / 乙骨憂太' },
+            hakari: { pitch: 0.95, rate: 1.12, title: 'Fever Gambler / 秤金次' },
+            jogo: { pitch: 0.72, rate: 1.04, title: 'Volcanic Curse / 漏瑚' },
+            geto: { pitch: 0.82, rate: 0.94, title: 'Worst Curse User / 夏油傑・羂索' },
+            maki: { pitch: 1.12, rate: 1.04, title: 'Heavenly Restriction / 禪院真希' },
+            panda: { pitch: 0.68, rate: 0.95, title: 'Mutated Corpse / パンダ' },
+            inumaki: { pitch: 1.05, rate: 0.92, title: 'Cursed Speech / 狗巻棘' },
+            nobara: { pitch: 1.18, rate: 1.06, title: 'Straw Doll / 釘崎野薔薇' },
+            finger_bearer: { pitch: 0.42, rate: 0.75, title: 'Special Grade / 呪胎戴天' }
+        };
+    }
+
+    initVoices() {
+        if (!this.synth) return;
+        const update = () => {
+            try {
+                this.voices = this.synth.getVoices() || [];
+            } catch (e) {
+                this.voices = [];
+            }
+        };
+        update();
+        if (this.synth.onvoiceschanged !== undefined) {
+            this.synth.onvoiceschanged = update;
+        }
+    }
+
+    getBestVoice(charKey) {
+        if (!this.voices || !this.voices.length) return null;
+        // Prioritize Japanese voices for canonical feel if installed on user machine
+        const jaVoice = this.voices.find(v => v.lang && (v.lang.startsWith('ja') || v.lang.startsWith('JA')));
+        if (jaVoice) return jaVoice;
+
+        // Prioritize male/female matching
+        if (['sukuna', 'toji', 'nanami', 'finger_bearer'].includes(charKey)) {
+            const deepVoice = this.voices.find(v => v.name.toLowerCase().includes('david') || v.name.toLowerCase().includes('male') || v.name.toLowerCase().includes('natural'));
+            if (deepVoice) return deepVoice;
+        }
+        return this.voices[0];
+    }
+
+    speak(text, charKey = 'yuji', onStart = null, onEnd = null) {
+        this.stop();
+        if (!text) return;
+
+        // Clean out bracketed kanji for cleaner speech delivery
+        const cleanText = text.replace(/（[^）]*）|\([^)]*\)/g, '').replace(/「|」/g, '').trim() || text;
+
+        if (this.synth) {
+            try {
+                const utterance = new SpeechSynthesisUtterance(cleanText);
+                const prof = this.profiles[charKey] || { pitch: 1, rate: 1 };
+                utterance.pitch = prof.pitch;
+                utterance.rate = prof.rate;
+                utterance.volume = Sound.isMuted ? 0 : 1;
+
+                const voice = this.getBestVoice(charKey);
+                if (voice) utterance.voice = voice;
+
+                utterance.onstart = () => {
+                    this.isSpeaking = true;
+                    if (onStart) onStart();
+                };
+
+                utterance.onend = () => {
+                    this.isSpeaking = false;
+                    this.currentUtterance = null;
+                    if (onEnd) onEnd();
+                };
+
+                utterance.onerror = () => {
+                    this.isSpeaking = false;
+                    this.currentUtterance = null;
+                    if (onEnd) onEnd();
+                };
+
+                this.currentUtterance = utterance;
+                this.synth.speak(utterance);
+            } catch (err) {
+                console.warn("Voice speech error:", err);
+                if (onEnd) setTimeout(onEnd, 2200);
+            }
+        } else {
+            if (onStart) onStart();
+            const delay = Math.min(5000, Math.max(2200, text.length * 60));
+            setTimeout(() => {
+                if (onEnd) onEnd();
+            }, delay);
+        }
+
+        // Anime vocal blip audio effect
+        this.playVoiceBeep(charKey);
+    }
+
+    playVoiceBeep(charKey) {
+        if (!Sound.ctx || Sound.isMuted) return;
+        try {
+            Sound.resume();
+            const prof = this.profiles[charKey] || { pitch: 1 };
+            const baseFreq = 190 * prof.pitch;
+            const osc = Sound.ctx.createOscillator();
+            const gain = Sound.ctx.createGain();
+            const now = Sound.ctx.currentTime;
+
+            osc.type = ['sukuna', 'toji'].includes(charKey) ? 'sawtooth' : 'triangle';
+            osc.frequency.setValueAtTime(baseFreq, now);
+            osc.frequency.exponentialRampToValueAtTime(baseFreq * 1.25, now + 0.08);
+
+            gain.gain.setValueAtTime(0.12 * Sound.volume, now);
+            gain.gain.exponentialRampToValueAtTime(0.001, now + 0.12);
+
+            osc.connect(gain);
+            gain.connect(Sound.ctx.destination);
+            osc.start(now);
+            osc.stop(now + 0.12);
+        } catch (e) {}
+    }
+
+    stop() {
+        if (this.synth) {
+            try {
+                this.synth.cancel();
+            } catch (e) {}
+        }
+        this.isSpeaking = false;
+        this.currentUtterance = null;
+    }
+}
+
+// Global Voice Singleton
+const Voice = new VoiceEngine();

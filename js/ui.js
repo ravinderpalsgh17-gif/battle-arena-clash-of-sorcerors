@@ -306,7 +306,7 @@ class UIManager {
             Sound.playClick();
             this.storyEpilogueModal?.classList.add('hidden');
             const progress = StorageManager.getStoryProgress();
-            this.openStoryCutscene(progress.currentChapter || 'ch1_fearsome_womb');
+            this.launchStoryBattle(progress.currentChapter || 1, 0);
         });
 
         this.btnStoryReturnMap?.addEventListener('click', () => {
@@ -567,6 +567,9 @@ class UIManager {
         if (this.storyEpilogueModal) this.storyEpilogueModal.classList.add('hidden');
         if (this.storyTurnModal) this.storyTurnModal.classList.add('hidden');
         if (this.combatDialogueToast) this.combatDialogueToast.classList.remove('active');
+        if (typeof Voice !== 'undefined') Voice.stop();
+        const cinematicOverlay = document.getElementById('cinematic3DDialogue');
+        if (cinematicOverlay) cinematicOverlay.classList.add('hidden');
         if (this.touchControls) {
             this.touchControls.classList.add('hidden');
         }
@@ -919,6 +922,7 @@ class UIManager {
         this.storyCutsceneModal?.classList.add('hidden');
         this.storyEpilogueModal?.classList.add('hidden');
         this.storyTurnModal?.classList.add('hidden');
+        document.getElementById('cinematic3DDialogue')?.classList.add('hidden');
         this.pauseOverlay?.classList.add('hidden');
         this.gameOverOverlay?.classList.add('hidden');
 
@@ -1895,7 +1899,7 @@ class UIManager {
                 btn.addEventListener('click', (e) => {
                     e.stopPropagation();
                     Sound.playClick();
-                    this.openStoryCutscene(ch.id);
+                    this.launchStoryBattle(ch.id, 0);
                 });
             }
 
@@ -1905,8 +1909,8 @@ class UIManager {
 
     resumeStoryCheckpoint() {
         const progress = StorageManager.getStoryProgress();
-        const targetChapter = progress.currentChapter || 'ch1_fearsome_womb';
-        this.openStoryCutscene(targetChapter);
+        const targetChapter = progress.currentChapter || 1;
+        this.launchStoryBattle(targetChapter, progress.currentTurn || 0);
     }
 
     openStoryCutscene(chapterId) {

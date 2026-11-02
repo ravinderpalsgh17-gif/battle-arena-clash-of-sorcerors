@@ -1880,7 +1880,7 @@ class CharacterModel3D {
         });
     }
 
-    update(state, stateTimer, vx, vz, vy, isGrounded, isBlocking, animFrame, isJackpot = false) {
+    update(state, stateTimer, vx, vz, vy, isGrounded, isBlocking, animFrame, isJackpot = false, isTalking = false) {
         this.animTime += 0.05;
         const t = this.animTime;
 
@@ -2156,6 +2156,29 @@ class CharacterModel3D {
                 this.parts.rightLowerShoulder.rotation.set(-0.28 + breath * 0.02, -0.32, 0.12);
                 this.parts.leftLowerForearm.rotation.set(-0.85, 0.2, 0);
                 this.parts.rightLowerForearm.rotation.set(-0.85, -0.2, 0);
+            }
+
+            // 3D Talking Dialogue Gestures & Anime Head Animation
+            if (isTalking) {
+                const talkPulse = Math.sin(t * 8.5);
+                const talkSway = Math.sin(t * 3.5);
+
+                if (this.parts.head) {
+                    this.parts.head.rotation.x = 0.06 + talkPulse * 0.08;
+                    this.parts.head.rotation.y = talkSway * 0.08;
+                }
+                this.parts.torso.rotation.y = talkSway * 0.04;
+
+                // Expressive speech hand gesture
+                this.parts.rightShoulder.rotation.set(-0.65 + talkPulse * 0.04, -0.25, 0.25);
+                this.parts.rightForearm.rotation.set(-1.15 + talkPulse * 0.06, 0, 0);
+
+                if (this.parts.leftLowerShoulder && this.parts.rightLowerShoulder) {
+                    this.parts.leftLowerShoulder.rotation.set(-0.42 + talkSway * 0.03, 0.25, -0.12);
+                    this.parts.leftLowerForearm.rotation.set(-0.95, 0.1, 0);
+                }
+            } else if (this.parts.head) {
+                this.parts.head.rotation.set(0, 0, 0);
             }
 
             this.parts.leftHip.rotation.set(0, 0, -0.08);

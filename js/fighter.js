@@ -37,6 +37,7 @@ class Fighter {
         this.stateTimer = 0;
         this.animFrame = 0;
         this.isBlocking = false;
+        this.isTalking = false;
         this.isInvulnerable = false;
         this.comboCount = 0;
         this.lastHitTime = 0;
@@ -696,7 +697,8 @@ class Fighter {
                 this.isGrounded,
                 this.isBlocking,
                 this.animFrame,
-                this.isJackpotActive
+                this.isJackpotActive,
+                this.isTalking
             );
         }
     }

@@ -246,6 +246,51 @@
             </div>
         </div>
 
+        <!-- 3D Cinematic Story Dialogue Overlay (In-Engine 3D Anime Cutscenes & Live Speech) -->
+        <div id="cinematic3DDialogue" class="cinematic-3d-overlay hidden">
+            <!-- Anime Widescreen Top Letterbox Bar -->
+            <div class="cinematic-bar top-bar">
+                <div class="cinematic-chapter-indicator">
+                    <span id="cinematicArcName" class="cinematic-arc-name">FEARSOME WOMB ARC</span>
+                    <span id="cinematicChapterName" class="cinematic-chapter-title">Chapter 1: The Cursed Vessel</span>
+                </div>
+                <div class="cinematic-top-actions">
+                    <button id="btnSkip3DCutscene" class="btn-skip-cinematic">⏩ SKIP TO FIGHT [ESC]</button>
+                </div>
+            </div>
+
+            <!-- Floating 3D Cinematic Subtitle Box -->
+            <div class="cinematic-dialogue-card">
+                <div class="cinematic-speaker-header">
+                    <div id="cinematicSpeakerAvatar" class="cinematic-speaker-avatar">👁️</div>
+                    <div class="cinematic-speaker-meta">
+                        <div id="cinematicSpeakerName" class="cinematic-speaker-name">RYOMEN SUKUNA</div>
+                        <div id="cinematicSpeakerTitle" class="cinematic-speaker-title">King of Curses / 両面宿儺</div>
+                    </div>
+                    <div class="cinematic-voice-indicator">
+                        <span class="voice-wave wave-1"></span>
+                        <span class="voice-wave wave-2"></span>
+                        <span class="voice-wave wave-3"></span>
+                        <span class="voice-status-text">🔊 VOICE ACTIVE</span>
+                    </div>
+                </div>
+                <div id="cinematicDialogueText" class="cinematic-dialogue-text">
+                    "Know your place, fool."
+                </div>
+                <div class="cinematic-footer">
+                    <span class="cinematic-hint">▶ PRESS [SPACE] OR CLICK ANYWHERE TO CONTINUE</span>
+                    <button id="btnNext3DDialogue" class="btn-next-dialogue">NEXT ▶</button>
+                </div>
+            </div>
+
+            <!-- Anime Widescreen Bottom Letterbox Bar -->
+            <div class="cinematic-bar bottom-bar">
+                <div id="cinematicObjectivesPreview" class="cinematic-objectives">
+                    🎯 <strong>OBJECTIVE:</strong> Survive Sukuna's onslaught and maintain control!
+                </div>
+            </div>
+        </div>
+
         <!-- Mid-Combat Live Canonical Dialogue Toast Banner -->
         <div id="combatDialogueToast" class="combat-dialogue-toast hidden">
             <div class="toast-avatar" id="combatToastAvatar">👁️</div>

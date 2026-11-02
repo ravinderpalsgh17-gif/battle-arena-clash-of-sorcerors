@@ -13,21 +13,24 @@ An adrenaline-pumping **4K Ultra 3D Open World fighting arena game** featuring 1
 * **4096x4096 Soft Shadows & HDR Tone Mapping**: Real-time PCF soft contact shadows, ACESFilmic high dynamic range tone mapping, and cool rim lighting highlighting fighter silhouettes.
 * **Razor-Sharp 4K HUD**: High-DPI vector health bars, glowing cursed energy gauges, combo counter, and floating damage typography.
 
-### 📜 Jujutsu Kaisen Canonical Story Saga Mode
-Relive the legendary canonical timeline of Jujutsu Kaisen through an 8-chapter multi-turn narrative campaign with checkpoints, dialogue cutscenes, and mid-battle quotes:
-1. **Chapter 1: Fearsome Womb Arc** (Eishu Juvenile Detention Center • Yuji & Sukuna vs Special Grade Finger Bearer)
-2. **Chapter 2: Vs. Mahito Arc** (Satozakura High & Underpass Sewer • Kento Nanami & Yuji Itadori vs Mahito)
-3. **Chapter 3: Kyoto Goodwill Event Arc** (Jujutsu High Sacred Woods • Yuji Itadori & Aoi Todo vs Jogo & Hanami)
-4. **Chapter 4: Hidden Inventory / Premature Death Arc** (Tomb of the Star Sanctum • Teen Satoru Gojo vs Toji Fushiguro)
-5. **Chapter 5: Shibuya Incident — Part 1: Seal the Strongest** (Tokyo Metro B5F Platform • Satoru Gojo vs Jogo, Mahito & Kenjaku)
-6. **Chapter 6: Shibuya Incident — Part 2: King of Curses** (Shibuya Ground Zero Crater • Heian Ryomen Sukuna vs Jogo & Mahito)
-7. **Chapter 7: Culling Game Arc** (Colony Barriers & Sendai Colosseum • Kinji Hakari & Yuta Okkotsu in deadly deathmatches)
-8. **Chapter 8: Shinjuku Showdown — Battle of the Strongest** (Shinjuku Skyscraper Zenith • Satoru Gojo vs Ryomen Sukuna Heian Form)
+### 📜 Jujutsu Kaisen Canonical Story Saga Mode & 3D In-Engine Dialogues
+Relive the exact legendary canonical timeline of Jujutsu Kaisen through an 8-chapter multi-turn narrative campaign with in-engine 3D cutscenes, live voice speech, and mid-battle quotes:
+1. **Chapter 1: Fearsome Womb Arc (呪胎戴天編)** (Eishu Juvenile Detention Center • Yuji & Sukuna vs Special Grade Finger Bearer)
+2. **Chapter 2: Vs. Mahito Arc (幼魚と逆罰編)** (Satozakura High & Underpass Sewer • Kento Nanami & Yuji Itadori vs Mahito)
+3. **Chapter 3: Kyoto Goodwill Event Arc (京都姉妹校交流会編)** (Jujutsu High Sacred Woods • Yuji Itadori & Aoi Todo vs Jogo & Hanami)
+4. **Chapter 4: Hidden Inventory / Premature Death Arc (懐玉・玉折編)** (Tomb of the Star Sanctum • Teen Satoru Gojo vs Toji Fushiguro)
+5. **Chapter 5: Shibuya Incident — Part 1: Seal the Strongest (渋谷事変 - 降霊・封印)** (Tokyo Metro B5F Platform • Satoru Gojo vs Jogo, Mahito & Kenjaku)
+6. **Chapter 6: Shibuya Incident — Part 2: King of Curses (渋谷事変 - 業火・変身)** (Shibuya Ground Zero Crater • Heian Ryomen Sukuna vs Jogo & Mahito)
+7. **Chapter 7: Culling Game Arc (死滅回游編)** (Colony Barriers & Sendai Colosseum • Kinji Hakari & Yuta Okkotsu in deadly deathmatches)
+8. **Chapter 8: Shinjuku Showdown — Battle of the Strongest (人魔境新宿決戦)** (Shinjuku Skyscraper Zenith • Satoru Gojo vs Ryomen Sukuna Heian Form)
 
-* **Multi-Turn Checkpoints**: Play through canonical sequential combat turns per chapter with automatic checkpoint saving in `StorageManager`. Resume anywhere from your last checkpoint!
-* **Prologue & Epilogue Cutscenes**: Illustrated visual novel dialogue stages with anime character avatars, mission objectives, and narrative context before and after every battle.
-* **Live In-Combat Dialogue Toasts**: Characters exchange canonical lines and philosophical clashes in real-time as fighter HP reaches dramatic thresholds.
-* **Campaign Rewards**: Earn over 25,000 bonus Battle Points across all chapters to unlock exclusive fighters and 3D battlefields!
+* **Exact Manga & Anime Storyline**: Exact, authentic canonical dialogue and philosophical clashes quoted word-for-word from Akutami Gege's Jujutsu Kaisen manga and anime adaptation (e.g. Gojo's *"Nah, I'd win"*, *"Throughout heaven and earth, I alone am the honored one"*, Sukuna's *"Stand proud. You are strong"*, Nanami's *"Overtime begins now"*, Todo's *"My best friend Takada-chan is watching"*).
+* **3D In-Engine Cinematic Cutscenes**: Dialogues unfold directly inside the 3D battle arena! The 3D camera dynamically tracks each speaker with cinematic close-ups and dramatic over-the-shoulder cuts.
+* **3D Animated Talking Rigs**: 3D anime heads nod, tilt, and move to dialogue cadence, while character torsos and arms perform expressive forward gestures during speech.
+* **Live Voice Synthesis Engine (`VoiceEngine`)**: Characters actually speak out loud using Web Speech API synthesis matched to custom pitch and rate profiles (Sukuna deep demonic bass, Gojo charismatic energetic tenor, Nanami stoic baritone, Mahito eerie falsetto, etc.) accompanied by procedural vocal synth chords.
+* **Interactive Anime Letterbox Overlay**: Cinematic black widescreen bars, active audio soundwave visualizer, [SPACE / CLICK] to advance dialogue, and [ESC] to skip straight to combat.
+* **Multi-Turn Checkpoints**: Sequential combat turns per chapter with automatic checkpoint saving in `StorageManager`. Resume anywhere from your last checkpoint!
+* **Live In-Combat Dialogue & Mid-Fight Speech**: Characters exchange iconic lines in real-time as fighter HP reaches dramatic thresholds with bullet-time camera focus.
 
 ### 🥋 Full 3D Characters with Procedural Anime Rigs
 Every character in the 16-sorcerer roster is fully modeled and animated in 3D with distinct anime aesthetics, signature accessories, and hierarchical skeletal rigging:

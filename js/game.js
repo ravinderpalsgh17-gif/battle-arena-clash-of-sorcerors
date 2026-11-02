@@ -92,6 +92,9 @@ class BattleArenaGame {
         this.storyChapterId = 1;
         this.storyTurnIndex = 0;
         this.activeStoryQuotes = [];
+        this.activeCutscene = null;
+        this.cutsceneCamPos = null;
+        this.cutsceneCamTarget = null;
 
         // Input Tracking
         this.keys = {};
@@ -166,6 +169,18 @@ class BattleArenaGame {
             this.keys[e.code] = true;
             this.sound.resume();
 
+            // 3D Cinematic Story Cutscene Controls
+            if (this.state === 'cutscene') {
+                if (e.code === 'Space' || e.code === 'Enter') {
+                    e.preventDefault();
+                    this.advance3DCutscene();
+                } else if (e.code === 'Escape') {
+                    e.preventDefault();
+                    this.finish3DCutscene();
+                }
+                return;
+            }
+
             // Toggle Camera View with 'V' key
             if (e.code === 'KeyV' && this.state === 'fighting') {
                 this.cycleCameraMode();
@@ -213,6 +228,25 @@ class BattleArenaGame {
             if (this.p2 && (e.code === 'ArrowDown' || e.code === 'NumpadPeriod' || e.code === 'Slash' || e.code === 'ShiftRight' || e.code === 'Semicolon')) {
                 this.p2.stopBlock();
             }
+        });
+
+        // 3D Cinematic Story Cutscene Advance & Skip Clicks
+        window.addEventListener('click', (e) => {
+            if (this.state === 'cutscene') {
+                if (!e.target.closest('#btnSkip3DCutscene')) {
+                    this.advance3DCutscene();
+                }
+            }
+        });
+
+        document.getElementById('btnNext3DDialogue')?.addEventListener('click', (e) => {
+            e.stopPropagation();
+            this.advance3DCutscene();
+        });
+
+        document.getElementById('btnSkip3DCutscene')?.addEventListener('click', (e) => {
+            e.stopPropagation();
+            this.finish3DCutscene();
         });
     }
 
@@ -339,6 +373,16 @@ class BattleArenaGame {
         this.p2RoundsWon = 0;
         this.currentRound = 1;
 
+        // In Story Mode: Check for 3D In-Engine Prologue Cutscenes
+        if (this.mode === 'story') {
+            const chapter = (typeof StoryManager !== 'undefined') ? StoryManager.getChapter(this.storyChapterId) : null;
+            if (this.storyTurnIndex === 0 && chapter && chapter.prologue && chapter.prologue.length) {
+                this.sound.startBGM();
+                this.startStory3DCutscene(this.storyChapterId, this.storyTurnIndex, 'prologue');
+                return;
+            }
+        }
+
         this.state = 'fighting';
         this.startRound();
         this.sound.startBGM();
@@ -459,7 +503,14 @@ class BattleArenaGame {
                     const chapterReward = chapter ? (chapter.reward || 1000) : 1000;
                     StorageManager.addPoints(chapterReward);
                     StorageManager.unlockNextChapter(this.storyChapterId);
-                    if (window.UI && window.UI.showStoryChapterComplete) {
+
+                    if (chapter && chapter.epilogue && chapter.epilogue.length) {
+                        this.startStory3DCutscene(this.storyChapterId, this.storyTurnIndex, 'epilogue', () => {
+                            if (window.UI && window.UI.showStoryChapterComplete) {
+                                window.UI.showStoryChapterComplete(chapter, chapterReward);
+                            }
+                        });
+                    } else if (window.UI && window.UI.showStoryChapterComplete) {
                         window.UI.showStoryChapterComplete(chapter, chapterReward);
                     }
                 }
@@ -597,6 +648,15 @@ class BattleArenaGame {
             this.camShakeY = 0;
         }
 
+        // 3D Cinematic Story Cutscene Camera
+        if (this.state === 'cutscene') {
+            if (this.cutsceneCamPos && this.cutsceneCamTarget) {
+                this.camera.position.lerp(this.cutsceneCamPos, 0.08);
+                this.camera.lookAt(this.cutsceneCamTarget);
+            }
+            return;
+        }
+
         if (this.state === 'fighting' || this.state === 'round_over' || this.state === 'match_over') {
             if (!this.p1 || !this.p2) return;
 
@@ -648,6 +708,17 @@ class BattleArenaGame {
     // ----------------------------------------------------
     loop(time) {
         this.animId = requestAnimationFrame((t) => this.loop(t));
+
+        // 3D In-Engine Cinematic Cutscene Loop
+        if (this.state === 'cutscene') {
+            if (this.p1) this.p1.update();
+            if (this.p2) this.p2.update();
+            this.particles.update();
+            if (this.world3d) this.world3d.update();
+            this.updateCamera();
+            this.renderer.render(this.scene, this.camera);
+            return;
+        }
 
         if (this.state === 'fighting') {
             // 1. Process Continuous 3D Inputs for Player 1 (WASD + Arrow keys in solo play)
@@ -718,6 +789,15 @@ class BattleArenaGame {
                         this.particles.addFloatingText(`${quote.speaker}: "${quote.text}"`, 0, 4.2, quote.color || '#ffd700', 26, true);
                         if (window.UI && window.UI.showCombatDialogue) {
                             window.UI.showCombatDialogue(quote);
+                        }
+                        if (typeof Voice !== 'undefined') {
+                            Voice.speak(quote.text, quote.charKey || 'yuji');
+                        }
+                        const isP1 = (quote.charKey === this.p1.charKey || quote.side === 'left');
+                        const speakerFighter = isP1 ? this.p1 : this.p2;
+                        if (speakerFighter) {
+                            speakerFighter.isTalking = true;
+                            setTimeout(() => { if (speakerFighter) speakerFighter.isTalking = false; }, 3800);
                         }
                         this.activeStoryQuotes.splice(i, 1);
                     }
@@ -910,7 +990,183 @@ class BattleArenaGame {
         ctx.textAlign = 'right';
         ctx.fillText(`CURSED ENERGY: ${Math.round(this.p2.energy)}% ${this.p2.energy >= 100 ? '[ULTIMATE READY!]' : ''}`, this.width - 52, nrgY - 7);
         ctx.textAlign = 'left';
-        ctx.textAlign = 'left';
+    }
+
+    // ----------------------------------------------------
+    // IN-ENGINE 3D CINEMATIC CUTSCENES & LIVE TALKING RIGS
+    // ----------------------------------------------------
+    startStory3DCutscene(chapterId, turnIndex = 0, type = 'prologue', onComplete = null) {
+        const chapter = (typeof StoryManager !== 'undefined') ? StoryManager.getChapter(chapterId) : null;
+        if (!chapter) {
+            if (onComplete) onComplete();
+            return;
+        }
+
+        const dialogues = (type === 'epilogue') ? chapter.epilogue : chapter.prologue;
+        if (!dialogues || !dialogues.length) {
+            if (onComplete) onComplete();
+            return;
+        }
+
+        this.state = 'cutscene';
+        this.cutsceneType = type;
+        this.cutsceneOnComplete = onComplete;
+        this.activeCutscene = {
+            chapter,
+            dialogues,
+            index: 0,
+            chapterId,
+            turnIndex
+        };
+
+        // Position 3D Fighters face-to-face in dramatic conversational stances
+        if (this.p1 && this.p2) {
+            this.p1.x = -4.8;
+            this.p1.z = 0;
+            this.p1.y = 0;
+            this.p1.vx = 0;
+            this.p1.vz = 0;
+            this.p1.state = 'idle';
+            this.p1.turnTowards(this.p2.x, this.p2.z);
+
+            this.p2.x = 4.8;
+            this.p2.z = 0;
+            this.p2.y = 0;
+            this.p2.vx = 0;
+            this.p2.vz = 0;
+            this.p2.state = (type === 'epilogue' && this.p1RoundsWon > this.p2RoundsWon) ? 'hurt' : 'idle';
+            this.p2.turnTowards(this.p1.x, this.p1.z);
+
+            this.p1.updateModelTransform();
+            this.p2.updateModelTransform();
+        }
+
+        // Show 3D Cinematic Letterbox Overlay
+        const overlay = document.getElementById('cinematic3DDialogue');
+        if (overlay) {
+            overlay.classList.remove('hidden');
+            const arcEl = document.getElementById('cinematicArcName');
+            const titleEl = document.getElementById('cinematicChapterName');
+            const objEl = document.getElementById('cinematicObjectivesPreview');
+            if (arcEl) arcEl.textContent = chapter.arc || 'JUJUTSU KAISEN STORY';
+            if (titleEl) titleEl.textContent = `Chapter ${chapter.id}: ${chapter.title}`;
+            if (objEl) {
+                const turn = chapter.turns ? chapter.turns[turnIndex] : null;
+                objEl.innerHTML = `🎯 <strong>OBJECTIVE:</strong> ${turn ? turn.objective : chapter.summary}`;
+            }
+        }
+
+        // Hide normal fighting HUD while in 3D Cutscene
+        const hud = document.getElementById('hudOverlay');
+        if (hud) hud.classList.add('hidden');
+        if (window.UI && window.UI.touchControls) {
+            window.UI.touchControls.classList.add('hidden');
+        }
+
+        this.playCutsceneLine();
+    }
+
+    playCutsceneLine() {
+        if (!this.activeCutscene) return;
+        const { dialogues, index } = this.activeCutscene;
+        if (index >= dialogues.length) {
+            this.finish3DCutscene();
+            return;
+        }
+
+        const line = dialogues[index];
+        const isP1 = (line.charKey === this.p1?.charKey || line.side === 'left');
+        const speakerFighter = isP1 ? this.p1 : this.p2;
+        const listenerFighter = isP1 ? this.p2 : this.p1;
+
+        if (speakerFighter) speakerFighter.isTalking = true;
+        if (listenerFighter) listenerFighter.isTalking = false;
+
+        // Cinematic 3D Camera framing focused directly on active speaker
+        if (speakerFighter) {
+            const angleOffset = isP1 ? 3.8 : -3.8;
+            this.cutsceneCamTarget = new THREE.Vector3(speakerFighter.x, speakerFighter.y + 1.8, speakerFighter.z);
+            this.cutsceneCamPos = new THREE.Vector3(
+                speakerFighter.x + angleOffset,
+                speakerFighter.y + 2.3,
+                speakerFighter.z + 5.2
+            );
+        }
+
+        // Update Cinematic UI Overlay
+        const avatarEl = document.getElementById('cinematicSpeakerAvatar');
+        const nameEl = document.getElementById('cinematicSpeakerName');
+        const titleEl = document.getElementById('cinematicSpeakerTitle');
+        const textEl = document.getElementById('cinematicDialogueText');
+        const voiceWaves = document.querySelectorAll('.voice-wave');
+
+        if (avatarEl) avatarEl.textContent = line.avatar || '👁️';
+        if (nameEl) nameEl.textContent = line.speaker || 'SORCERER';
+        if (titleEl) titleEl.textContent = line.title || (line.charKey && typeof CHARACTERS_DATA !== 'undefined' ? (CHARACTERS_DATA[line.charKey]?.grade || 'Special Grade') : 'Jujutsu Sorcerer');
+        if (textEl) textEl.textContent = `"${line.text}"`;
+
+        // Live Voice Audio Speech Synthesis with animated soundwaves
+        if (typeof Voice !== 'undefined') {
+            voiceWaves.forEach(w => w.style.opacity = '1');
+            Voice.speak(line.text, line.charKey || (isP1 ? this.p1?.charKey : this.p2?.charKey) || 'yuji',
+                () => {
+                    voiceWaves.forEach(w => w.style.opacity = '1');
+                },
+                () => {
+                    voiceWaves.forEach(w => w.style.opacity = '0.35');
+                    if (speakerFighter) speakerFighter.isTalking = false;
+                }
+            );
+        }
+    }
+
+    advance3DCutscene() {
+        if (!this.activeCutscene) return;
+        this.activeCutscene.index++;
+        this.playCutsceneLine();
+    }
+
+    finish3DCutscene() {
+        if (typeof Voice !== 'undefined') Voice.stop();
+        if (this.p1) this.p1.isTalking = false;
+        if (this.p2) this.p2.isTalking = false;
+
+        const overlay = document.getElementById('cinematic3DDialogue');
+        if (overlay) overlay.classList.add('hidden');
+
+        const callback = this.cutsceneOnComplete;
+        const type = this.cutsceneType;
+        this.activeCutscene = null;
+        this.cutsceneOnComplete = null;
+
+        if (type === 'epilogue') {
+            if (callback) callback();
+            return;
+        }
+
+        // Smooth transition directly from 3D Cutscene to Active Combat
+        this.state = 'fighting';
+        if (this.p1 && this.p2) {
+            this.p1.x = -12;
+            this.p1.z = 0;
+            this.p2.x = 12;
+            this.p2.z = 0;
+            this.p1.turnTowards(this.p2.x, this.p2.z);
+            this.p2.turnTowards(this.p1.x, this.p1.z);
+            this.p1.updateModelTransform();
+            this.p2.updateModelTransform();
+        }
+
+        this.startRound();
+        this.sound.playFight();
+        this.particles.addFloatingText('BATTLE START!', 0, 4.2, '#ffd700', 44, true);
+
+        const hud = document.getElementById('hudOverlay');
+        if (hud) hud.classList.remove('hidden');
+
+        if (window.UI && window.UI.touchControls && (window.UI.touchEnabled || window.UI.isTouchOrMobile)) {
+            window.UI.touchControls.classList.remove('hidden');
+        }
     }
 }
 

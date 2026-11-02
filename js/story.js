@@ -1,679 +1,783 @@
 // ============================================================================
 // BATTLE ARENA: CLASH OF SORCERORS - CANONICAL JUJUTSU KAISEN STORY SAGA
-// 8 Canonical Story Arcs • Multi-Turn Checkpoint Battles • Dialogue Cutscenes
+// Exact Manga & Anime Dialogue • Multi-Turn Checkpoints • 3D Voice Engine
 // ============================================================================
 
 const STORY_CHAPTERS = [
     {
         id: 1,
-        arc: "Fearsome Womb Arc",
+        arc: "Fearsome Womb Arc (呪胎戴天編)",
         title: "Chapter 1: The Cursed Vessel's Awakening",
-        subtitle: "Sugisawa High School to Ryomen Sukuna's Innate Domain",
+        subtitle: "Sugisawa High School to Eishu Detention Center",
         battlefield: "jjk_high",
-        bossKey: "sukuna",
+        bossKey: "megumi",
         playerKey: "yuji",
-        reward: 500,
-        summary: "When Special Grade cursed spirits besiege Sugisawa High School, ordinary high schooler Yuji Itadori swallows the sealed finger of Ryomen Sukuna to save Megumi Fushiguro. Thrust into the brutal world of sorcery, Yuji must control the King of Curses within his own soul.",
+        reward: 1500,
+        summary: "When a Special Grade cursed object is unsealed at Sugisawa High, ordinary athlete Yuji Itadori swallows the sealed finger of Ryomen Sukuna to save Megumi Fushiguro. Thrust into the Jujutsu world, Yuji must control the ancient King of Curses within his soul.",
         prologue: [
             {
                 speaker: "Megumi Fushiguro",
+                charKey: "megumi",
                 avatar: "🐺",
+                title: "Ten Shadows Heir / 伏黒恵",
                 side: "left",
-                text: "Don't do it, Itadori! That's a Special Grade cursed object! Eating it means guaranteed death—you'll be possessed by the worst curse in history!"
+                text: "Don't eat it, Itadori! That's a Special Grade cursed object—Ryomen Sukuna's sealed finger! Swallowing it means guaranteed death!"
             },
             {
                 speaker: "Yuji Itadori",
+                charKey: "yuji",
                 avatar: "🥊",
+                title: "Vessel of Sukuna / 虎杖悠仁",
                 side: "left",
-                text: "If I don't swallow it right now, that monster will kill you and everyone else! Bottoms up!"
+                text: "If I don't swallow it right now, that cursed spirit will kill you and everyone else! Bottoms up!"
             },
             {
                 speaker: "Ryomen Sukuna",
+                charKey: "sukuna",
                 avatar: "👁️",
+                title: "King of Curses / 両面宿儺",
                 side: "right",
-                text: "AHAHAHAHA! I knew it! The moonlight feels best on true flesh! Where are the women?! Where are the children?! A magnificent age of slaughter begins!"
+                text: "AHAHAHAHA! I knew it! The moonlight feels best on true flesh! A cursed spirit's flesh is no fun. Where are the people?! Where are the women?! What a magnificent era of slaughter!"
             },
             {
                 speaker: "Yuji Itadori",
+                charKey: "yuji",
                 avatar: "🥊",
+                title: "Vessel of Sukuna / 虎杖悠仁",
                 side: "left",
-                text: "Hey! What do you think you're doing with my body?! Give it back, you creep!"
+                text: "Hey! What do you think you're doing with someone else's body?! Give it back, you creep!"
+            },
+            {
+                speaker: "Megumi Fushiguro",
+                charKey: "megumi",
+                avatar: "🐺",
+                title: "Ten Shadows Heir / 伏黒恵",
+                side: "left",
+                text: "He's suppressing Sukuna with sheer physical willpower...?! Under Jujutsu regulations, Itadori Yuji, I must exorcise you as a curse!"
             }
         ],
         turns: [
             {
                 turnNumber: 1,
-                name: "Turn 1: The Vessel's Trial",
+                name: "Turn 1: The Vessel's Evaluation",
                 battlefield: "jjk_high",
                 playerChar: "yuji",
                 playerName: "Yuji Itadori",
                 enemyChar: "megumi",
                 enemyName: "Megumi Fushiguro",
                 difficulty: "easy",
-                objective: "Defeat Megumi in an evaluation bout to demonstrate control over your cursed energy!",
+                objective: "Defeat Megumi in an evaluation duel to prove you can maintain control over Sukuna's cursed energy!",
                 midBattleQuotes: [
-                    { hpThreshold: 60, speaker: "Megumi", text: "His raw physical power is inhuman... how is he suppressing Sukuna's malice?!", color: "#00e5ff" },
-                    { hpThreshold: 30, speaker: "Yuji", text: "I made a promise to my grandpa! I will save whoever I can!", color: "#ff2a5f" }
+                    { hpThreshold: 70, speaker: "Megumi", charKey: "megumi", text: "His raw physical speed is inhuman... How is he suppressing Sukuna's malice without sorcery training?!", color: "#00e5ff" },
+                    { hpThreshold: 35, speaker: "Yuji", charKey: "yuji", text: "I made a promise to my grandpa on his deathbed! I will save whoever I can, so don't you dare give up on me!", color: "#ff2a5f" }
                 ]
             },
             {
                 turnNumber: 2,
-                name: "Turn 2: Confronting the King of Curses",
+                name: "Turn 2: Mountain of Skulls (Innate Domain)",
                 battlefield: "heian_necropolis",
                 playerChar: "yuji",
                 playerName: "Yuji Itadori",
                 enemyChar: "sukuna",
                 enemyName: "Ryomen Sukuna",
                 difficulty: "medium",
-                objective: "Face the King of Curses atop his mountain of skulls inside his Innate Domain!",
+                objective: "Confront the King of Curses atop his mountain of skulls inside his Innate Domain!",
                 midBattleQuotes: [
-                    { hpThreshold: 70, speaker: "Sukuna", text: "Know your place, fool. A brat like you dares to lecture me?", color: "#ff0055" },
-                    { hpThreshold: 35, speaker: "Yuji", text: "I'll never accept your binding vow! Restore my heart, Sukuna!", color: "#ffd700" }
+                    { hpThreshold: 75, speaker: "Sukuna", charKey: "sukuna", text: "Know your place, fool. (身の程をわきまえろ、痴れ者が) A brat like you dares to demand terms from me?!", color: "#ff0055" },
+                    { hpThreshold: 40, speaker: "Yuji", charKey: "yuji", text: "I'll never accept your binding vow! Restore my heart and let me protect Fushiguro!", color: "#ffd700" }
                 ]
             }
         ],
         epilogue: [
             {
                 speaker: "Satoru Gojo",
+                charKey: "gojo",
                 avatar: "👁️",
+                title: "The Strongest / 五条悟",
                 side: "right",
-                text: "Good news, Yuji! Your immediate secret execution has been suspended! Bad news: you have to locate and consume all twenty of Sukuna's fingers first."
+                text: "Yo, Yuji! Good news: your immediate secret execution has been suspended! Bad news: you have to locate and consume all twenty of Sukuna's fingers first."
             },
             {
                 speaker: "Yuji Itadori",
+                charKey: "yuji",
                 avatar: "🥊",
+                title: "Tokyo Jujutsu High / 虎杖悠仁",
                 side: "left",
-                text: "If eating every finger means destroying this curse forever so innocent people can live... then I'm in!"
+                text: "If eating every finger destroys this curse forever so innocent people can live... then count me in!"
             },
             {
                 speaker: "Satoru Gojo",
+                charKey: "gojo",
                 avatar: "👁️",
+                title: "The Strongest / 五条悟",
                 side: "right",
-                text: "That's the spirit! Welcome to Tokyo Prefectural Jujutsu High School!"
+                text: "That's the spirit! Welcome to Tokyo Metropolitan Magic Technical College."
             }
         ]
     },
     {
         id: 2,
-        arc: "Vs. Mahito Arc",
+        arc: "Vs. Mahito Arc (幼魚と逆罰編)",
         title: "Chapter 2: The Shape of the Soul",
-        subtitle: "Tokyo Sewer Underpass to Satozakura High",
+        subtitle: "Tokyo Sewer Underpass to Satozakura High School",
         battlefield: "tokyo_subway",
         bossKey: "mahito",
         playerKey: "nanami",
-        reward: 750,
-        summary: "A grotesque new Special Grade curse born from human hatred of other humans, Mahito, begins transfiguring innocent students. Grade 1 Sorcerer Kento Nanami and Yuji Itadori descend into the Tokyo underground sewers to sever Mahito's twisted transfiguration.",
+        reward: 2000,
+        summary: "A human-born curse named Mahito transfigures innocent teenagers in Kawasaki. Grade 1 sorcerer Kento Nanami and Yuji Itadori investigate the killings, uncovering Mahito's twisted philosophy that the soul precedes and shapes the body.",
         prologue: [
             {
                 speaker: "Kento Nanami",
-                avatar: "📐",
+                charKey: "nanami",
+                avatar: "👔",
+                title: "Grade 1 Sorcerer / 七海建人",
                 side: "left",
-                text: "Being a sorcerer is shit. Being a salaryman is shit. If both are shit, I chose the one I was better suited for. But I have one strict rule: no overtime."
+                text: "Working is shit! Having to deal with people is shit! So as long as both are shit, I chose the one that I am better suited for as a sorcerer."
             },
             {
                 speaker: "Mahito",
-                avatar: "🪡",
+                charKey: "mahito",
+                avatar: "🧵",
+                title: "Curse of Humanity / 真人",
                 side: "right",
-                text: "You sorcerers think the body came first, but you're wrong! The soul precedes the body! By altering the soul's shape, the flesh is putty in my hands!"
+                text: "Humans always wonder what comes first, the body or the soul? The soul comes first! The body is merely shaped by the contour of the soul. Idle Transfiguration!"
             },
             {
                 speaker: "Kento Nanami",
-                avatar: "📐",
+                charKey: "nanami",
+                avatar: "👔",
+                title: "Grade 1 Sorcerer / 七海建人",
                 side: "left",
-                text: "My shift is nearly complete. I shall conclude this before 6:00 PM."
+                text: "The time is currently 17:30. My scheduled shift ended at 17:00. Starting now... I will be working overtime. (ここからは、時間外労働です)"
             }
         ],
         turns: [
             {
                 turnNumber: 1,
-                name: "Turn 1: The 7:3 Ratio Underpass",
+                name: "Turn 1: Overtime in the Underpass",
                 battlefield: "tokyo_subway",
                 playerChar: "nanami",
                 playerName: "Kento Nanami",
                 enemyChar: "mahito",
                 enemyName: "Mahito",
                 difficulty: "medium",
-                objective: "Strike Mahito's 7:3 ratio critical point with blunt cleaver precision!",
+                objective: "Unleash 7:3 Ratio Technique against Mahito in the underground sewer tunnels before your overtime runs out!",
                 midBattleQuotes: [
-                    { hpThreshold: 55, speaker: "Nanami", text: "6:00 PM has arrived. My cursed energy increases now. Overtime begins.", color: "#ffd700" },
-                    { hpThreshold: 25, speaker: "Mahito", text: "Oho! Your cursed energy density just doubled! What an interesting technique!", color: "#00e5ff" }
+                    { hpThreshold: 70, speaker: "Nanami", charKey: "nanami", text: "Ratio Technique: Collapse! By creating a weak point at the 7 to 3 ratio, even curses without physical cores can be severed!", color: "#fbbf24" },
+                    { hpThreshold: 35, speaker: "Mahito", charKey: "mahito", text: "Fascinating! You can damage my soul contour! But my soul has infinite variations!", color: "#c084fc" }
                 ]
             },
             {
                 turnNumber: 2,
-                name: "Turn 2: The Soul Boundary Clash",
-                battlefield: "tokyo_subway",
+                name: "Turn 2: Satozakura High Climax",
+                battlefield: "jjk_high",
                 playerChar: "yuji",
                 playerName: "Yuji Itadori",
                 enemyChar: "mahito",
                 enemyName: "Mahito",
                 difficulty: "hard",
-                objective: "Yuji arrives! Strike the boundary of Mahito's soul with Divergent Fist!",
+                objective: "Deliver justice for Junpei Yoshino and strike Mahito's soul with unyielding Divergent Fists!",
                 midBattleQuotes: [
-                    { hpThreshold: 60, speaker: "Mahito", text: "Guh! Why does his strike damage my soul?! He shares a vessel with Sukuna, so he understands soul contours!", color: "#ff0055" },
-                    { hpThreshold: 30, speaker: "Yuji", text: "You turned Junpei into a monster! I will never forgive you, Mahito!", color: "#ff2a5f" }
+                    { hpThreshold: 80, speaker: "Mahito", charKey: "mahito", text: "Domain Expansion: Self-Embodiment of Perfection! (自閉円頓裹) Within my palm, your souls are mine!", color: "#a855f7" },
+                    { hpThreshold: 50, speaker: "Sukuna", charKey: "sukuna", text: "I warned you once, patchface. Touch my soul a second time and you die.", color: "#ef4444" },
+                    { hpThreshold: 25, speaker: "Yuji", charKey: "yuji", text: "I will never forgive you, Mahito! Even if you run, even if you change your name and form, I will kill you!", color: "#38bdf8" }
                 ]
             }
         ],
         epilogue: [
             {
-                speaker: "Mahito",
-                avatar: "🪡",
-                side: "right",
-                text: "Damn it! Two on one... and Sukuna slashed me when I touched his soul! We will meet again, Yuji Itadori!"
+                speaker: "Kento Nanami",
+                charKey: "nanami",
+                avatar: "👔",
+                title: "Grade 1 Sorcerer / 七海建人",
+                side: "left",
+                text: "Itadori-kun. You saved my life today. You don't have to force yourself to become an adult too quickly... but today, you were a true Jujutsu sorcerer."
             },
             {
-                speaker: "Kento Nanami",
-                avatar: "📐",
+                speaker: "Yuji Itadori",
+                charKey: "yuji",
+                avatar: "🥊",
+                title: "Vessel of Sukuna / 虎杖悠仁",
                 side: "left",
-                text: "You did well, Itadori-kun. You saved my life. However, do not rush to discard your youth. There is still much you must learn."
+                text: "I couldn't save Junpei... but I swear on my life, I will never let another person be murdered by a curse in front of me again."
             }
         ]
     },
     {
         id: 3,
-        arc: "Kyoto Goodwill Event",
-        title: "Chapter 3: The Kyoto Goodwill Brotherhood",
-        subtitle: "Tokyo vs Kyoto Sister School Exchange & Curse Infiltration",
+        arc: "Kyoto Goodwill Event Arc (京都姉妹校交流会編)",
+        title: "Chapter 3: Brotherly Synchrony & Black Flash",
+        subtitle: "Jujutsu High Sacred Woods & Forest Boundary",
         battlefield: "jjk_high",
         bossKey: "jogo",
         playerKey: "yuji",
-        reward: 1000,
-        summary: "During the annual Sister School Exchange, Kyoto's powerhouse Aoi Todo challenges Yuji. In the heat of battle, Todo recognizes Yuji as his 'brother' and teaches him the secret of Black Flash, right as Disaster Curses breach the sacred academy barrier.",
+        reward: 2500,
+        summary: "The annual sister-school goodwill event descends into chaos when Special Grade disaster curses breach the sacred barrier. Aoi Todo discovers his true soul brother in Yuji Itadori, guiding him to unlock the legendary Black Flash.",
         prologue: [
             {
                 speaker: "Aoi Todo",
-                avatar: "👏",
-                side: "right",
-                text: "Answer me one question, Itadori. What kind of woman is your type? Answer poorly, and I will pulverize you into the dirt."
+                charKey: "todo",
+                avatar: "💪",
+                title: "Kyoto Grade 1 / 東堂葵",
+                side: "left",
+                text: "Answer me one question, Itadori! What is your type of woman?! If you give me a boring answer, I'll beat you half to death right here!"
             },
             {
                 speaker: "Yuji Itadori",
+                charKey: "yuji",
                 avatar: "🥊",
+                title: "Tokyo Jujutsu High / 虎杖悠仁",
                 side: "left",
-                text: "My type? Uh... a tall woman with a big ass... like Jennifer Lawrence!"
+                text: "What kind of question is that right now?! Well... a tall girl with a big ass... like Jennifer Lawrence, I guess?"
             },
             {
                 speaker: "Aoi Todo",
-                avatar: "👏",
+                charKey: "todo",
+                avatar: "💪",
+                title: "Kyoto Grade 1 / 東堂葵",
+                side: "left",
+                text: "Takada-chan... It's him. MY BEST FRIEND! (親友 - Burazā!) We walked through middle school together! Our youth was radiant!"
+            },
+            {
+                speaker: "Jogo",
+                charKey: "jogo",
+                avatar: "🌋",
+                title: "Disaster Curse / 漏瑚",
                 side: "right",
-                text: "*Flashback of memories that never occurred*... Brother! MY BEST FRIEND! We walked home from middle school together! Let me teach you the Black Flash!"
+                text: "Insolent brats chatting like fools! The earth boils beneath our feet! Die in flames!"
             }
         ],
         turns: [
             {
                 turnNumber: 1,
-                name: "Turn 1: Best Friends Sparring",
+                name: "Turn 1: Brotherly Evaluation",
                 battlefield: "jjk_high",
                 playerChar: "yuji",
                 playerName: "Yuji Itadori",
                 enemyChar: "todo",
                 enemyName: "Aoi Todo",
                 difficulty: "medium",
-                objective: "Spar with Aoi Todo to align your cursed energy with the microsecond timing of impact!",
+                objective: "Spar with Aoi Todo in the sacred courtyard to master the rhythm of cursed energy!",
                 midBattleQuotes: [
-                    { hpThreshold: 60, speaker: "Todo", text: "Your cursed energy lags behind your physical blow! You are relying on Divergent Fist! Awaken, brother!", color: "#9d4edd" },
-                    { hpThreshold: 30, speaker: "Yuji", text: "Focus... apply cursed energy at 0.000001 seconds of physical collision!", color: "#ffd700" }
+                    { hpThreshold: 65, speaker: "Todo", charKey: "todo", text: "Listen well, brother! Divergent Fist is a failure born from your cursed energy lagging behind. Unleash impact and energy simultaneously!", color: "#fbbf24" },
+                    { hpThreshold: 30, speaker: "Yuji", charKey: "yuji", text: "I can feel it... the delay between my fist and my cursed energy is vanishing!", color: "#38bdf8" }
                 ]
             },
             {
                 turnNumber: 2,
-                name: "Turn 2: Boogie Woogie Clapping Duo",
-                battlefield: "jjk_high",
-                playerChar: "todo",
-                playerName: "Aoi Todo",
+                name: "Turn 2: The Sparks of Black Flash",
+                battlefield: "dagon_beach",
+                playerChar: "yuji",
+                playerName: "Yuji Itadori",
                 enemyChar: "jogo",
                 enemyName: "Jogo",
                 difficulty: "hard",
-                objective: "Disaster Curse Jogo breaches the barrier! Coordinate Boogie Woogie swaps to overwhelm the volcano spirit!",
+                objective: "Team up with Todo's Boogie Woogie and strike the volcanic curse with consecutive Black Flashes!",
                 midBattleQuotes: [
-                    { hpThreshold: 65, speaker: "Jogo", text: "Impudent fledglings! You dare mock the flames of humanity's true successors?!", color: "#ff2a5f" },
-                    { hpThreshold: 25, speaker: "Todo", text: "*CLAP*—Boogie Woogie! Our victory is a 530,000 IQ certainty, brother!", color: "#00e5ff" }
+                    { hpThreshold: 75, speaker: "Jogo", charKey: "jogo", text: "Insects! Coffin of the Iron Mountain! Molten rock shall incinerate your bones!", color: "#ef4444" },
+                    { hpThreshold: 45, speaker: "Todo", charKey: "todo", text: "Clap! Boogie Woogie! The sound of the Gion Shoja bells echoes the impermanence of all things... but we are the exception!", color: "#fbbf24" },
+                    { hpThreshold: 20, speaker: "Yuji", charKey: "yuji", text: "Space distorts... physical impact and cursed energy collide within 0.000001 seconds... BLACK FLASH! (黒閃!)", color: "#38bdf8" }
                 ]
             }
         ],
         epilogue: [
             {
                 speaker: "Aoi Todo",
-                avatar: "👏",
+                charKey: "todo",
+                avatar: "💪",
+                title: "Kyoto Grade 1 / 東堂葵",
                 side: "left",
-                text: "Four consecutive Black Flashes! Magnificent, brother! You have tasted the blessing of the sparks!"
+                text: "Four consecutive Black Flashes! Brother, you have crossed the threshold into the realm of the chosen!"
             },
             {
-                speaker: "Yuji Itadori",
-                avatar: "🥊",
-                side: "left",
-                text: "Thanks to you, Todo! Together, we can take on any curse in the world!"
+                speaker: "Satoru Gojo",
+                charKey: "gojo",
+                avatar: "👁️",
+                title: "The Strongest / 五条悟",
+                side: "right",
+                text: "Hollow Technique: Purple! Look at that massive forest crater. Whoops, did I overdo it again?"
             }
         ]
     },
     {
         id: 4,
-        arc: "Hidden Inventory Arc",
-        title: "Chapter 4: The Sorcerer Killer — Premonition",
-        subtitle: "Tomb of the Star Corridor, 2006",
+        arc: "Hidden Inventory / Premature Death Arc (懐玉・玉折編)",
+        title: "Chapter 4: The Honored One",
+        subtitle: "Tomb of the Star Sanctum to Jujutsu High",
         battlefield: "star_tomb",
         bossKey: "toji",
         playerKey: "gojo",
-        reward: 1500,
-        summary: "Twelve years prior, Satoru Gojo and Suguru Geto are assigned to protect the Star Plasma Vessel Riko Amanai. The non-sorcerer assassin Toji Fushiguro breaches the barrier with zero cursed energy and the Inverted Spear of Heaven, pushing Gojo to the boundary between life and death.",
+        reward: 3500,
+        summary: "In 2006, Second-Year Satoru Gojo and Suguru Geto are tasked with protecting the Star Plasma Vessel Riko Amanai. The Sorcerer Killer Toji Fushiguro ambushes them, piercing Gojo's brain and triggering the most legendary spiritual awakening in sorcery history.",
         prologue: [
             {
-                speaker: "Toji Fushiguro",
-                avatar: "🗡️",
-                side: "right",
-                text: "You sorcerers blessed with cursed energy are all the same: cocky, proud, and completely reliant on your precious techniques."
-            },
-            {
-                speaker: "Suguru Geto",
-                avatar: "🐉",
+                speaker: "Teen Satoru Gojo",
+                charKey: "gojo",
+                avatar: "👁️",
+                title: "Second Year / 五条悟",
                 side: "left",
-                text: "A monkey with zero cursed energy... how dare you harm Satoru and Riko inside the sacred corridor!"
+                text: "Suguru and I are the strongest. Don't worry, Riko-chan. No bounty hunter in Japan can pierce my Infinity."
             },
             {
                 speaker: "Toji Fushiguro",
+                charKey: "toji",
                 avatar: "🗡️",
+                title: "Sorcerer Killer / 伏黒甚爾",
                 side: "right",
-                text: "A monkey? Let me show you what a monkey with Heavenly Restriction can do to your special grade sorcery."
+                text: "Gojo Satoru... the first person in four hundred years born with both Six Eyes and Limitless. You've kept your technique active for three straight days without sleep. Your senses are completely dull."
+            },
+            {
+                speaker: "Teen Satoru Gojo",
+                charKey: "gojo",
+                avatar: "👁️",
+                title: "Second Year / 五条悟",
+                side: "left",
+                text: "A monkey without cursed energy? You think that rusty dagger can touch me?"
+            },
+            {
+                speaker: "Toji Fushiguro",
+                charKey: "toji",
+                avatar: "🗡️",
+                title: "Sorcerer Killer / 伏黒甚爾",
+                side: "right",
+                text: "The Inverted Spear of Heaven forcefully nullifies any cursed technique. Let's see your Infinity bend to this!"
             }
         ],
         turns: [
             {
                 turnNumber: 1,
-                name: "Turn 1: The Assassin in the Corridor",
+                name: "Turn 1: Ambush at the Sanctum",
                 battlefield: "star_tomb",
-                playerChar: "geto",
-                playerName: "Suguru Geto",
+                playerChar: "gojo",
+                playerName: "Teen Satoru Gojo",
                 enemyChar: "toji",
                 enemyName: "Toji Fushiguro",
                 difficulty: "hard",
-                objective: "Defend the Star Corridor against Toji's Inverted Spear of Heaven!",
+                objective: "Defend against Toji's blinding zero-cursed-energy speed and the Inverted Spear of Heaven!",
                 midBattleQuotes: [
-                    { hpThreshold: 55, speaker: "Toji", text: "Too slow. Your cursed spirit manipulation is just target practice.", color: "#00e5ff" },
-                    { hpThreshold: 20, speaker: "Geto", text: "His physical speed and stealth... I cannot track him with cursed sensory perception!", color: "#ff2a5f" }
+                    { hpThreshold: 70, speaker: "Toji", charKey: "toji", text: "Zero cursed energy makes me completely invisible to your Six Eyes! You're relying entirely on your eyes, boy!", color: "#94a3b8" },
+                    { hpThreshold: 35, speaker: "Gojo", charKey: "gojo", text: "Limitless Lapse: Blue! Max output! I'll crush you into the ground!", color: "#38bdf8" }
                 ]
             },
             {
                 turnNumber: 2,
-                name: "Turn 2: The Honored One Awakens",
-                battlefield: "star_tomb",
+                name: "Turn 2: Throughout Heaven and Earth",
+                battlefield: "jjk_high",
                 playerChar: "gojo",
-                playerName: "Satoru Gojo (Awakened)",
+                playerName: "Awakened Satoru Gojo",
                 enemyChar: "toji",
                 enemyName: "Toji Fushiguro",
-                difficulty: "deity",
-                objective: "Tap into the core of Reverse Cursed Technique! Unleash Hollow Technique: Purple and defeat the Sorcerer Killer!",
+                difficulty: "master",
+                objective: "Awaken the Reverse Cursed Technique and unleash the secret imaginary mass Hollow Purple!",
                 midBattleQuotes: [
-                    { hpThreshold: 70, speaker: "Gojo", text: "Throughout Heaven and Earth... I alone am the honored one.", color: "#00e5ff" },
-                    { hpThreshold: 35, speaker: "Toji", text: "Something is wrong... he isn't even touching the ground! He's running pure positive energy!", color: "#ff0055" },
-                    { hpThreshold: 10, speaker: "Gojo", text: "Take the amplified and the reversal... and combine these two expressions of infinity. HOLLOW PURPLE!", color: "#9d4edd" }
+                    { hpThreshold: 85, speaker: "Toji", charKey: "toji", text: "Gojo Satoru...?! You're alive?! My blade pierced your carotid artery and drove into your skull!", color: "#ef4444" },
+                    { hpThreshold: 60, speaker: "Gojo", charKey: "gojo", text: "Yo. It's been a while. When you stabbed my brain, I poured 100% of my consciousness into the Reverse Cursed Technique! Negative times negative creates positive energy! I get it now... I finally understand everything!", color: "#c084fc" },
+                    { hpThreshold: 35, speaker: "Gojo", charKey: "gojo", text: "Throughout heaven and earth, I alone am the honored one. (天上天下唯我独尊)", color: "#fbbf24" },
+                    { hpThreshold: 15, speaker: "Gojo", charKey: "gojo", text: "Take the amplified Blue and the reversal Red... Push out an imaginary mass... Hollow Technique: Purple! (虚式「茈」)", color: "#a855f7" }
                 ]
             }
         ],
         epilogue: [
             {
                 speaker: "Toji Fushiguro",
+                charKey: "toji",
                 avatar: "🗡️",
+                title: "Sorcerer Killer / 伏黒甚爾",
                 side: "right",
-                text: "In two or three years... my kid will be sold to the Zen'in clan. His name is Megumi. Do whatever you want with him..."
+                text: "Something felt off... In the end, I wanted to deny everything the Zen'in clan stood for. In two or three years... my kid will be sold to the Zen'in clan. Do whatever you want with him."
             },
             {
-                speaker: "Satoru Gojo",
-                avatar: "👁️",
+                speaker: "Suguru Geto",
+                charKey: "geto",
+                avatar: "☸️",
+                title: "Special Grade / 夏油傑",
                 side: "left",
-                text: "Suguru... are you the strongest because you're Suguru Geto? Or are you Suguru Geto because you're the strongest?"
+                text: "Satoru... Are you the strongest because you're Satoru Gojo? Or are you Satoru Gojo because you're the strongest?"
             }
         ]
     },
     {
         id: 5,
-        arc: "Shibuya Incident: Part 1",
-        title: "Chapter 5: The Shibuya Descent — Blood & Fire",
-        subtitle: "October 31, 2018 — B5F Fukutoshin Platform",
+        arc: "Shibuya Incident — Part 1: Seal the Strongest (渋谷事変 - 降霊・封印)",
+        title: "Chapter 5: The 0.2 Second Domain",
+        subtitle: "Tokyo Metro B5F Platform to Shibuya Station",
         battlefield: "tokyo_subway",
-        bossKey: "choso",
-        playerKey: "yuji",
-        reward: 2000,
-        summary: "A colossal non-sorcerer barrier traps hundreds of thousands in Shibuya. Satoru Gojo descends into the crowded subway platform, while Yuji Itadori clashes with Death Painting Choso in the flooded restroom underpass.",
+        bossKey: "jogo",
+        playerKey: "gojo",
+        reward: 4500,
+        summary: "October 31st, 19:00. The curtain drops over Shibuya, trapping hundreds of thousands of civilians. Satoru Gojo descends alone into the packed B5F subway platform, facing an ambush designed specifically to neutralize him through the cursed artifact Prison Realm.",
         prologue: [
             {
-                speaker: "Choso",
-                avatar: "🩸",
+                speaker: "Jogo",
+                charKey: "jogo",
+                avatar: "🌋",
+                title: "Disaster Curse / 漏瑚",
                 side: "right",
-                text: "You killed Eso and Kechizu. Even if they were curses, they were my beloved brothers! An elder brother must avenge his younger kin!"
+                text: "October 31st, 19:00, Shibuya. The curtain has fallen! We packed thousands of non-sorcerers onto the B5F platform! You cannot expand your domain or use Hollow Purple without turning all of Tokyo into ground meat, Gojo Satoru!"
             },
             {
-                speaker: "Yuji Itadori",
-                avatar: "🥊",
+                speaker: "Satoru Gojo",
+                charKey: "gojo",
+                avatar: "👁️",
+                title: "The Strongest / 五条悟",
                 side: "left",
-                text: "I had no choice back then! But right now, people are dying all over Shibuya! I can't let you stop me here!"
-            },
-            {
-                speaker: "Choso",
-                avatar: "🩸",
-                side: "right",
-                text: "Then prepare to bleed. Blood Manipulation: Flowing Red Scale!"
+                text: "You really think surrounding me with civilians is enough to hold me back? You're underestimating the Six Eyes. Next."
             }
         ],
         turns: [
             {
                 turnNumber: 1,
-                name: "Turn 1: Piercing Blood Duel",
+                name: "Turn 1: Bloodbath on B5F",
                 battlefield: "tokyo_subway",
-                playerChar: "yuji",
-                playerName: "Yuji Itadori",
-                enemyChar: "choso",
-                enemyName: "Choso",
+                playerChar: "gojo",
+                playerName: "Satoru Gojo",
+                enemyChar: "jogo",
+                enemyName: "Jogo & Disaster Curses",
                 difficulty: "hard",
-                objective: "Evade Choso's supersonic Piercing Blood and close into melee range!",
+                objective: "Exorcise the disaster curse vanguard using pure cursed energy reinforcement without hurting innocent civilians!",
                 midBattleQuotes: [
-                    { hpThreshold: 60, speaker: "Choso", text: "Piercing Blood compresses blood to its absolute limit! You cannot dodge sound itself!", color: "#ff0055" },
-                    { hpThreshold: 20, speaker: "Choso", text: "*Synaptic flashback*... wait... memories flowing into my brain?! You... you are my brother?!", color: "#ffd700" }
+                    { hpThreshold: 70, speaker: "Jogo", charKey: "jogo", text: "Domain Amplification! If we coat our bodies in empty domains, we can neutralize his Limitless barrier!", color: "#ef4444" },
+                    { hpThreshold: 35, speaker: "Gojo", charKey: "gojo", text: "You think that pathetic mist can stop me? You're out of your league, volcanic head.", color: "#38bdf8" }
                 ]
             },
             {
                 turnNumber: 2,
-                name: "Turn 2: Dagon's Horizon Beach",
-                battlefield: "dagon_beach",
-                playerChar: "maki",
-                playerName: "Maki Zen'in",
-                enemyChar: "jogo",
-                enemyName: "Jogo",
-                difficulty: "hard",
-                objective: "Survive the boiling volcano inferno of Jogo inside the tropical barrier!",
+                name: "Turn 2: The Prison Realm Clasp",
+                battlefield: "tokyo_subway",
+                playerChar: "gojo",
+                playerName: "Satoru Gojo",
+                enemyChar: "geto",
+                enemyName: "Kenjaku (Pseudo-Geto)",
+                difficulty: "master",
+                objective: "Deploy the legendary 0.2-second Unlimited Void to paralyze transfigured humans before the Prison Realm opens!",
                 midBattleQuotes: [
-                    { hpThreshold: 60, speaker: "Jogo", text: "A non-sorcerer with zero cursed energy dares face a disaster curse?!", color: "#ff2a5f" },
-                    { hpThreshold: 25, speaker: "Maki", text: "Don't you dare mock me! I will destroy every curse and every Zen'in fool!", color: "#00ff88" }
+                    { hpThreshold: 80, speaker: "Gojo", charKey: "gojo", text: "Domain Expansion: 0.2 Second Unlimited Void! (0.2秒の無量空処) In 0.2 seconds, 299 seconds of infinite information flooded every civilian's brain! That gives me 299 seconds to slaughter every curse!", color: "#38bdf8" },
+                    { hpThreshold: 45, speaker: "Kenjaku", charKey: "geto", text: "Good evening, Satoru. (よお、悟)", color: "#a855f7" },
+                    { hpThreshold: 20, speaker: "Gojo", charKey: "gojo", text: "Suguru...?! No... My Six Eyes tell me your body, your cursed energy is Suguru Geto... but my soul knows otherwise! WHO THE HELL ARE YOU?!", color: "#ef4444" }
                 ]
             }
         ],
         epilogue: [
             {
-                speaker: "Choso",
-                avatar: "🩸",
+                speaker: "Kenjaku",
+                charKey: "geto",
+                avatar: "🧠",
+                title: "Ancient Curse User / 羂索",
                 side: "right",
-                text: "Who are you, Yuji Itadori...? My blood resonates with yours... Kenjaku made us both!"
+                text: "My name is Kenjaku. The Prison Realm is sealed. Sleep well, Satoru Gojo. The new era will be born without the Strongest."
             },
             {
-                speaker: "Kento Nanami",
-                avatar: "📐",
+                speaker: "Satoru Gojo",
+                charKey: "gojo",
+                avatar: "👁️",
+                title: "The Strongest (Sealed) / 五条悟",
                 side: "left",
-                text: "Attention all units... Satoru Gojo has been sealed inside the Prison Realm. I repeat: Satoru Gojo is sealed. Tokyo has fallen."
+                text: "I have faith in my students. You will regret this, Kenjaku."
             }
         ]
     },
     {
         id: 6,
-        arc: "Shibuya Incident: Part 2",
-        title: "Chapter 6: The Climax of Despair — Malevolent Shibuya",
-        subtitle: "Shibuya Ground Zero — The Fall of Humanity",
+        arc: "Shibuya Incident — Part 2: King of Curses (渋谷事変 - 業火・変身)",
+        title: "Chapter 6: Stand Proud",
+        subtitle: "Shibuya Ground Zero Crater to Dogenzaka",
         battlefield: "shibuya_crater",
-        bossKey: "mahito",
-        playerKey: "yuji",
-        reward: 2500,
-        summary: "With Gojo sealed in the Prison Realm, 15-finger Sukuna awakens and levels Shibuya in a cataclysmic clash against Jogo. Amid the burning crater, Yuji Itadori and Aoi Todo stand alone against Mahito's final awakened form: The Instant Spirit of Distorted Killing.",
+        bossKey: "jogo",
+        playerKey: "sukuna",
+        reward: 5500,
+        summary: "Force-fed fifteen fingers, Ryomen Sukuna awakens in Shibuya. After effortlessly obliterating Jogo with his own flame technique, the King of Curses levels Shibuya with Malevolent Shrine, while Yuji faces Mahito in their climactic philosophical showdown.",
         prologue: [
             {
-                speaker: "Kenjaku (Geto)",
-                avatar: "🧠",
+                speaker: "Jogo",
+                charKey: "jogo",
+                avatar: "🌋",
+                title: "Disaster Curse / 漏瑚",
                 side: "right",
-                text: "Good evening, Satoru. Did you really think you could save everyone in the subway? In this world, ideals are a luxury."
-            },
-            {
-                speaker: "Satoru Gojo",
-                avatar: "👁️",
-                side: "left",
-                text: "My Six Eyes tell me you're Suguru Geto... but my soul knows you're a revolting imposter inhabiting my friend's corpse!"
+                text: "Sukuna-sama! You have ingested fifteen fingers! Please lead the curses to our rightful kingdom!"
             },
             {
                 speaker: "Ryomen Sukuna",
+                charKey: "sukuna",
                 avatar: "👁️",
-                side: "right",
-                text: "Out of the way, worm. If you can land a single hit on me, Jogo, I'll agree to work under your curse collective."
+                title: "King of Curses / 両面宿儺",
+                side: "left",
+                text: "Stand up, Jogo. If you can land a single blow on me, I will do as you say and slaughter every human in Shibuya."
             }
         ],
         turns: [
             {
                 turnNumber: 1,
-                name: "Turn 1: The 0.2-Second Domain",
-                battlefield: "shibuya_crater",
-                playerChar: "gojo",
-                playerName: "Satoru Gojo",
-                enemyChar: "geto",
-                enemyName: "Kenjaku (Geto)",
-                difficulty: "hard",
-                objective: "Deploy a 0.2-second Unlimited Void to paralyze transfigured spirits before the Prison Realm closes!",
-                midBattleQuotes: [
-                    { hpThreshold: 60, speaker: "Gojo", text: "0.2-second Unlimited Void! A gamble so normal humans don't suffer permanent brain death!", color: "#00e5ff" },
-                    { hpThreshold: 20, speaker: "Kenjaku", text: "Gate open! Prison Realm, bind the strongest sorcerer in history!", color: "#9d4edd" }
-                ]
-            },
-            {
-                turnNumber: 2,
-                name: "Turn 2: Flame Arrow vs Meteor",
+                name: "Turn 1: The Fire Arrow (Fūga)",
                 battlefield: "shibuya_crater",
                 playerChar: "sukuna",
                 playerName: "Ryomen Sukuna",
                 enemyChar: "jogo",
                 enemyName: "Jogo",
                 difficulty: "hard",
-                objective: "Annihilate Jogo with Malevolent Shrine slashes and the Divine Flame Arrow!",
+                objective: "Toy with Jogo's maximum output Maximum: Meteor before incinerating him with the divine flame arrow!",
                 midBattleQuotes: [
-                    { hpThreshold: 60, speaker: "Jogo", text: "Maximum: Meteor! I will incinerate this entire ward to cinders!", color: "#ff2a5f" },
-                    { hpThreshold: 20, speaker: "Sukuna", text: "Open (Fuga). Stand proud, Jogo. You were strong.", color: "#ffd700" }
+                    { hpThreshold: 75, speaker: "Jogo", charKey: "jogo", text: "Maximum: Meteor! (極ノ番「隕石」) If this strikes Shibuya, nothing will remain!", color: "#ef4444" },
+                    { hpThreshold: 40, speaker: "Sukuna", charKey: "sukuna", text: "The moonlight is radiant tonight. Let me show you what real flames look like. Open. (■ 開 - Fūga)", color: "#fbbf24" },
+                    { hpThreshold: 15, speaker: "Sukuna", charKey: "sukuna", text: "Stand proud, Jogo. You are strong. (誇れ、オマエは強い)", color: "#ffd700" }
                 ]
             },
             {
-                turnNumber: 3,
-                name: "Turn 3: The Wolf and the Rabbit",
+                turnNumber: 2,
+                name: "Turn 2: The 'I'm You' Clash",
                 battlefield: "shibuya_crater",
                 playerChar: "yuji",
                 playerName: "Yuji Itadori",
                 enemyChar: "mahito",
-                enemyName: "Mahito (Final Form)",
-                difficulty: "deity",
-                objective: "Mahito awakens Instant Spirit of Distorted Killing! Deliver the final Black Flash of Shibuya!",
+                enemyName: "Mahito (Instant Spirit Body)",
+                difficulty: "master",
+                objective: "Exorcise Mahito's ultimate evolved form Instant Spirit Body of Distorted Killing!",
                 midBattleQuotes: [
-                    { hpThreshold: 65, speaker: "Mahito", text: "I have discovered the true shape of my soul! I am death itself!", color: "#ff0055" },
-                    { hpThreshold: 25, speaker: "Yuji", text: "I am you, Mahito. Kill me, and another like me will take my place. I will hunt you down across a thousand reincarnations!", color: "#ffd700" }
+                    { hpThreshold: 80, speaker: "Mahito", charKey: "mahito", text: "I have arrived at the truth! The true essence of the soul! Instant Spirit Body of Distorted Killing! (遍殺即霊体)", color: "#a855f7" },
+                    { hpThreshold: 45, speaker: "Yuji", charKey: "yuji", text: "I'm you, Mahito. I didn't want to admit it. But now I understand. I don't need a grand reason to kill you.", color: "#38bdf8" },
+                    { hpThreshold: 15, speaker: "Yuji", charKey: "yuji", text: "If you're reborn in a hundred years, I'll kill you. If you change your name and form, I'll kill you again. That is my role in this story.", color: "#38bdf8" }
                 ]
             }
         ],
         epilogue: [
             {
-                speaker: "Mahito",
-                avatar: "🪡",
+                speaker: "Jogo",
+                charKey: "jogo",
+                avatar: "🌋",
+                title: "Disaster Curse / 漏瑚",
                 side: "right",
-                text: "No... NO! Get away from me! SAVE ME, GETO!"
+                text: "What is this...? Curses don't cry tears..."
             },
             {
-                speaker: "Kenjaku (Geto)",
-                avatar: "🧠",
-                side: "right",
-                text: "Shall I save you, Mahito? *Absorbs Mahito via Cursed Spirit Manipulation*... What a useful technique Uzumaki is."
-            },
-            {
-                speaker: "Yuji Itadori",
-                avatar: "🥊",
+                speaker: "Ryomen Sukuna",
+                charKey: "sukuna",
+                avatar: "👁️",
+                title: "King of Curses / 両面宿儺",
                 side: "left",
-                text: "Nanami... Kugisaki... I will keep running. Even if my body breaks, I will destroy every curse Kenjaku leaves behind."
+                text: "Don't ask me. I don't know either."
+            },
+            {
+                speaker: "Kenjaku",
+                charKey: "geto",
+                avatar: "🧠",
+                title: "Ancient Curse User / 羂索",
+                side: "right",
+                text: "Thank you for cultivating such a marvelous cursed spirit for me, Itadori-kun. Uzumaki extraction complete."
             }
         ]
     },
     {
         id: 7,
-        arc: "Culling Game Arc",
-        title: "Chapter 7: The Culling Game — Colony Deathmatches",
-        subtitle: "Tokyo No. 1 Barrier & Sendai Colosseum",
+        arc: "Culling Game Arc (死滅回游編)",
+        title: "Chapter 7: Idle Death Gamble & Sendai Colony",
+        subtitle: "Tokyo No. 1 Colony to Sendai Barrier Colosseum",
         battlefield: "culling_barrier",
-        bossKey: "choso",
+        bossKey: "mahito",
         playerKey: "hakari",
-        reward: 3500,
-        summary: "Kenjaku initiates the Culling Game across ten domestic barriers to force the evolution of human cursed energy. Third-year Kinji Hakari unleashes his pachinko jackpot domain, while Special Grade Yuta Okkotsu sweeps the Sendai Colony with Rika.",
+        reward: 7000,
+        summary: "Kenjaku activates the Culling Game across ten barrier colonies. Third-year Kinji Hakari rides infinite Jackpot immortality in Tokyo No. 1, while Special Grade Yuta Okkotsu tears through a four-way deadlocked colony in Sendai to free Gojo.",
         prologue: [
             {
-                speaker: "Kinji Hakari",
-                avatar: "🎰",
-                side: "left",
-                text: "The rules of the Culling Game are simple: kill or be killed to rack up 100 points. But me? I'm chasing the fever! Let's spin the reels!"
+                speaker: "Kogane",
+                charKey: "sukuna",
+                avatar: "🐝",
+                title: "Culling Game Arbiter / コガネ",
+                side: "right",
+                text: "Attention Players Kinji Hakari and Yuta Okkotsu! You have entered the Culling Game colonies! The survival deathmatch has begun!"
             },
             {
-                speaker: "Yuta Okkotsu",
-                avatar: "🗡️",
+                speaker: "Kinji Hakari",
+                charKey: "hakari",
+                avatar: "🎰",
+                title: "Jackpot Gambler / 秤金次",
                 side: "left",
-                text: "Gojo-sensei trusted us to protect the world while he's sealed. I won't let anyone else bear this terrible weight. Let's do this, Rika."
+                text: "You feel that pulse?! In life, it's all about FEVER! If you don't gamble your soul, you're already dead! Domain Expansion: Idle Death Gamble! (坐殺博徒)"
             }
         ],
         turns: [
             {
                 turnNumber: 1,
-                name: "Turn 1: The Infinite 777 Jackpot",
+                name: "Turn 1: 4 Minutes & 11 Seconds of Immortality",
                 battlefield: "culling_barrier",
                 playerChar: "hakari",
                 playerName: "Kinji Hakari",
-                enemyChar: "choso",
-                enemyName: "Colony Sorcerer Choso",
+                enemyChar: "toji",
+                enemyName: "Colony Sorcerer Assassin",
                 difficulty: "hard",
-                objective: "Deploy Idle Death Gamble and maintain 777 Jackpot infinite cursed energy!",
+                objective: "Hit the 777 Jackpot and unleash infinite cursed energy overflow during the immortal music phase!",
                 midBattleQuotes: [
-                    { hpThreshold: 60, speaker: "Hakari", text: "Domain Expansion: Idle Death Gamble! Reach the probability change rush!", color: "#00e5ff" },
-                    { hpThreshold: 20, speaker: "Hakari", text: "JACKPOT 777! Four minutes and eleven seconds of pure immortality! Let's dance!", color: "#ffd700" }
+                    { hpThreshold: 75, speaker: "Hakari", charKey: "hakari", text: "JACKPOT 777! The romance theme song is blasting! Infinite cursed energy is flooding every cell of my body!", color: "#fbbf24" },
+                    { hpThreshold: 35, speaker: "Hakari", charKey: "hakari", text: "For 4 minutes and 11 seconds, Kinji Hakari is completely immortal! Your attacks can't scratch me!", color: "#ffd700" }
                 ]
             },
             {
                 turnNumber: 2,
-                name: "Turn 2: Sendai Colony Dominance",
+                name: "Turn 2: Authentic Mutual Love in Sendai",
                 battlefield: "sendai_colosseum",
                 playerChar: "yuta",
                 playerName: "Yuta Okkotsu",
                 enemyChar: "geto",
-                enemyName: "Kenjaku",
-                difficulty: "deity",
-                objective: "Unleash Authentic Mutual Love and Rika's manifestation against ancient sorcerers!",
+                enemyName: "Sendai Colony Champions",
+                difficulty: "master",
+                objective: "Unleash Queen of Curses Rika and Authenticate Mutual Love with an arsenal of copied cursed techniques!",
                 midBattleQuotes: [
-                    { hpThreshold: 60, speaker: "Yuta", text: "Rika... don't hurt them too badly. We need their 100 points to establish new rules!", color: "#ff0055" },
-                    { hpThreshold: 25, speaker: "Kenjaku", text: "Okkotsu Yuta... his boundless cursed energy makes even Special Grades look like infants!", color: "#9d4edd" }
+                    { hpThreshold: 80, speaker: "Yuta", charKey: "yuta", text: "Sensei had to kill his best friend with his own hands... I won't let him bear that loneliness ever again. I will get all 400 points myself.", color: "#38bdf8" },
+                    { hpThreshold: 45, speaker: "Yuta", charKey: "yuta", text: "Come, Rika! Don't hold back! Domain Expansion: Authentic Mutual Love! (真贋相愛)", color: "#c084fc" },
+                    { hpThreshold: 20, speaker: "Yuta", charKey: "yuta", text: "Every katana planted in this soil carries a copied cursed technique! Thin-Ice Missile Strike!", color: "#00e5ff" }
                 ]
             }
         ],
         epilogue: [
             {
                 speaker: "Yuta Okkotsu",
-                avatar: "🗡️",
+                charKey: "yuta",
+                avatar: "💍",
+                title: "Special Grade / 乙骨憂太",
                 side: "left",
-                text: "We have acquired the required points. Angel has agreed to use Jacob's Ladder. Satoru Gojo is about to be unsealed!"
+                text: "We secured the points and rules. Hana Kurusu and Angel have joined us. The back of the Prison Realm is ready to be opened."
             },
             {
                 speaker: "Kinji Hakari",
+                charKey: "hakari",
                 avatar: "🎰",
+                title: "Jackpot Gambler / 秤金次",
                 side: "left",
-                text: "The stage is set for the greatest show in jujutsu history. Let's go blow Sukuna to kingdom come!"
+                text: "The fever is boiling over! When Gojo-sensei steps out of that box, Sukuna and Kenjaku won't know what hit 'em!"
             }
         ]
     },
     {
         id: 8,
-        arc: "Shinjuku Showdown Arc",
-        title: "Chapter 8: Shinjuku Showdown — Battle of the Strongest",
-        subtitle: "December 24, 2018 — The Climax of Jujutsu Sorcery",
+        arc: "Shinjuku Showdown — Battle of the Strongest (人魔境新宿決戦)",
+        title: "Chapter 8: The Battle of the Strongest",
+        subtitle: "Shinjuku Zenith Skyscraper to Ground Zero",
         battlefield: "shinjuku_zenith",
         bossKey: "sukuna",
         playerKey: "gojo",
-        reward: 5000,
-        summary: "Satoru Gojo is unsealed from the Prison Realm and meets Ryomen Sukuna atop the Shinjuku Zenith skyscrapers on Christmas Eve. The strongest sorcerer of today clashes with the strongest sorcerer in history, followed by Yuji and Yuta's final stand to save humanity.",
+        reward: 10000,
+        summary: "December 24th, Shinjuku. The Prison Realm is shattered and Satoru Gojo returns. Facing twenty-finger Ryomen Sukuna armed with the Ten Shadows technique, the two godlike titans clash in the greatest battle in the history of Jujutsu sorcery.",
         prologue: [
             {
-                speaker: "Satoru Gojo",
-                avatar: "👁️",
+                speaker: "Yuji Itadori",
+                charKey: "yuji",
+                avatar: "🥊",
+                title: "Student of Gojo / 虎杖悠仁",
                 side: "left",
-                text: "Sukuna... you're looking a little worn down. Ready to face the real deal?"
+                text: "Gojo-sensei... Sukuna has all twenty fingers and Megumi's Ten Shadows technique. Can you win?"
+            },
+            {
+                speaker: "Satoru Gojo",
+                charKey: "gojo",
+                avatar: "👁️",
+                title: "The Strongest / 五条悟",
+                side: "left",
+                text: "Nah, I'd win. (勝つさ)"
+            },
+            {
+                speaker: "Satoru Gojo",
+                charKey: "gojo",
+                avatar: "👁️",
+                title: "The Strongest / 五条悟",
+                side: "left",
+                text: "Let's get this party started, Sukuna! 200% Hollow Technique: PURPLE!"
             },
             {
                 speaker: "Ryomen Sukuna",
+                charKey: "sukuna",
                 avatar: "👁️",
+                title: "King of Curses / 両面宿儺",
                 side: "right",
-                text: "You were just a fish on the chopping board, Gojo Satoru. A slightly lively one, that is all."
+                text: "You're merely a fish on my cutting board that wriggles slightly more than the others. Domain Expansion: Malevolent Shrine!"
             },
             {
                 speaker: "Satoru Gojo",
+                charKey: "gojo",
                 avatar: "👁️",
+                title: "The Strongest / 五条悟",
                 side: "left",
-                text: "Students are watching. Nah, I'd win."
+                text: "Domain Expansion: Unlimited Void!"
             }
         ],
         turns: [
             {
                 turnNumber: 1,
-                name: "Turn 1: Clash of the Strongest",
+                name: "Turn 1: Unlimited Void vs Malevolent Shrine",
                 battlefield: "shinjuku_zenith",
                 playerChar: "gojo",
                 playerName: "Satoru Gojo",
                 enemyChar: "sukuna",
-                enemyName: "Ryomen Sukuna (Heian Form)",
-                difficulty: "deity",
-                objective: "The Battle of the Strongest! Match Malevolent Shrine with Unlimited Void and withstand Sukuna's slashes!",
+                enemyName: "Ryomen Sukuna",
+                difficulty: "master",
+                objective: "Survive the domain clashes, compress your barrier to a basketball size, and land Black Flash on Sukuna!",
                 midBattleQuotes: [
-                    { hpThreshold: 75, speaker: "Gojo", text: "Unlimited Void! Within this infinity, you cannot perceive or breathe!", color: "#00e5ff" },
-                    { hpThreshold: 45, speaker: "Sukuna", text: "Domain Expansion: Malevolent Shrine! An open barrier of divine slaughter!", color: "#ff0055" },
-                    { hpThreshold: 20, speaker: "Gojo", text: "Maximum Output: Hollow Purple! Tear through space and dismantle his domain!", color: "#9d4edd" }
+                    { hpThreshold: 75, speaker: "Sukuna", charKey: "sukuna", text: "My domain has no barrier! The sure-hit extends up to 200 meters, cleaving the exterior of your sphere to dust!", color: "#ef4444" },
+                    { hpThreshold: 50, speaker: "Gojo", charKey: "gojo", text: "Simple Domain! Falling Blossom Emotion! Flip the barrier conditions! Inside is soft, outside is unbreakable!", color: "#38bdf8" },
+                    { hpThreshold: 25, speaker: "Gojo", charKey: "gojo", text: "Black Flash! The sparks of black do not choose who to bless... but today they answer the Strongest!", color: "#00e5ff" }
                 ]
             },
             {
                 turnNumber: 2,
-                name: "Turn 2: The Next Generation Gauntlet",
-                battlefield: "celestial_void",
-                playerChar: "yuji",
-                playerName: "Yuji Itadori",
+                name: "Turn 2: The World-Cutting Slash & True Heian Form",
+                battlefield: "shinjuku_zenith",
+                playerChar: "gojo",
+                playerName: "Awakened Satoru Gojo",
                 enemyChar: "sukuna",
-                enemyName: "Ryomen Sukuna (True King)",
-                difficulty: "deity",
-                objective: "The Final Gauntlet! Yuji Itadori strikes Sukuna's soul boundary with Black Flash to sever his connection!",
+                enemyName: "Ryomen Sukuna (Heian Form)",
+                difficulty: "master",
+                objective: "Face the King of Curses as he deploys the space-cutting slash and transforms into his 4-armed Heian Era True Form!",
                 midBattleQuotes: [
-                    { hpThreshold: 60, speaker: "Sukuna", text: "You persistent brat! Why won't your soul shatter under my World Cutting Slash?!", color: "#ff0055" },
-                    { hpThreshold: 30, speaker: "Yuji", text: "Every blow I land tears the barrier between your soul and Megumi! Divergent Soul Dismantle!", color: "#ffd700" },
-                    { hpThreshold: 10, speaker: "Yuji", text: "BLACK FLASH! This is the collective soul of everyone you tried to extinguish!", color: "#ff2a5f" }
+                    { hpThreshold: 80, speaker: "Sukuna", charKey: "sukuna", text: "Mahoraga's wheel adapted to your Infinity! The target was not you, Gojo Satoru. The target was space itself, the very fabric of existence! The World-Cutting Slash (世界を断つ斬撃)!", color: "#ef4444" },
+                    { hpThreshold: 45, speaker: "Sukuna", charKey: "sukuna", text: "You were magnificent, Gojo Satoru. I shall never forget you as long as I live. (天晴れだ、五条悟。生涯貴様を忘れることはあるまい)", color: "#fbbf24" },
+                    { hpThreshold: 20, speaker: "Sukuna", charKey: "sukuna", text: "I revert to my true four-armed Heian King of Curses form! The age of sorcery is dead. Bow before the King!", color: "#ef4444" }
                 ]
             }
         ],
         epilogue: [
             {
-                speaker: "Ryomen Sukuna",
-                avatar: "👁️",
-                side: "right",
-                text: "I am a curse... a monstrosity born of the Heian era... to think I would fall to brats of this newborn age..."
-            },
-            {
                 speaker: "Yuji Itadori",
+                charKey: "yuji",
                 avatar: "🥊",
+                title: "Student of Gojo / 虎杖悠仁",
                 side: "left",
-                text: "It's over, Sukuna. Megumi is safe. The cycle of curses ends today."
+                text: "Gojo-sensei's will lives on in all of us. Even if you cut through space, our bonds can never be severed! Sukuna, you are going down!"
             },
             {
-                speaker: "Satoru Gojo",
+                speaker: "Ryomen Sukuna",
+                charKey: "sukuna",
                 avatar: "👁️",
-                side: "left",
-                text: "Look at you all. My students surpassed me just as I always knew they would. Jujutsu sorcery has a bright tomorrow."
+                title: "True Heian Form / 両面宿儺",
+                side: "right",
+                text: "Fascinating, brat. Let us see if your newborn soul can withstand the eternal wrath of the Heian Era!"
             }
         ]
     }
 ];
 
-// Helper methods for the Story Mode Manager
+// Helper methods for Story Mode Manager
 class StoryManager {
     static getChapters() {
         return STORY_CHAPTERS;
     }
 
     static getChapter(id) {
-        return STORY_CHAPTERS.find(c => c.id === parseInt(id, 10)) || STORY_CHAPTERS[0];
+        if (!id) return STORY_CHAPTERS[0];
+        const numId = parseInt(id.toString().replace(/\D/g, ''), 10);
+        return STORY_CHAPTERS.find(c => c.id === id || c.id === numId) || STORY_CHAPTERS[0];
     }
 
-    static getTurn(chapterId, turnIndex) {
+    static getTurn(chapterId, turnIndex = 0) {
         const chapter = this.getChapter(chapterId);
         if (!chapter || !chapter.turns || !chapter.turns[turnIndex]) {
             return chapter ? chapter.turns[0] : null;
         }
         return chapter.turns[turnIndex];
+    }
+
+    static getNextChapterId(chapterId) {
+        const chapter = this.getChapter(chapterId);
+        if (!chapter) return null;
+        const nextId = chapter.id + 1;
+        const nextChap = STORY_CHAPTERS.find(c => c.id === nextId);
+        return nextChap ? nextChap.id : null;
     }
 
     static getTotalChapters() {
