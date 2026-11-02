@@ -88,6 +88,11 @@ class BattleArenaGame {
         this.arcadeLadder = ['megumi', 'nanami', 'todo', 'mahito', 'toji', 'yuta', 'sukuna'];
         this.arcadeIndex = 0;
 
+        // Story Mode Progression & Live Dialogue
+        this.storyChapterId = 1;
+        this.storyTurnIndex = 0;
+        this.activeStoryQuotes = [];
+
         // Input Tracking
         this.keys = {};
         this.initInputListeners();
@@ -256,9 +261,27 @@ class BattleArenaGame {
     // ----------------------------------------------------
     // MATCH & ROUND MANAGEMENT
     // ----------------------------------------------------
-    startMatch(p1CharKey, p2CharKey, mode = 'arcade', difficulty = 'medium', p1Name = null, p2Name = null) {
+    startMatch(p1CharKey, p2CharKey, mode = 'arcade', difficulty = 'medium', p1Name = null, p2Name = null, storyChapterId = 1, storyTurnIndex = 0) {
         this.mode = mode;
         this.difficulty = difficulty;
+        this.storyChapterId = storyChapterId;
+        this.storyTurnIndex = storyTurnIndex;
+
+        let battlefieldKey = null;
+
+        // Canonical Story Mode Setup & Chapter Data Load
+        if (this.mode === 'story' && typeof StoryManager !== 'undefined') {
+            const turn = StoryManager.getTurn(this.storyChapterId, this.storyTurnIndex);
+            if (turn) {
+                p1CharKey = turn.playerChar;
+                p2CharKey = turn.enemyChar;
+                this.difficulty = turn.difficulty || difficulty;
+                p1Name = turn.playerName;
+                p2Name = turn.enemyName;
+                battlefieldKey = turn.battlefield;
+                this.activeStoryQuotes = turn.midBattleQuotes ? [...turn.midBattleQuotes] : [];
+            }
+        }
 
         // Reset Arcade Ladder round counter on round 1 / initial gauntlet start
         if (this.mode === 'arcade') {
@@ -279,9 +302,9 @@ class BattleArenaGame {
         this.p2CustomName = p2Name || (this.isPvPMode() ? (profile.friendName || 'Friend') : null);
 
         // Load active battlefield into 3D world
-        this.currentBattlefieldKey = (typeof StorageManager !== 'undefined' && StorageManager.getSelectedBattlefield)
+        this.currentBattlefieldKey = battlefieldKey || ((typeof StorageManager !== 'undefined' && StorageManager.getSelectedBattlefield)
             ? StorageManager.getSelectedBattlefield()
-            : (this.currentBattlefieldKey || 'jjk_high');
+            : (this.currentBattlefieldKey || 'jjk_high'));
         if (this.world3d) {
             this.world3d.loadBattlefield(this.currentBattlefieldKey);
             this.world3d.clearDomain();
@@ -418,6 +441,36 @@ class BattleArenaGame {
     handleMatchEnd(p1Won) {
         this.state = 'match_over';
         this.sound.stopBGM();
+
+        // ----------------------------------------------------
+        // STORY MODE COMPLETION, CHECKPOINTS & TURNS
+        // ----------------------------------------------------
+        if (this.mode === 'story') {
+            const chapter = (typeof StoryManager !== 'undefined') ? StoryManager.getChapter(this.storyChapterId) : null;
+            if (p1Won) {
+                this.sound.playVictory();
+                const hasNextTurn = chapter && chapter.turns && (this.storyTurnIndex + 1 < chapter.turns.length);
+                if (hasNextTurn) {
+                    this.storyTurnIndex++;
+                    if (window.UI && window.UI.showStoryTurnComplete) {
+                        window.UI.showStoryTurnComplete(chapter, this.storyTurnIndex);
+                    }
+                } else {
+                    const chapterReward = chapter ? (chapter.reward || 1000) : 1000;
+                    StorageManager.addPoints(chapterReward);
+                    StorageManager.unlockNextChapter(this.storyChapterId);
+                    if (window.UI && window.UI.showStoryChapterComplete) {
+                        window.UI.showStoryChapterComplete(chapter, chapterReward);
+                    }
+                }
+            } else {
+                this.sound.playKO();
+                if (window.UI && window.UI.showStoryDefeat) {
+                    window.UI.showStoryDefeat(chapter, this.storyTurnIndex);
+                }
+            }
+            return;
+        }
 
         const field = (typeof BATTLEFIELDS_DATA !== 'undefined' && BATTLEFIELDS_DATA[this.currentBattlefieldKey])
             ? BATTLEFIELDS_DATA[this.currentBattlefieldKey]
@@ -653,6 +706,23 @@ class BattleArenaGame {
             // 4. Update 3D Fighters
             if (this.p1) this.p1.update();
             if (this.p2) this.p2.update();
+
+            // 4.5 Process Mid-Battle Canonical Story Dialogue & Checkpoint Quotes
+            if (this.mode === 'story' && this.activeStoryQuotes && this.activeStoryQuotes.length && this.p1 && this.p2) {
+                const enemyHpPct = (this.p2.hp / this.p2.maxHp) * 100;
+                const playerHpPct = (this.p1.hp / this.p1.maxHp) * 100;
+
+                for (let i = this.activeStoryQuotes.length - 1; i >= 0; i--) {
+                    const quote = this.activeStoryQuotes[i];
+                    if (enemyHpPct <= quote.hpThreshold || playerHpPct <= quote.hpThreshold) {
+                        this.particles.addFloatingText(`${quote.speaker}: "${quote.text}"`, 0, 4.2, quote.color || '#ffd700', 26, true);
+                        if (window.UI && window.UI.showCombatDialogue) {
+                            window.UI.showCombatDialogue(quote);
+                        }
+                        this.activeStoryQuotes.splice(i, 1);
+                    }
+                }
+            }
 
             // 5. Death Checks
             if (this.p1 && this.p1.state === 'dead') {

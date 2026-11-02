@@ -13,6 +13,22 @@ An adrenaline-pumping **4K Ultra 3D Open World fighting arena game** featuring 1
 * **4096x4096 Soft Shadows & HDR Tone Mapping**: Real-time PCF soft contact shadows, ACESFilmic high dynamic range tone mapping, and cool rim lighting highlighting fighter silhouettes.
 * **Razor-Sharp 4K HUD**: High-DPI vector health bars, glowing cursed energy gauges, combo counter, and floating damage typography.
 
+### 📜 Jujutsu Kaisen Canonical Story Saga Mode
+Relive the legendary canonical timeline of Jujutsu Kaisen through an 8-chapter multi-turn narrative campaign with checkpoints, dialogue cutscenes, and mid-battle quotes:
+1. **Chapter 1: Fearsome Womb Arc** (Eishu Juvenile Detention Center • Yuji & Sukuna vs Special Grade Finger Bearer)
+2. **Chapter 2: Vs. Mahito Arc** (Satozakura High & Underpass Sewer • Kento Nanami & Yuji Itadori vs Mahito)
+3. **Chapter 3: Kyoto Goodwill Event Arc** (Jujutsu High Sacred Woods • Yuji Itadori & Aoi Todo vs Jogo & Hanami)
+4. **Chapter 4: Hidden Inventory / Premature Death Arc** (Tomb of the Star Sanctum • Teen Satoru Gojo vs Toji Fushiguro)
+5. **Chapter 5: Shibuya Incident — Part 1: Seal the Strongest** (Tokyo Metro B5F Platform • Satoru Gojo vs Jogo, Mahito & Kenjaku)
+6. **Chapter 6: Shibuya Incident — Part 2: King of Curses** (Shibuya Ground Zero Crater • Heian Ryomen Sukuna vs Jogo & Mahito)
+7. **Chapter 7: Culling Game Arc** (Colony Barriers & Sendai Colosseum • Kinji Hakari & Yuta Okkotsu in deadly deathmatches)
+8. **Chapter 8: Shinjuku Showdown — Battle of the Strongest** (Shinjuku Skyscraper Zenith • Satoru Gojo vs Ryomen Sukuna Heian Form)
+
+* **Multi-Turn Checkpoints**: Play through canonical sequential combat turns per chapter with automatic checkpoint saving in `StorageManager`. Resume anywhere from your last checkpoint!
+* **Prologue & Epilogue Cutscenes**: Illustrated visual novel dialogue stages with anime character avatars, mission objectives, and narrative context before and after every battle.
+* **Live In-Combat Dialogue Toasts**: Characters exchange canonical lines and philosophical clashes in real-time as fighter HP reaches dramatic thresholds.
+* **Campaign Rewards**: Earn over 25,000 bonus Battle Points across all chapters to unlock exclusive fighters and 3D battlefields!
+
 ### 🥋 Full 3D Characters with Procedural Anime Rigs
 Every character in the 16-sorcerer roster is fully modeled and animated in 3D with distinct anime aesthetics, signature accessories, and hierarchical skeletal rigging:
 * **Ryomen Sukuna (Heian Form)**: True 4-armed Heian Era King of Curses with **4 fully articulated muscular arms**, 4 glowing crimson eyes with animated pulse, right-side demonic carapace mask with horn spur, authentic black cursed tattoos mapped across chest and arms, obsidian black claws with glowing red tips, open silk kimono with gold embroidery, textured rope obi, and the Enmaten domain mudra!
@@ -84,6 +100,7 @@ Toggle between 3 distinct camera modes at any time with the `V` key or top-bar b
 | **Pause Match** | <kbd>Esc</kbd> or <kbd>P</kbd> | <kbd>Esc</kbd> | <kbd>⏸</kbd> (PAUSE) |
 
 ### 🏆 Game Modes & Arcade Gauntlet
+* **Jujutsu Story Saga**: 8-chapter canonical narrative campaign depicting the manga/anime storyline from Fearsome Womb to Shinjuku Showdown with sequential battle turns, mid-fight dialogue, and persistent checkpoints.
 * **Arcade Ladder**: 7-round canonical gauntlet against Megumi Fushiguro, Kento Nanami, Aoi Todo, Mahito, Toji Fushiguro, Yuta Okkotsu, and Heian Ryomen Sukuna. Features an active gauntlet route tracker, instant start from character select, and progressive win coin multipliers.
 * **Versus AI**: Single match against machine-learning tactical AI with customizable difficulty.
 * **Local 2-Player (PvP)**: Split-screen combat on a shared keyboard.

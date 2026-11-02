@@ -89,10 +89,56 @@ class UIManager {
         this.arenaSelectModal = document.getElementById('arenaSelectModal');
         this.btnCloseArenaModal = document.getElementById('btnCloseArenaModal');
         this.arenaModalGrid = document.getElementById('arenaModalGrid');
+
+        // Story Mode (Jujutsu Saga) Elements
+        this.storyScreen = document.getElementById('storyScreen');
+        this.storyChaptersGrid = document.getElementById('storyChaptersGrid');
+        this.storyActiveCheckpointText = document.getElementById('storyActiveCheckpointText');
+        this.storyProgressPct = document.getElementById('storyProgressPct');
+        this.storyClearedCount = document.getElementById('storyClearedCount');
+        this.storyProgressBarFill = document.getElementById('storyProgressBarFill');
+        this.btnStoryResume = document.getElementById('btnStoryResume');
+        this.btnStoryReset = document.getElementById('btnStoryReset');
+        this.btnStoryBack = document.getElementById('btnStoryBack');
+
+        // Story Cutscene Modal
+        this.storyCutsceneModal = document.getElementById('storyCutsceneModal');
+        this.btnCloseStoryCutscene = document.getElementById('btnCloseStoryCutscene');
+        this.btnStartStoryBattle = document.getElementById('btnStartStoryBattle');
+        this.cutsceneChapterBadge = document.getElementById('cutsceneChapterBadge');
+        this.cutsceneTitle = document.getElementById('cutsceneTitle');
+        this.cutsceneSubtitle = document.getElementById('cutsceneSubtitle');
+        this.storyDialogueStage = document.getElementById('storyDialogueStage');
+        this.storyMissionObjectives = document.getElementById('storyMissionObjectives');
+
+        // Story Epilogue Modal
+        this.storyEpilogueModal = document.getElementById('storyEpilogueModal');
+        this.epilogueChapterTitle = document.getElementById('epilogueChapterTitle');
+        this.epilogueRewardAmount = document.getElementById('epilogueRewardAmount');
+        this.storyEpilogueDialogueStage = document.getElementById('storyEpilogueDialogueStage');
+        this.btnStoryNextChapter = document.getElementById('btnStoryNextChapter');
+        this.btnStoryReturnMap = document.getElementById('btnStoryReturnMap');
+
+        // Story Turn Modal
+        this.storyTurnModal = document.getElementById('storyTurnModal');
+        this.turnCompleteSubtitle = document.getElementById('turnCompleteSubtitle');
+        this.nextOpponentTag = document.getElementById('nextOpponentTag');
+        this.btnStoryAdvanceTurn = document.getElementById('btnStoryAdvanceTurn');
+
+        // In-Combat Live Dialogue Toast
+        this.combatDialogueToast = document.getElementById('combatDialogueToast');
+        this.combatDialogueAvatar = document.getElementById('combatDialogueAvatar');
+        this.combatDialogueSpeaker = document.getElementById('combatDialogueSpeaker');
+        this.combatDialogueLine = document.getElementById('combatDialogueLine');
     }
 
     bindEvents() {
         // Mode Buttons
+        document.getElementById('btnModeStory')?.addEventListener('click', () => {
+            Sound.playClick();
+            this.openStorySaga();
+        });
+
         document.getElementById('btnModeArcade')?.addEventListener('click', () => {
             Sound.playClick();
             this.currentMode = 'arcade';
@@ -196,6 +242,79 @@ class UIManager {
             }
         });
 
+        // Story Mode Modal Backdrop dismissals
+        this.storyCutsceneModal?.addEventListener('click', (e) => {
+            if (e.target === this.storyCutsceneModal) {
+                this.storyCutsceneModal.classList.add('hidden');
+            }
+        });
+
+        this.storyTurnModal?.addEventListener('click', (e) => {
+            if (e.target === this.storyTurnModal) {
+                this.storyTurnModal.classList.add('hidden');
+            }
+        });
+
+        this.storyEpilogueModal?.addEventListener('click', (e) => {
+            if (e.target === this.storyEpilogueModal) {
+                this.storyEpilogueModal.classList.add('hidden');
+            }
+        });
+
+        // Story Mode Screen & Modal Action Buttons
+        this.btnStoryBack?.addEventListener('click', () => {
+            Sound.playClick();
+            this.storyScreen?.classList.add('hidden');
+            this.menuScreen?.classList.remove('hidden');
+        });
+
+        this.btnStoryResume?.addEventListener('click', () => {
+            Sound.playClick();
+            this.resumeStoryCheckpoint();
+        });
+
+        this.btnStoryReset?.addEventListener('click', () => {
+            if (confirm("Reset all Story Saga chapter progress back to Chapter 1? (Your coins and unlocked shop fighters will remain intact)")) {
+                Sound.playClick();
+                StorageManager.resetStoryProgress();
+                this.renderStorySaga();
+            }
+        });
+
+        this.btnCloseStoryCutscene?.addEventListener('click', () => {
+            Sound.playClick();
+            this.storyCutsceneModal?.classList.add('hidden');
+        });
+
+        this.btnStartStoryBattle?.addEventListener('click', () => {
+            Sound.playClick();
+            this.storyCutsceneModal?.classList.add('hidden');
+            if (this.pendingStoryChapter) {
+                this.launchStoryBattle(this.pendingStoryChapter.id, 0);
+            }
+        });
+
+        this.btnStoryAdvanceTurn?.addEventListener('click', () => {
+            Sound.playClick();
+            this.storyTurnModal?.classList.add('hidden');
+            if (window.GameInstance && window.GameInstance.storyChapterId) {
+                this.launchStoryBattle(window.GameInstance.storyChapterId, window.GameInstance.storyTurnIndex || 0);
+            }
+        });
+
+        this.btnStoryNextChapter?.addEventListener('click', () => {
+            Sound.playClick();
+            this.storyEpilogueModal?.classList.add('hidden');
+            const progress = StorageManager.getStoryProgress();
+            this.openStoryCutscene(progress.currentChapter || 'ch1_fearsome_womb');
+        });
+
+        this.btnStoryReturnMap?.addEventListener('click', () => {
+            Sound.playClick();
+            this.storyEpilogueModal?.classList.add('hidden');
+            this.openStorySaga();
+        });
+
         // Global Keyboard Shortcuts (Escape to close modals, Enter/Space to start fight)
         window.addEventListener('keydown', (e) => {
             if (e.key === 'Escape') {
@@ -205,6 +324,18 @@ class UIManager {
                 }
                 if (this.arenaSelectModal && !this.arenaSelectModal.classList.contains('hidden')) {
                     this.arenaSelectModal.classList.add('hidden');
+                    return;
+                }
+                if (this.storyCutsceneModal && !this.storyCutsceneModal.classList.contains('hidden')) {
+                    this.storyCutsceneModal.classList.add('hidden');
+                    return;
+                }
+                if (this.storyTurnModal && !this.storyTurnModal.classList.contains('hidden')) {
+                    this.storyTurnModal.classList.add('hidden');
+                    return;
+                }
+                if (this.storyEpilogueModal && !this.storyEpilogueModal.classList.contains('hidden')) {
+                    this.storyEpilogueModal.classList.add('hidden');
                     return;
                 }
                 if (this.friendModal && !this.friendModal.classList.contains('hidden')) {
@@ -340,7 +471,11 @@ class UIManager {
         document.getElementById('btnGameOverRematch')?.addEventListener('click', () => {
             Sound.playClick();
             this.gameOverOverlay.classList.add('hidden');
-            this.launchGame();
+            if (this.currentMode === 'story' && window.GameInstance && window.GameInstance.storyChapterId) {
+                this.launchStoryBattle(window.GameInstance.storyChapterId, window.GameInstance.storyTurnIndex || 0);
+            } else {
+                this.launchGame();
+            }
         });
 
         document.getElementById('btnGameOverNext')?.addEventListener('click', () => {
@@ -358,7 +493,12 @@ class UIManager {
 
         document.getElementById('btnGameOverMenu')?.addEventListener('click', () => {
             Sound.playClick();
-            this.returnToMainMenu();
+            if (this.currentMode === 'story') {
+                this.gameOverOverlay.classList.add('hidden');
+                this.openStorySaga();
+            } else {
+                this.returnToMainMenu();
+            }
         });
 
         // Back from Char Select
@@ -422,6 +562,11 @@ class UIManager {
         if (this.friendModal) this.friendModal.classList.add('hidden');
         if (this.moveListModal) this.moveListModal.classList.add('hidden');
         if (this.arenaSelectModal) this.arenaSelectModal.classList.add('hidden');
+        if (this.storyScreen) this.storyScreen.classList.add('hidden');
+        if (this.storyCutsceneModal) this.storyCutsceneModal.classList.add('hidden');
+        if (this.storyEpilogueModal) this.storyEpilogueModal.classList.add('hidden');
+        if (this.storyTurnModal) this.storyTurnModal.classList.add('hidden');
+        if (this.combatDialogueToast) this.combatDialogueToast.classList.remove('active');
         if (this.touchControls) {
             this.touchControls.classList.add('hidden');
         }
@@ -770,6 +915,10 @@ class UIManager {
         this.signInModal?.classList.add('hidden');
         this.friendModal?.classList.add('hidden');
         this.shopScreen?.classList.add('hidden');
+        this.storyScreen?.classList.add('hidden');
+        this.storyCutsceneModal?.classList.add('hidden');
+        this.storyEpilogueModal?.classList.add('hidden');
+        this.storyTurnModal?.classList.add('hidden');
         this.pauseOverlay?.classList.add('hidden');
         this.gameOverOverlay?.classList.add('hidden');
 
@@ -1636,6 +1785,319 @@ class UIManager {
             if (lName) {
                 lName.textContent = (p1.charKey === 'gojo') ? 'PURPLE' : 'SKILL 2';
             }
+        }
+    }
+
+    // ----------------------------------------------------
+    // STORY MODE (JUJUTSU SAGA) PROGRESSION & CUTSCENES
+    // ----------------------------------------------------
+    openStorySaga() {
+        window.scrollTo(0, 0);
+        document.documentElement.scrollTop = 0;
+        document.body.scrollTop = 0;
+        this.currentMode = 'story';
+
+        this.menuScreen?.classList.add('hidden');
+        this.charSelectScreen?.classList.add('hidden');
+        this.shopScreen?.classList.add('hidden');
+        this.friendModal?.classList.add('hidden');
+        this.moveListModal?.classList.add('hidden');
+        this.arenaSelectModal?.classList.add('hidden');
+        this.pauseOverlay?.classList.add('hidden');
+        this.gameOverOverlay?.classList.add('hidden');
+        this.storyCutsceneModal?.classList.add('hidden');
+        this.storyEpilogueModal?.classList.add('hidden');
+        this.storyTurnModal?.classList.add('hidden');
+
+        this.storyScreen?.classList.remove('hidden');
+        this.renderStorySaga();
+    }
+
+    renderStorySaga() {
+        if (!this.storyChaptersGrid || typeof STORY_CHAPTERS === 'undefined') return;
+
+        const progress = StorageManager.getStoryProgress();
+        const total = STORY_CHAPTERS.length;
+        const clearedCount = (progress.clearedChapters || []).length;
+        const pct = Math.round((clearedCount / total) * 100);
+
+        if (this.storyProgressPct) this.storyProgressPct.textContent = `${pct}%`;
+        if (this.storyClearedCount) this.storyClearedCount.textContent = `${clearedCount} / ${total} Sagas Cleared`;
+        if (this.storyProgressBarFill) this.storyProgressBarFill.style.width = `${pct}%`;
+
+        // Active Checkpoint
+        const currentChapObj = StoryManager.getChapter(progress.currentChapter);
+        if (this.storyActiveCheckpointText) {
+            this.storyActiveCheckpointText.textContent = currentChapObj 
+                ? `Chapter ${currentChapObj.number}: ${currentChapObj.title}`
+                : `Chapter 1: Fearsome Womb`;
+        }
+
+        // Render chapter cards
+        this.storyChaptersGrid.innerHTML = '';
+        STORY_CHAPTERS.forEach((ch) => {
+            const isUnlocked = StorageManager.isChapterUnlocked(ch.id);
+            const isCleared = StorageManager.isChapterCleared(ch.id);
+            const isActive = isUnlocked && !isCleared;
+
+            const card = document.createElement('div');
+            card.className = `story-chapter-card ${isUnlocked ? 'unlocked' : 'locked'} ${isCleared ? 'cleared' : ''}`;
+            card.style.setProperty('--chapter-accent', ch.color || '#a855f7');
+            card.style.setProperty('--chapter-glow', (ch.color || '#a855f7') + '40');
+
+            const statusClass = isCleared ? 'status-cleared' : (isActive ? 'status-active' : 'status-locked');
+            const statusText = isCleared ? '✓ CLEARED' : (isActive ? '🔥 ACTIVE' : '🔒 LOCKED');
+
+            // Fighter preview from turn 0
+            const firstTurn = ch.turns && ch.turns[0];
+            const playerCharName = (firstTurn && typeof CHARACTERS_DATA !== 'undefined' && CHARACTERS_DATA[firstTurn.playerKey]) 
+                ? CHARACTERS_DATA[firstTurn.playerKey].name : 'Sorcerer';
+            const enemyCharName = (firstTurn && typeof CHARACTERS_DATA !== 'undefined' && CHARACTERS_DATA[firstTurn.bossKey]) 
+                ? CHARACTERS_DATA[firstTurn.bossKey].name : 'Cursed Spirit';
+
+            let actionBtnHtml = '';
+            if (isCleared) {
+                actionBtnHtml = `<button class="btn-story-play btn-story-replay" data-chap="${ch.id}">🔄 REPLAY CHAPTER</button>`;
+            } else if (isUnlocked) {
+                actionBtnHtml = `<button class="btn-story-play" data-chap="${ch.id}">⚡ ENTER CHAPTER</button>`;
+            } else {
+                actionBtnHtml = `<button class="btn-story-play" disabled>🔒 LOCKED</button>`;
+            }
+
+            card.innerHTML = `
+                <div>
+                    <div class="story-card-top">
+                        <div class="story-card-badge">${ch.arc}</div>
+                        <div class="story-card-status-pill ${statusClass}">${statusText}</div>
+                    </div>
+                    <div class="story-card-body">
+                        <h3>Chapter ${ch.number}: ${ch.title}</h3>
+                        <div class="story-card-subtitle">${ch.subtitle}</div>
+                        <p class="story-card-desc">${ch.description}</p>
+                        <div class="story-card-matchup">
+                            <span class="story-fighter-tag player">🦸 ${playerCharName}</span>
+                            <span class="story-fighter-tag vs">VS</span>
+                            <span class="story-fighter-tag enemy">👹 ${enemyCharName}</span>
+                        </div>
+                        <div class="story-card-details">
+                            <span class="story-card-turns">⚔️ ${ch.turns.length} Turn${ch.turns.length > 1 ? 's' : ''}</span>
+                            <span class="story-card-reward">🪙 +${ch.reward.toLocaleString()} Coins</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="story-card-footer">
+                    ${actionBtnHtml}
+                </div>
+            `;
+
+            const btn = card.querySelector('.btn-story-play');
+            if (btn && isUnlocked) {
+                btn.addEventListener('click', (e) => {
+                    e.stopPropagation();
+                    Sound.playClick();
+                    this.openStoryCutscene(ch.id);
+                });
+            }
+
+            this.storyChaptersGrid.appendChild(card);
+        });
+    }
+
+    resumeStoryCheckpoint() {
+        const progress = StorageManager.getStoryProgress();
+        const targetChapter = progress.currentChapter || 'ch1_fearsome_womb';
+        this.openStoryCutscene(targetChapter);
+    }
+
+    openStoryCutscene(chapterId) {
+        const chapter = (typeof StoryManager !== 'undefined') ? StoryManager.getChapter(chapterId) : null;
+        if (!chapter) return;
+
+        this.pendingStoryChapter = chapter;
+
+        if (this.cutsceneChapterBadge) {
+            this.cutsceneChapterBadge.textContent = `${chapter.arc} • Chapter ${chapter.number}`;
+        }
+        if (this.cutsceneTitle) {
+            this.cutsceneTitle.textContent = chapter.title;
+        }
+        if (this.cutsceneSubtitle) {
+            this.cutsceneSubtitle.textContent = chapter.subtitle;
+        }
+
+        // Objectives
+        if (this.storyMissionObjectives) {
+            this.storyMissionObjectives.innerHTML = '';
+            if (chapter.objectives) {
+                chapter.objectives.forEach(obj => {
+                    const li = document.createElement('li');
+                    li.textContent = obj;
+                    this.storyMissionObjectives.appendChild(li);
+                });
+            }
+        }
+
+        // Prologue dialogue
+        if (this.storyDialogueStage) {
+            this.storyDialogueStage.innerHTML = '';
+            if (chapter.prologue) {
+                chapter.prologue.forEach(line => {
+                    const row = document.createElement('div');
+                    row.className = `dialogue-bubble-row ${line.type || 'hero'}`;
+                    row.innerHTML = `
+                        <div class="dialogue-avatar">${line.avatar || '💬'}</div>
+                        <div class="dialogue-content">
+                            <div class="dialogue-speaker">${line.speaker}</div>
+                            <div class="dialogue-text">${line.text}</div>
+                        </div>
+                    `;
+                    this.storyDialogueStage.appendChild(row);
+                });
+            }
+        }
+
+        this.storyCutsceneModal?.classList.remove('hidden');
+    }
+
+    launchStoryBattle(chapterId, turnIndex = 0) {
+        window.scrollTo(0, 0);
+        document.documentElement.scrollTop = 0;
+        document.body.scrollTop = 0;
+
+        this.currentMode = 'story';
+
+        this.storyScreen?.classList.add('hidden');
+        this.storyCutsceneModal?.classList.add('hidden');
+        this.storyEpilogueModal?.classList.add('hidden');
+        this.storyTurnModal?.classList.add('hidden');
+        this.menuScreen?.classList.add('hidden');
+        this.charSelectScreen?.classList.add('hidden');
+        this.shopScreen?.classList.add('hidden');
+        this.pauseOverlay?.classList.add('hidden');
+        this.gameOverOverlay?.classList.add('hidden');
+
+        this.hudOverlay?.classList.remove('hidden');
+
+        const isTouchOrMobile = ('ontouchstart' in window) || 
+                                (navigator.maxTouchPoints > 0) || 
+                                (window.matchMedia && window.matchMedia('(pointer: coarse)').matches) || 
+                                (window.innerWidth <= 900);
+        if (this.touchControls && (this.touchEnabled || isTouchOrMobile)) {
+            this.touchControls.classList.remove('hidden');
+        }
+
+        document.body.classList.add('in-battle');
+        if (window.GameInstance && window.GameInstance.handleResize) {
+            window.GameInstance.handleResize();
+        }
+        this.checkMobileOrientation();
+
+        const profile = StorageManager.getPlayerProfile();
+        const p1 = this.p1Name || profile.name || 'Sorcerer';
+
+        window.GameInstance.startMatch(null, null, 'story', 'medium', p1, null, chapterId, turnIndex);
+    }
+
+    showCombatDialogue(quote) {
+        if (!this.combatDialogueToast || !quote) return;
+        if (this.combatDialogueAvatar) this.combatDialogueAvatar.textContent = quote.avatar || '💬';
+        if (this.combatDialogueSpeaker) {
+            this.combatDialogueSpeaker.textContent = quote.speaker || 'SORCERER';
+            if (quote.color) this.combatDialogueSpeaker.style.color = quote.color;
+        }
+        if (this.combatDialogueLine) this.combatDialogueLine.textContent = `"${quote.text}"`;
+
+        this.combatDialogueToast.classList.add('active');
+        if (this._combatDialogueTimer) clearTimeout(this._combatDialogueTimer);
+        this._combatDialogueTimer = setTimeout(() => {
+            this.combatDialogueToast?.classList.remove('active');
+        }, 4500);
+    }
+
+    showStoryTurnComplete(chapter, nextTurnIndex) {
+        if (this.touchControls) this.touchControls.classList.add('hidden');
+        if (!this.storyTurnModal) return;
+
+        const nextTurn = chapter && chapter.turns ? chapter.turns[nextTurnIndex] : null;
+        if (this.turnCompleteSubtitle) {
+            this.turnCompleteSubtitle.textContent = `Turn ${nextTurnIndex} Cleared! Advance to Turn ${nextTurnIndex + 1}.`;
+        }
+        if (this.nextOpponentTag && nextTurn) {
+            const nextBoss = (typeof CHARACTERS_DATA !== 'undefined' && CHARACTERS_DATA[nextTurn.bossKey]) 
+                ? CHARACTERS_DATA[nextTurn.bossKey].name 
+                : nextTurn.bossKey;
+            this.nextOpponentTag.innerHTML = `<strong>Next Matchup:</strong> ${nextTurn.objective || nextBoss}`;
+        }
+        this.storyTurnModal.classList.remove('hidden');
+    }
+
+    showStoryChapterComplete(chapter, chapterReward) {
+        if (this.touchControls) this.touchControls.classList.add('hidden');
+        if (!this.storyEpilogueModal) return;
+
+        if (this.epilogueChapterTitle && chapter) {
+            this.epilogueChapterTitle.textContent = `${chapter.title} Cleared!`;
+        }
+        if (this.epilogueRewardAmount) {
+            this.epilogueRewardAmount.textContent = `+🪙 ${chapterReward.toLocaleString()}`;
+        }
+
+        // Epilogue dialogues
+        if (this.storyEpilogueDialogueStage && chapter && chapter.epilogue) {
+            this.storyEpilogueDialogueStage.innerHTML = '';
+            chapter.epilogue.forEach(line => {
+                const row = document.createElement('div');
+                row.className = `dialogue-bubble-row ${line.type || 'hero'}`;
+                row.innerHTML = `
+                    <div class="dialogue-avatar">${line.avatar || '💬'}</div>
+                    <div class="dialogue-content">
+                        <div class="dialogue-speaker">${line.speaker}</div>
+                        <div class="dialogue-text">${line.text}</div>
+                    </div>
+                `;
+                this.storyEpilogueDialogueStage.appendChild(row);
+            });
+        }
+
+        // Check if next chapter exists
+        const nextChapId = chapter ? StoryManager.getNextChapterId(chapter.id) : null;
+        if (this.btnStoryNextChapter) {
+            if (nextChapId) {
+                this.btnStoryNextChapter.classList.remove('hidden');
+                this.btnStoryNextChapter.textContent = 'NEXT CHAPTER ➔';
+            } else {
+                this.btnStoryNextChapter.classList.add('hidden');
+            }
+        }
+
+        this.storyEpilogueModal.classList.remove('hidden');
+        this.updatePointsDisplay();
+    }
+
+    showStoryDefeat(chapter, turnIndex) {
+        if (this.touchControls) this.touchControls.classList.add('hidden');
+        this.gameOverOverlay.classList.remove('hidden');
+        const titleEl = document.getElementById('gameOverTitle');
+        const pointsEl = document.getElementById('gameOverPoints');
+        const scoreEl = document.getElementById('gameOverScore');
+        const nextBtn = document.getElementById('btnGameOverNext');
+        const rematchBtn = document.getElementById('btnGameOverRematch');
+
+        if (titleEl) {
+            titleEl.textContent = 'DEFEAT - MISSION FAILED';
+            titleEl.style.color = '#ef4444';
+        }
+        if (scoreEl && chapter) {
+            scoreEl.textContent = `${chapter.title} • Turn ${turnIndex + 1}`;
+        }
+        if (pointsEl) {
+            pointsEl.textContent = `Revive and try again! Regroup and focus your cursed energy.`;
+        }
+        if (nextBtn) {
+            nextBtn.classList.add('hidden');
+        }
+        if (rematchBtn) {
+            rematchBtn.textContent = '🔄 RETRY TURN';
         }
     }
 }

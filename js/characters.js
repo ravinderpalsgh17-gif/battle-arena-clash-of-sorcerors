@@ -1177,7 +1177,15 @@ class StorageManager {
             playerTitle: 'Special Grade Sorcerer',
             playerAvatar: '👁️',
             isRegistered: false,
-            friendName: 'Friend'
+            friendName: 'Friend',
+            storyProgress: {
+                unlockedChapters: [1],
+                clearedChapters: [],
+                currentChapter: 1,
+                currentTurn: 0,
+                chapterStars: {},
+                lastCheckpoint: 1
+            }
         };
 
         try {
@@ -1190,6 +1198,16 @@ class StorageManager {
                     loaded.points = 0;
                     loaded.coinsResetToZeroV1 = true;
                     this.save(loaded);
+                }
+                if (!loaded.storyProgress || !Array.isArray(loaded.storyProgress.unlockedChapters)) {
+                    loaded.storyProgress = {
+                        unlockedChapters: [1],
+                        clearedChapters: [],
+                        currentChapter: 1,
+                        currentTurn: 0,
+                        chapterStars: {},
+                        lastCheckpoint: 1
+                    };
                 }
                 if (!loaded.unlockedBattlefields || !Array.isArray(loaded.unlockedBattlefields)) {
                     loaded.unlockedBattlefields = ['jjk_high'];
@@ -1318,5 +1336,78 @@ class StorageManager {
         if (fieldId === 'jjk_high') return true;
         const data = this.load();
         return data.unlockedBattlefields && data.unlockedBattlefields.includes(fieldId);
+    }
+
+    // ----------------------------------------------------
+    // STORY MODE CHECKPOINTS & PROGRESSION
+    // ----------------------------------------------------
+    static getStoryProgress() {
+        const data = this.load();
+        return data.storyProgress || {
+            unlockedChapters: [1],
+            clearedChapters: [],
+            currentChapter: 1,
+            currentTurn: 0,
+            chapterStars: {},
+            lastCheckpoint: 1
+        };
+    }
+
+    static saveStoryProgress(progress) {
+        const data = this.load();
+        data.storyProgress = { ...data.storyProgress, ...progress };
+        this.save(data);
+        return data.storyProgress;
+    }
+
+    static unlockNextChapter(chapterId) {
+        const data = this.load();
+        if (!data.storyProgress) {
+            data.storyProgress = {
+                unlockedChapters: [1],
+                clearedChapters: [],
+                currentChapter: 1,
+                currentTurn: 0,
+                chapterStars: {},
+                lastCheckpoint: 1
+            };
+        }
+        if (!data.storyProgress.clearedChapters.includes(chapterId)) {
+            data.storyProgress.clearedChapters.push(chapterId);
+        }
+        const nextId = chapterId + 1;
+        if (nextId <= 8 && !data.storyProgress.unlockedChapters.includes(nextId)) {
+            data.storyProgress.unlockedChapters.push(nextId);
+        }
+        data.storyProgress.lastCheckpoint = Math.min(8, Math.max(data.storyProgress.lastCheckpoint || 1, nextId));
+        data.storyProgress.currentChapter = nextId <= 8 ? nextId : chapterId;
+        data.storyProgress.currentTurn = 0;
+        this.save(data);
+        return data.storyProgress;
+    }
+
+    static isChapterUnlocked(chapterId) {
+        if (chapterId === 1) return true;
+        const data = this.load();
+        return data.storyProgress && data.storyProgress.unlockedChapters && data.storyProgress.unlockedChapters.includes(chapterId);
+    }
+
+    static isChapterCleared(chapterId) {
+        const data = this.load();
+        return data.storyProgress && data.storyProgress.clearedChapters && data.storyProgress.clearedChapters.includes(chapterId);
+    }
+
+    static resetStoryProgress() {
+        const data = this.load();
+        data.storyProgress = {
+            unlockedChapters: [1],
+            clearedChapters: [],
+            currentChapter: 1,
+            currentTurn: 0,
+            chapterStars: {},
+            lastCheckpoint: 1
+        };
+        this.save(data);
+        return data.storyProgress;
     }
 }

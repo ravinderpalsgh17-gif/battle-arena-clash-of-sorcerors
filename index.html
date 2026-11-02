@@ -61,6 +61,7 @@
             </div>
 
             <div class="menu-buttons">
+                <button id="btnModeStory" class="btn btn-story" style="background: linear-gradient(135deg, #ff0055, #9d4edd); color: #fff; font-weight: 900; border-color: #ff0055; box-shadow: 0 0 16px rgba(255, 0, 85, 0.45); letter-spacing: 1px;">📜 STORY MODE: JJK SAGA</button>
                 <button id="btnModeFriend" class="btn btn-friend">🤝 PLAY VS FRIEND</button>
                 <button id="btnModeArcade" class="btn btn-primary">🏆 ARCADE LADDER</button>
                 <button id="btnModeVersus" class="btn btn-secondary">⚔️ VERSUS AI</button>
@@ -68,6 +69,121 @@
                 <button id="btnModeTraining" class="btn btn-secondary">🥋 TRAINING DOJO</button>
                 <button id="btnShop" class="btn btn-gold">🥋 SORCERER ROSTER & SHOP</button>
                 <button id="btnBattlefields" class="btn btn-secondary" style="border-color: #00e5ff; color: #00e5ff;">🗺️ BATTLEFIELD ARENAS (10)</button>
+            </div>
+        </div>
+
+        <!-- 3B. Story Mode: Jujutsu Kaisen Saga Screen -->
+        <div id="storyScreen" class="ui-screen hidden">
+            <h1 class="menu-title" style="font-size: 34px; background: linear-gradient(135deg, #ffd700, #ff0055, #9d4edd); -webkit-background-clip: text; -webkit-text-fill-color: transparent;">📜 JUJUTSU KAISEN: STORY SAGA</h1>
+            <div class="menu-subtitle" style="margin-bottom: 8px;">CANONICAL MANGA ARCS • MULTI-TURN CHECKPOINT BATTLES • DIALOGUE CUTSCENES</div>
+
+            <!-- Story Checkpoint Tracker Header Banner -->
+            <div class="story-progress-header" id="storyProgressHeader">
+                <div class="story-progress-summary">
+                    <span class="checkpoint-icon">💾</span>
+                    <div class="checkpoint-info">
+                        <div class="checkpoint-title">ACTIVE CHECKPOINT: <strong id="storyActiveCheckpointText" style="color: #ffd700;">Chapter 1: The Cursed Vessel</strong></div>
+                        <div class="checkpoint-subtitle"><span id="storyProgressPct" style="color: #00e5ff; font-weight: bold;">0%</span> COMPLETED • <span id="storyClearedCount">0/8</span> CHAPTERS CLEARED</div>
+                    </div>
+                </div>
+                <div class="story-header-actions">
+                    <button id="btnStoryResume" class="btn btn-primary" style="background: linear-gradient(135deg, #00e5ff, #9d4edd); border-color: #00e5ff; font-weight: 900;">⚡ RESUME CHECKPOINT</button>
+                    <button id="btnStoryReset" class="btn btn-secondary btn-micro" style="color: #ff5555; border-color: #552222;" title="Restart Story Saga from Chapter 1">🔄 RESET SAGA</button>
+                </div>
+            </div>
+
+            <!-- 8 Chapters Interactive Grid -->
+            <div id="storyChaptersGrid" class="story-chapters-grid">
+                <!-- Injected dynamically by ui.js -->
+            </div>
+
+            <div style="margin-top: 15px;">
+                <button id="btnStoryBack" class="btn btn-secondary">← BACK TO MENU</button>
+            </div>
+        </div>
+
+        <!-- 3C. Story Dialogue Cutscene Modal -->
+        <div id="storyCutsceneModal" class="ui-screen hidden" style="z-index: 225;">
+            <div class="modal-box story-cutscene-box">
+                <div class="story-cutscene-header">
+                    <div>
+                        <span id="cutsceneArcBadge" class="story-arc-badge">FEARSOME WOMB ARC</span>
+                        <h2 id="cutsceneChapterTitle" class="story-chapter-title">Chapter 1: The Cursed Vessel's Awakening</h2>
+                        <div id="cutsceneTurnSubtitle" class="story-turn-subtitle">Turn 1: The Sugisawa High Curse</div>
+                    </div>
+                    <button id="btnCloseStoryCutscene" class="modal-close">&times;</button>
+                </div>
+
+                <div class="story-briefing-banner" id="cutsceneBriefingBanner">
+                    <span class="briefing-icon">📜</span>
+                    <p id="cutsceneSummaryText" class="briefing-text">Summary of the narrative...</p>
+                </div>
+
+                <!-- Visual Dialogue Stage with Anime Speaker Avatars & Bubbles -->
+                <div class="story-dialogue-stage" id="storyDialogueStage">
+                    <div id="storyDialogueList" class="story-dialogue-list">
+                        <!-- Dialogue bubbles injected dynamically -->
+                    </div>
+                </div>
+
+                <!-- Objective and Battlefield Preview Banner -->
+                <div class="story-match-preview" id="storyMatchPreview">
+                    <div class="match-objective">
+                        <span class="objective-label">🎯 MISSION OBJECTIVE:</span>
+                        <strong id="cutsceneObjectiveText">Defeat the enemy!</strong>
+                    </div>
+                    <div class="match-combatants">
+                        <span id="cutscenePlayerTag" class="combatant-tag player">🥊 Yuji Itadori</span>
+                        <span class="vs-divider">VS</span>
+                        <span id="cutsceneEnemyTag" class="combatant-tag enemy">🐺 Megumi Fushiguro</span>
+                    </div>
+                </div>
+
+                <div class="story-cutscene-footer">
+                    <button id="btnStartStoryBattle" class="btn btn-primary btn-large btn-fight-pulse" style="width: 100%; font-size: 18px; padding: 14px 20px;">
+                        ⚡ ENTER BATTLE: TURN 1 ⚡
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- 3D. Story Victory / Checkpoint Epilogue Modal -->
+        <div id="storyEpilogueModal" class="ui-screen hidden" style="z-index: 230;">
+            <div class="modal-box story-epilogue-box">
+                <div class="story-epilogue-badge">🏆 CHAPTER CLEARED • CHECKPOINT SAVED! 💾</div>
+                <h2 id="epilogueChapterTitle" class="story-epilogue-title">Chapter 1 Cleared!</h2>
+                <div class="story-reward-pill">
+                    <span>🪙 REWARD:</span> <strong id="epilogueRewardPoints">+500 COINS</strong>
+                </div>
+
+                <div class="story-dialogue-stage" style="margin: 15px 0;">
+                    <div id="storyEpilogueDialogueList" class="story-dialogue-list">
+                        <!-- Epilogue dialogues injected dynamically -->
+                    </div>
+                </div>
+
+                <div class="story-epilogue-footer" style="display: flex; gap: 12px; justify-content: center; flex-wrap: wrap;">
+                    <button id="btnStoryNextChapter" class="btn btn-primary btn-large" style="background: linear-gradient(135deg, #00e5ff, #00ff88); color: #000; font-weight: 900;">
+                        ➔ NEXT CHAPTER CHECKPOINT
+                    </button>
+                    <button id="btnStoryReturnMap" class="btn btn-secondary">
+                        📜 RETURN TO SAGA MAP
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- 3E. Story Mid-Turn Advance Modal (for multi-turn chapters) -->
+        <div id="storyTurnModal" class="ui-screen hidden" style="z-index: 228;">
+            <div class="modal-box story-turn-box">
+                <div class="story-turn-badge">⚡ TURN CLEARED! ⚡</div>
+                <h2 id="storyTurnClearTitle" style="color: #ffd700; margin: 10px 0;">Turn 1 Complete!</h2>
+                <p id="storyTurnNextDesc" style="color: #ccc; font-size: 15px; margin-bottom: 20px;">The battle intensifies as Sukuna awakens...</p>
+                <div style="display: flex; gap: 12px; justify-content: center;">
+                    <button id="btnStoryAdvanceTurn" class="btn btn-primary btn-large" style="background: linear-gradient(135deg, #ffd700, #ff0055); color: #000; font-weight: 900;">
+                        ⚡ ADVANCE TO NEXT TURN ⚡
+                    </button>
+                </div>
             </div>
         </div>
 
@@ -127,6 +243,15 @@
             <div style="margin-top: 20px; display: flex; gap: 15px; justify-content: center; align-items: center;">
                 <button id="btnShopBack" class="btn btn-secondary">← BACK TO MENU</button>
                 <button id="btnResetPoints" class="btn btn-secondary" style="color: #ff5555; border-color: #552222; font-size: 13px;" title="Reset balance back to 0 coins">🔄 RESET COINS TO 0</button>
+            </div>
+        </div>
+
+        <!-- Mid-Combat Live Canonical Dialogue Toast Banner -->
+        <div id="combatDialogueToast" class="combat-dialogue-toast hidden">
+            <div class="toast-avatar" id="combatToastAvatar">👁️</div>
+            <div class="toast-body">
+                <div class="toast-speaker" id="combatToastSpeaker">Satoru Gojo</div>
+                <div class="toast-text" id="combatToastText">"Don't worry, I'm the strongest."</div>
             </div>
         </div>
 
@@ -665,6 +790,7 @@
     <script src="js/world3d.js"></script>
     <script src="js/fighter.js"></script>
     <script src="js/ai.js"></script>
+    <script src="js/story.js"></script>
     <script src="js/game.js"></script>
     <script src="js/ui.js"></script>
 </body>
