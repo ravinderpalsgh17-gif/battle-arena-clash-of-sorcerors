@@ -147,6 +147,77 @@ const CHARACTERS_DATA = {
         }
     },
 
+    kanwar: {
+        id: 'kanwar',
+        name: 'Kanwar',
+        title: 'The Noxious Sorcerer',
+        grade: 'Special Grade / Gas Manipulator',
+        powerTier: 1,
+        cost: 0, // Default Free Starter
+        unlocked: true,
+        tagline: 'Eccentric sorcerer who weaponizes noxious cursed digestive energy. Capable of unleashing catastrophic toxic shockwaves.',
+        color: '#84cc16',
+        accentColor: '#365314',
+        auraColor: 'rgba(132, 204, 22, 0.45)',
+        stats: {
+            hp: 1100,
+            speed: 5.6,
+            jumpForce: 15,
+            defense: 1.15,
+            energyGain: 1.25
+        },
+        passive: {
+            name: 'Toxic Respiration',
+            desc: 'Immune to gas stuns and builds cursed energy 25% faster while taking damage or standing in noxious clouds.'
+        },
+        attacks: {
+            basic: {
+                id: 'noxious_chop',
+                name: 'Noxious Chop & Gut Check',
+                key: 'J / Z',
+                cooldown: 0.32,
+                energyCost: 0,
+                damage: 60,
+                range: 80,
+                type: 'melee_poison',
+                desc: 'Delivers a swift stomach jab and downward toxic palm strike infused with pungent cursed energy.'
+            },
+            skill1: {
+                id: 'silent_but_deadly',
+                name: 'Silent But Deadly (SBD)',
+                key: 'K / X',
+                cooldown: 3.5,
+                energyCost: 20,
+                damage: 130,
+                range: 170,
+                type: 'dash_toxic_cloud',
+                desc: 'Phases behind the opponent in a noxious slipstream, leaving a blinding cloud of pungent green gas in his wake!'
+            },
+            skill2: {
+                id: 'rotten_gas_bomb',
+                name: 'Rotten Cursed Gas Bomb',
+                key: 'L / C',
+                cooldown: 5.0,
+                energyCost: 35,
+                damage: 165,
+                range: 520,
+                type: 'toxic_projectile',
+                desc: 'Hurls an unstable orb of concentrated digestive cursed gas that explodes into an acrid green blast on impact!'
+            },
+            ultimate: {
+                id: 'big_fart',
+                name: 'Ultimate Technique: BIG FART',
+                key: 'U / V',
+                cooldown: 12.0,
+                energyCost: 100,
+                damage: 550,
+                range: 800,
+                type: 'cataclysmic_noxious_detonation',
+                desc: 'Deep squat turnabout unleashing a catastrophic, room-clearing noxious blast! Deals devastating damage, 1.5s toxic choke stun, and titanic radial knockback!'
+            }
+        }
+    },
+
     // ----------------------------------------------------
     // TIER 2: GRADE 2 & SEMI-GRADE 1 SORCERERS
     // ----------------------------------------------------
@@ -1167,7 +1238,7 @@ class StorageManager {
         const defaultData = {
             points: 0,
             coinsResetToZeroV1: true,
-            unlocked: ['yuji', 'nobara'],
+            unlocked: ['yuji', 'nobara', 'kanwar'],
             unlockedBattlefields: ['jjk_high'],
             selectedBattlefield: 'jjk_high',
             battlesWon: 0,
@@ -1197,6 +1268,13 @@ class StorageManager {
                 if (!loaded.coinsResetToZeroV1) {
                     loaded.points = 0;
                     loaded.coinsResetToZeroV1 = true;
+                    this.save(loaded);
+                }
+                if (!loaded.unlocked || !Array.isArray(loaded.unlocked)) {
+                    loaded.unlocked = ['yuji', 'nobara', 'kanwar'];
+                    this.save(loaded);
+                } else if (!loaded.unlocked.includes('kanwar')) {
+                    loaded.unlocked.push('kanwar');
                     this.save(loaded);
                 }
                 if (!loaded.storyProgress || !Array.isArray(loaded.storyProgress.unlockedChapters)) {
@@ -1274,7 +1352,7 @@ class StorageManager {
         const defaultData = {
             points: 0,
             coinsResetToZeroV1: true,
-            unlocked: ['yuji', 'nobara'],
+            unlocked: ['yuji', 'nobara', 'kanwar'],
             unlockedBattlefields: ['jjk_high'],
             selectedBattlefield: 'jjk_high',
             battlesWon: 0,
@@ -1300,7 +1378,7 @@ class StorageManager {
     }
 
     static isUnlocked(charId) {
-        if (charId === 'yuji' || charId === 'nobara') return true;
+        if (charId === 'yuji' || charId === 'nobara' || charId === 'kanwar') return true;
         const data = this.load();
         return data.unlocked && data.unlocked.includes(charId);
     }

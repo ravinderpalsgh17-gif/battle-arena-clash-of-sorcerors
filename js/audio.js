@@ -696,6 +696,69 @@ class SoundEngine {
         this.playNoise(0.08, 0.4 * this.volume, 2200);
     }
 
+    // Kanwar Signature Big Fart sound: Bass squelch, pitch flutter, resonant sub boom
+    playFartSound() {
+        if (this.isMuted || !this.ctx) return;
+        this.resume();
+        const now = this.ctx.currentTime;
+        const duration = 1.15;
+
+        try {
+            // 1. Fluttering low-frequency flapper oscillator (sawtooth)
+            const osc = this.ctx.createOscillator();
+            const gain = this.ctx.createGain();
+            const filter = this.ctx.createBiquadFilter();
+
+            osc.type = 'sawtooth';
+            osc.frequency.setValueAtTime(155, now);
+            osc.frequency.exponentialRampToValueAtTime(32, now + duration);
+
+            // Frequency flutter LFO (cheek flutter resonance)
+            const lfo = this.ctx.createOscillator();
+            const lfoGain = this.ctx.createGain();
+            lfo.type = 'sine';
+            lfo.frequency.setValueAtTime(26, now);
+            lfo.frequency.linearRampToValueAtTime(12, now + duration);
+            lfoGain.gain.setValueAtTime(40, now);
+            lfoGain.gain.exponentialRampToValueAtTime(4, now + duration);
+            lfo.connect(osc.frequency);
+            lfo.start(now);
+            lfo.stop(now + duration);
+
+            filter.type = 'lowpass';
+            filter.frequency.setValueAtTime(520, now);
+            filter.frequency.exponentialRampToValueAtTime(110, now + duration);
+
+            gain.gain.setValueAtTime(0.01, now);
+            gain.gain.linearRampToValueAtTime(0.95 * this.volume, now + 0.05);
+            gain.gain.exponentialRampToValueAtTime(0.001, now + duration);
+
+            osc.connect(filter);
+            filter.connect(gain);
+            gain.connect(this.ctx.destination);
+            osc.start(now);
+            osc.stop(now + duration);
+
+            // 2. Squelchy airy puff noise burst
+            this.playNoise(0.75, 0.45 * this.volume, 550);
+
+            // 3. Sub-bass seismic rumble
+            const sub = this.ctx.createOscillator();
+            const subGain = this.ctx.createGain();
+            sub.type = 'sine';
+            sub.frequency.setValueAtTime(85, now);
+            sub.frequency.exponentialRampToValueAtTime(22, now + 0.95);
+            subGain.gain.setValueAtTime(0.75 * this.volume, now);
+            subGain.gain.exponentialRampToValueAtTime(0.001, now + 0.95);
+            sub.connect(subGain);
+            subGain.connect(this.ctx.destination);
+            sub.start(now);
+            sub.stop(now + 0.95);
+        } catch (e) {
+            console.warn("Fart audio error", e);
+        }
+    }
+
     // Dynamic procedural synth combat BGM loop
     startBGM() {
         if (this.isMuted || !this.ctx || this.bgmPlaying) return;
@@ -789,6 +852,7 @@ class VoiceEngine {
             panda: { pitch: 0.68, rate: 0.95, title: 'Mutated Corpse / パンダ' },
             inumaki: { pitch: 1.05, rate: 0.92, title: 'Cursed Speech / 狗巻棘' },
             nobara: { pitch: 1.18, rate: 1.06, title: 'Straw Doll / 釘崎野薔薇' },
+            kanwar: { pitch: 0.92, rate: 1.05, title: 'The Noxious Sorcerer / カンワール' },
             finger_bearer: { pitch: 0.42, rate: 0.75, title: 'Special Grade / 呪胎戴天' }
         };
     }

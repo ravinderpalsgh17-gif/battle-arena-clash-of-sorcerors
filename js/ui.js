@@ -1781,13 +1781,25 @@ class UIManager {
             }
             const uName = this.btnTouchU.querySelector('.touch-name');
             if (uName) {
-                uName.textContent = (p1.charKey === 'gojo') ? 'VOID' : 'ULT';
+                if (p1.charKey === 'kanwar') {
+                    uName.textContent = 'BIG FART';
+                } else if (p1.charKey === 'gojo') {
+                    uName.textContent = 'VOID';
+                } else {
+                    uName.textContent = 'ULT';
+                }
             }
         }
         if (this.btnTouchL) {
             const lName = this.btnTouchL.querySelector('.touch-name');
             if (lName) {
-                lName.textContent = (p1.charKey === 'gojo') ? 'PURPLE' : 'SKILL 2';
+                if (p1.charKey === 'kanwar') {
+                    lName.textContent = 'GAS BOMB';
+                } else if (p1.charKey === 'gojo') {
+                    lName.textContent = 'PURPLE';
+                } else {
+                    lName.textContent = 'SKILL 2';
+                }
             }
         }
     }

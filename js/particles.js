@@ -118,6 +118,34 @@ class ParticleEngine {
         }
     }
 
+    createBigFartExplosion(x, y, z = 0, count = 90) {
+        // Toxic noxious mushroom cloud colors: lime, toxic green, dark chartreuse, sulfur yellow, pungent brown
+        const colors = ['#84cc16', '#a3e635', '#4d7c0f', '#eab308', '#ca8a04', '#65a30d', '#78350f'];
+
+        for (let i = 0; i < count; i++) {
+            const theta = Math.random() * Math.PI * 2;
+            const phi = Math.random() * Math.PI;
+            const speed = 0.16 + Math.random() * 0.45;
+            const chosenColor = colors[Math.floor(Math.random() * colors.length)];
+            this.particles.push({
+                x: x + (Math.random() - 0.5) * 0.8,
+                y: y + (Math.random() - 0.5) * 0.8,
+                z: z + (Math.random() - 0.5) * 0.8,
+                vx: Math.sin(phi) * Math.cos(theta) * speed,
+                vy: Math.abs(Math.cos(phi)) * speed * 1.6 + 0.12, // mushroom cloud upward plume
+                vz: Math.sin(phi) * Math.sin(theta) * speed,
+                color: chosenColor,
+                size: 8 + Math.random() * 14,
+                alpha: 1.0,
+                life: 50 + Math.random() * 35
+            });
+        }
+
+        // Heavy screen shake and toxic green flash!
+        this.shake(34, 28);
+        this.flash('#a3e635', 0.55);
+    }
+
     update() {
         if (this.screenShake > 0) this.screenShake--;
         if (this.flashAlpha > 0) this.flashAlpha -= 0.05;

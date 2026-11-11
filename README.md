@@ -1,6 +1,6 @@
 # ⚔️ Battle Arena: Clash of Sorcerors — 4K Ultra 3D Edition
 
-An adrenaline-pumping **4K Ultra 3D Open World fighting arena game** featuring 16 legendary characters from **Jujutsu Kaisen**, ranked and balanced according to their canonical power levels, grades, and domain expansions. Built with **Three.js (WebGL 3D)**, hardware-accelerated procedural 4K textures, 4096x4096 soft PCF shadows, procedural Web Audio synthesis, and dynamic combat camera tracking.
+An adrenaline-pumping **4K Ultra 3D Open World fighting arena game** featuring 17 legendary characters from **Jujutsu Kaisen**, ranked and balanced according to their canonical power levels, grades, and domain expansions. Built with **Three.js (WebGL 3D)**, hardware-accelerated procedural 4K textures, 4096x4096 soft PCF shadows, procedural Web Audio synthesis, and dynamic combat camera tracking.
 
 ---
 
@@ -33,7 +33,8 @@ Relive the exact legendary canonical timeline of Jujutsu Kaisen through an 8-cha
 * **Live In-Combat Dialogue & Mid-Fight Speech**: Characters exchange iconic lines in real-time as fighter HP reaches dramatic thresholds with bullet-time camera focus.
 
 ### 🥋 Full 3D Characters with Procedural Anime Rigs
-Every character in the 16-sorcerer roster is fully modeled and animated in 3D with distinct anime aesthetics, signature accessories, and hierarchical skeletal rigging:
+Every character in the 17-sorcerer roster is fully modeled and animated in 3D with distinct anime aesthetics, signature accessories, and hierarchical skeletal rigging:
+* **Kanwar**: The Noxious Sorcerer, featuring an olive-green sorcerer gi, dark spiky anime hair with lime-green headband, floating swirling toxic gas wisps, and the devastating, room-clearing ultimate attack: **Big Fart** with authentic frequency-modulated audio squelch and massive toxic mushroom-cloud particle blast!
 * **Ryomen Sukuna (Heian Form)**: True 4-armed Heian Era King of Curses with **4 fully articulated muscular arms**, 4 glowing crimson eyes with animated pulse, right-side demonic carapace mask with horn spur, authentic black cursed tattoos mapped across chest and arms, obsidian black claws with glowing red tips, open silk kimono with gold embroidery, textured rope obi, and the Enmaten domain mudra!
 * **Satoru Gojo**: 3D spiky white hair with anisotropic shimmer, blindfold that slides down during attacks/domain revealing the legendary **Six Eyes** (celestial starlight iris with radiant cyan glow), shimmering translucent **Infinity Barrier sphere**, rotating 3D **Lapse Blue** & **Reversal Red** orbs, dedicated **Hollow Technique: Purple** beam (Skill 2 / Key <kbd>H</kbd>), and separate **Domain Expansion: Unlimited Void** (Ultimate / Key <kbd>Y</kbd>)!
 * **Toji Fushiguro**: Chiseled vascular physique in black compression shirt, articulated 12-segment 3D **Cursed Spirit inventory worm** coiled around torso with toothy mouth and demonic eye, and the **Inverted Spear of Heaven** with iron chain links!

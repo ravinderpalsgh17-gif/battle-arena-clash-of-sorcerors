@@ -550,6 +550,13 @@ class Character3DFactory {
             armThickness = 0.21;
             legThickness = 0.23;
             headSize = 0.53;
+        } else if (charKey === 'kanwar') {
+            torsoWidth = 1.18;
+            torsoHeight = 1.34;
+            torsoDepth = 0.74;
+            armThickness = 0.23;
+            legThickness = 0.25;
+            headSize = 0.54;
         } else if (charKey === 'nobara' || charKey === 'maki') {
             torsoWidth = 0.96;
             torsoHeight = 1.25;
@@ -651,6 +658,10 @@ class Character3DFactory {
             torsoMat = regMat(new THREE.MeshStandardMaterial({ color: 0x242a26, roughness: 0.55 }));
             chestMat = skinMat; // Open jacket showing muscular chest
             pantsMat = regMat(new THREE.MeshStandardMaterial({ color: 0x333b35, roughness: 0.6 }));
+        } else if (charKey === 'kanwar') {
+            torsoMat = regMat(new THREE.MeshStandardMaterial({ color: 0x4d7c0f, roughness: 0.55 })); // Olive / toxic green jacket
+            chestMat = skinMat; // Muscular chest revealed
+            pantsMat = regMat(new THREE.MeshStandardMaterial({ color: 0x1a2e05, roughness: 0.65 })); // Dark olive cargo pants
         }
 
         // ----------------------------------------------------
@@ -849,6 +860,12 @@ class Character3DFactory {
             chain.position.set(0, 0.32, torsoDepth / 2 + 0.04);
             chain.rotation.x = Math.PI / 4;
             torsoGroup.add(chain);
+        } else if (charKey === 'kanwar') {
+            // Toxic Lime Waist Belt / Sash
+            const sashMat = regMat(new THREE.MeshStandardMaterial({ color: 0x84cc16, roughness: 0.5 }));
+            const sash = new THREE.Mesh(new THREE.BoxGeometry(torsoWidth * 0.88, 0.18, torsoDepth * 0.92), sashMat);
+            sash.position.set(0, -0.46, 0);
+            torsoGroup.add(sash);
         }
 
         // ----------------------------------------------------
@@ -1393,6 +1410,35 @@ class Character3DFactory {
             const pupil = new THREE.Mesh(new THREE.BoxGeometry(0.05, 0.18, 0.04), regMat(new THREE.MeshBasicMaterial({ color: 0x000000 })));
             pupil.position.set(0, 0.04, 0.52);
             headGroup.add(pupil);
+
+        } else if (charKey === 'kanwar') {
+            // KANWAR: Spiky anime styled hair, forehead lime headband, confident smirk
+            const hairMat = regMat(new THREE.MeshStandardMaterial({ color: 0x27272a, roughness: 0.7 })); // Dark spiky hair
+            const hairBase = new THREE.Mesh(new THREE.ConeGeometry(0.52, 0.42, 7), hairMat);
+            hairBase.position.set(0, 0.44, -0.05);
+            headGroup.add(hairBase);
+
+            // Spikes
+            for (let i = 0; i < 5; i++) {
+                const spike = new THREE.Mesh(new THREE.ConeGeometry(0.14, 0.38, 5), hairMat);
+                const angle = (i / 4 - 0.5) * 1.5;
+                spike.position.set(Math.sin(angle) * 0.32, 0.52, -0.1 + Math.cos(angle) * 0.15);
+                spike.rotation.z = -angle * 0.7;
+                spike.rotation.x = -0.25;
+                headGroup.add(spike);
+            }
+
+            // Lime Green Headband
+            const headbandMat = regMat(new THREE.MeshBasicMaterial({ color: 0x84cc16 }));
+            const headband = new THREE.Mesh(new THREE.CylinderGeometry(headSize * 0.53, headSize * 0.53, 0.12, 16), headbandMat);
+            headband.position.set(0, 0.22, 0);
+            headGroup.add(headband);
+
+            // Headband knot tails
+            const knot = new THREE.Mesh(new THREE.BoxGeometry(0.12, 0.35, 0.04), headbandMat);
+            knot.position.set(0.24, 0.15, -headSize * 0.52);
+            knot.rotation.z = -0.4;
+            headGroup.add(knot);
         }
 
         // ----------------------------------------------------
@@ -1838,6 +1884,22 @@ class Character3DFactory {
             torsoGroup.add(redOrb);
             parts.blueOrb = blueOrb;
             parts.redOrb = redOrb;
+        } else if (charKey === 'kanwar') {
+            // Orbiting noxious gas puffs / stink wisps
+            const gasGroup = new THREE.Group();
+            const gasMat = regMat(new THREE.MeshBasicMaterial({
+                color: 0x84cc16,
+                transparent: true,
+                opacity: 0.65
+            }));
+            const wisps = [];
+            for (let i = 0; i < 6; i++) {
+                const wisp = new THREE.Mesh(new THREE.SphereGeometry(0.18 + (i % 3) * 0.06, 8, 8), gasMat);
+                gasGroup.add(wisp);
+                wisps.push(wisp);
+            }
+            torsoGroup.add(gasGroup);
+            parts.fartWisps = wisps;
         }
 
         // Cursed Energy Ground Halo
@@ -1939,6 +2001,18 @@ class CharacterModel3D {
         // Divine Dog tracking
         if (this.parts.divineDog) {
             this.parts.divineDog.position.y = Math.abs(Math.sin(t * 4)) * 0.08;
+        }
+
+        // Kanwar Orbiting Toxic Gas Wisps
+        if (this.parts.fartWisps) {
+            this.parts.fartWisps.forEach((wisp, i) => {
+                const angle = t * 2.2 + (i * Math.PI / 3);
+                const radius = 1.1 + Math.sin(t * 3 + i) * 0.25;
+                const height = -0.4 + (i * 0.2) + Math.sin(t * 2.5 + i) * 0.15;
+                wisp.position.set(Math.cos(angle) * radius, height, Math.sin(angle) * radius);
+                const s = 0.8 + Math.sin(t * 4 + i) * 0.3;
+                wisp.scale.set(s, s, s);
+            });
         }
 
         // Rika floating sway
@@ -2070,6 +2144,21 @@ class CharacterModel3D {
         }
 
         if (state === 'ultimate') {
+            if (this.charKey === 'kanwar') {
+                // Kanwar Big Fart squat windup and posterior blast pose!
+                const squat = 1.35 + Math.sin(t * 12) * 0.08;
+                this.parts.torso.position.y = squat;
+                this.parts.torso.rotation.set(0.65, Math.PI, 0); // Turned 180 degrees backward pointing rear at target
+                this.parts.leftHip.rotation.set(-1.1, 0, -0.3);
+                this.parts.rightHip.rotation.set(-1.1, 0, 0.3);
+                this.parts.leftCalf.rotation.set(1.4, 0, 0);
+                this.parts.rightCalf.rotation.set(1.4, 0, 0);
+                this.parts.leftShoulder.rotation.set(-0.5, 0.4, -0.4);
+                this.parts.rightShoulder.rotation.set(-0.5, -0.4, 0.4);
+                this.parts.head.rotation.set(-0.2, 0.6, 0); // Looking back over shoulder
+                return;
+            }
+
             // Domain Expansion: Signature Hand Signs & Levitation!
             this.parts.torso.position.y = 2.4 + Math.sin(t * 4) * 0.15;
             this.parts.torso.rotation.set(0, 0, 0);

@@ -68,14 +68,27 @@ class AIController {
 
         // 2. Ultimate / Domain Execution: If 100 energy or Jackpot ready
         if (f.energy >= 100 && f.cooldowns.ultimate === 0) {
-            if (['gojo', 'sukuna', 'yuta', 'hakari', 'jogo', 'mahito'].includes(f.charKey) || dist < 12.0) {
+            if (['gojo', 'sukuna', 'yuta', 'hakari', 'jogo', 'mahito', 'kanwar'].includes(f.charKey) || dist < 12.0) {
                 f.triggerUltimate();
                 return;
             }
         }
 
         // 3. Character-Specific Tactical Playstyles in 3D
-        if (f.charKey === 'gojo') {
+        if (f.charKey === 'kanwar') {
+            if (dist > 7.0 && f.cooldowns.skill2 === 0 && f.energy >= 35) {
+                f.triggerSkill2(); // Rotten Gas Bomb
+                return;
+            }
+            if (dist <= 6.0 && f.cooldowns.skill1 === 0 && f.energy >= 20) {
+                f.triggerSkill1(); // Silent But Deadly
+                return;
+            }
+            if (dist <= 4.5 && f.cooldowns.basic === 0) {
+                f.triggerBasicAttack(); // Noxious Chop
+                return;
+            }
+        } else if (f.charKey === 'gojo') {
             if (dist > 12.0 && f.cooldowns.skill1 === 0 && f.energy >= 30) {
                 f.triggerSkill1(); // Reversal Red
                 return;

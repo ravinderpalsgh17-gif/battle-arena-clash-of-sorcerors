@@ -240,6 +240,23 @@ class Fighter {
                 this.opponent.applyStatus('stun', 90);
                 this.particles.addFloatingText("DON'T MOVE!", this.opponent.x, this.opponent.y + 3, '#00e5ff', 24);
             }
+        } else if (this.charKey === 'kanwar') {
+            // Silent But Deadly (SBD): Rapid toxic slipstream behind enemy!
+            this.sound.playWhoosh();
+            const fwdX = Math.sin(this.rotationY);
+            const fwdZ = Math.cos(this.rotationY);
+            this.vx = fwdX * 0.55;
+            this.vz = fwdZ * 0.55;
+            this.particles.createCursedBurst(this.x, this.y + 0.8, this.z, '#84cc16', 22);
+            this.particles.addFloatingText('S.B.D.!', this.x, this.y + 3, '#84cc16', 22);
+            this.currentHitbox = {
+                range: 6.8,
+                angle: 1.5,
+                damage: atk.damage,
+                knockback: 0.65,
+                type: 'kanwar_skill1',
+                activeFrames: [6, 22]
+            };
         } else {
             // Dash Attack or Heavy Hitbox
             this.sound.playWhoosh();
@@ -301,6 +318,12 @@ class Fighter {
                 this.particles.createCursedBurst(this.opponent.x, this.opponent.y + 1.5, this.opponent.z, '#ab47bc', 25);
                 this.particles.addFloatingText('BOOGIE WOOGIE!', this.x, this.y + 3, '#ab47bc', 22);
             }
+        } else if (this.charKey === 'kanwar') {
+            // Rotten Cursed Gas Bomb
+            this.sound.playWhoosh();
+            this.particles.createCursedBurst(this.x, this.y + 1.2, this.z, '#84cc16', 18);
+            this.particles.addFloatingText('GAS BOMB!', this.x, this.y + 3.2, '#84cc16', 22);
+            this.spawn3DProjectile('gas_bomb', atk.damage, 0.75, 0.45, '#84cc16');
         } else {
             // High Impact Melee Launch
             this.sound.playSlash();
@@ -363,6 +386,27 @@ class Fighter {
             this.isJackpotActive = true;
             this.jackpotTimer = 60 * 20;
             this.particles.addFloatingText('JACKPOT ACTIVE!', this.x, this.y + 3.5, '#ffd700', 26);
+        } else if (this.charKey === 'kanwar') {
+            // Kanwar: ULTIMATE ATTACK - BIG FART!
+            // Colossal toxic shockwave, noxious green gas eruption, ear-shattering squelch, massive knockback!
+            this.sound.playFartSound();
+            if (this.particles.createBigFartExplosion) {
+                this.particles.createBigFartExplosion(this.x, this.y + 0.8, this.z);
+            } else {
+                this.particles.createCursedBurst(this.x, this.y + 1.0, this.z, '#84cc16', 70);
+            }
+            this.particles.addFloatingText('💨 BIG FART! 💥', this.x, this.y + 3.8, '#84cc16', 32, true);
+            this.currentHitbox = {
+                range: 15.0,
+                angle: Math.PI * 2, // 360-degree noxious blast radius
+                damage: atk.damage,
+                knockback: 3.2, // Massive launch backward!
+                type: 'kanwar_big_fart',
+                activeFrames: [10, 50]
+            };
+            if (this.opponent && this.opponent.applyStatus) {
+                this.opponent.applyStatus('stun', 90); // 1.5s choke / stun from toxic odor
+            }
         } else {
             // Direct Spatial Domain / Critical Blast
             this.currentHitbox = {
